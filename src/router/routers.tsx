@@ -1,34 +1,34 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
   Navigate,
-} from "react-router-dom";
-import { useAuth, AuthProvider } from "@/context/authContext";
+  useAuth,
+  Home,
+  Login,
+  SelectLogin,
+  HeaderExport,
+  Footer,
+  Dashboard,
+  StudentScreen,
+  AddClass,
+  Student,
+  Password,
+  Code,
+  Email,
+  AnimatePresence,
+  motion,
+  StudentNotification,
+  Classes,
+  Profile,
+  ProfileMobile
+} from "./index";
 
-import { Home } from "@/screens/home/home";
-import { Login } from "@/screens/auth/login";
-import { SelectLogin } from "@/screens/auth/userType";
-import { HeaderExport } from "@/components/index";
-import { Footer } from "@/components/footer";
-import { Dashboard } from "@/screens/dashboard/dashboard";
-import { StudentScreen } from "@/screens/student/screens/add";
-import { AddClass } from "@/screens/classes/screens/add_classes";
-import { Student } from "@/screens/student";
-import { Password } from "@/screens/auth/changePassword";
-import { Code } from "@/screens/auth/code";
-import { Email } from "@/screens/auth/emailVerification";
-import { AnimatePresence, motion } from "framer-motion";
-import { StudentNotification } from "@/screens/student/indexNotification";
-import { Classes } from "@/screens/classes";
-import { Profile } from "@/screens/user";
-import { ProfileMobile } from "@/screens/student/screens/profileMobile";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
 ----------------------------------------------------------- */
-function AppContent() {
+export function AppContent() {
   const location = useLocation();
   const { authState, authReady } = useAuth();
   const token = authState?.token;
@@ -119,18 +119,3 @@ function AppContent() {
     </AnimatePresence>
   );
 }
-
-/* -----------------------------------------------------------
-   Routers — encapsula tudo com AuthProvider e BrowserRouter
------------------------------------------------------------ */
-function Routers() {
-  return (
-    <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </Router>
-  );
-}
-
-export default Routers;
