@@ -105,7 +105,7 @@ export function AddClass() {
                 </div>
               </form>
               <div className="flex justify-end items-center mt-8 space-x-6">
-              <button type="button" className="text-gray-400 text-[10px] hover:text-gray-600 transition">
+              <button onClick={() => navigate(-1)} type="button" className="text-gray-400 text-[10px] hover:text-gray-600 transition">
                 Cancelar
               </button>
               <button

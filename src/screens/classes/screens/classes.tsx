@@ -4,8 +4,11 @@ import { IoMdAdd } from "react-icons/io";
 import { classesMock } from "../components/classesMock";
 import { PiStudentBold } from "react-icons/pi";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
+import { useState } from "react";
 
 export function ClassesDesktop() {
+  const [open, setOpen] = useState(false);
+  
   return (
     <div className="min-h-screen bg-[#0D0C15] mb-40 text-white font-sans">
       {/* Conteúdo */}
@@ -14,9 +17,26 @@ export function ClassesDesktop() {
         <div className="flex items-center justify-end mb-4">
           {/* Search + Add button */}
           <div className="flex items-center justify-center gap-6">
-            <div className="flex hover:scale-110 transition items-center justify-center h-[50px] w-[50px] bg-[#323D4E] rounded-full hover:bg-[#3f4c63] cursor-pointer">
-              <FaSearch size={20} />
-            </div>
+    <div
+      className={`flex items-center bg-[#323D4E] rounded-full transition-all duration-300 
+      h-[50px] cursor-pointer overflow-hidden
+      ${open ? "w-[220px] px-4" : "w-[50px] justify-center"}`}
+      onClick={() => setOpen(!open)}
+    >
+      {/* Ícone */}
+      <FaSearch size={20} className="text-white shrink-0" />
+
+      {/* Input aparece só quando expandido */}
+      {open && (
+        <input
+          type="text"
+          autoFocus
+          placeholder="Pesquisar..."
+          className="bg-transparent text-white ml-3 outline-none w-full"
+          onClick={(e) => e.stopPropagation()}
+        />
+      )}
+    </div>
             <a href="/add_classes">
               <motion.button
                 whileHover={{ scale: 1.05 }}
