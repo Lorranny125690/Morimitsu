@@ -62,7 +62,7 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
         </motion.div>
 
         {/* Conteúdo */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 mb-8 justify-items-center">
+        <div className="gap-12 p-6 mb-8 justify-items-center flex justify-center">
           {/* Turmas */}
           <motion.div
             className="hover:scale-110 transition-all flex flex-col justify-center items-center bg-[#7C9FC9] text-white rounded-lg p-4"
@@ -91,7 +91,7 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="flex flex-row gap-4 items-center justify-center">
+            <div className="flex flex-row gap-4 items-start justify-start">
               <h2 className="text-[16px] font-semibold text-white">Frequências</h2>
 
               <button className="hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
@@ -100,20 +100,6 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
             </div>
 
             <span className="text-[30px] font-semibold text-white">15</span>
-          </motion.div>
-
-          {/* Equipes */}
-          <motion.div
-            className="hover:scale-110 transition-all flex flex-col h-[88px] w-[208px] bg-[#7C9FC9] items-center justify-center rounded-lg p-2 px-4 shadow-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <div className="flex flex-row gap-4 items-center justify-center">
-              <h2 className="text-[16px] font-semibold text-white">Equipes</h2>
-            </div>
-
-            <span className="text-[30px] font-semibold text-white">0</span>
           </motion.div>
         </div>
 
