@@ -5,6 +5,7 @@ import { classesMock } from "../components/classesMock";
 import { PiStudentBold } from "react-icons/pi";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
+import { RiEditLine } from "react-icons/ri";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
@@ -102,11 +103,27 @@ export function ClassesDesktop() {
                   </h2>
 
                   {/* Instrutor */}
-                  <div className="flex items-center gap-2 text-gray-300">
-                    <FaUser size={14} />
-                    <p className="text-sm">
+                  <div className="flex items-center gap-2">
+                    <FaUser className="text-gray-300" size={14} />
+                    <p className="text-gray-300 text-sm">
                       {classe.professor || "Instrutor não definido"}
                     </p>
+                    <div className="relative group">
+                      <RiEditLine
+                        className="hover:scale-120 cursor-pointer transition-all text-white"
+                        size={20}
+                      />
+
+                      {/* Tooltip */}
+                      <span
+                        className="absolute left-1/2 -translate-x-1/2 -top-7
+                                  bg-black text-white text-xs py-1 px-2 rounded
+                                  opacity-0 group-hover:opacity-100 transition-opacity
+                                  whitespace-nowrap pointer-events-none"
+                      >
+                        Frequência
+                      </span>
+                    </div>
                   </div>
 
                   {/* Infos */}
