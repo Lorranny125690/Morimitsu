@@ -6,10 +6,12 @@ import { PiStudentBold } from "react-icons/pi";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // FECHAR AO CLICAR FORA
   useEffect(() => {
@@ -112,6 +114,7 @@ export function ClassesDesktop() {
                       <RiEditLine
                         className="hover:scale-120 cursor-pointer transition-all text-white"
                         size={20}
+                        onClick={() => navigate("/frequency")}
                       />
 
                       {/* Tooltip */}

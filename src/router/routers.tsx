@@ -1,3 +1,4 @@
+import { Frequency } from "@/screens/frequency/frequencyScreen";
 import {
   Routes,
   Route,
@@ -41,7 +42,7 @@ export function AppContent() {
     );
   }
 
-  const noHeaderRoutes = ["/", "/login", "/password", "/code", "/email", "/add_student", "/add_classes", "/profileMobile"];
+  const noHeaderRoutes = ["/", "/login", "/password", "/code", "/email", "/add_student", "/add_classes", "/profileMobile", "/frequency"];
   const showHeader = !noHeaderRoutes.includes(location.pathname);
 
   const privateRoutes = [
@@ -107,6 +108,7 @@ export function AppContent() {
             <Route path="/add_classes" element={<AddClass />} />
             <Route path="/profile" element={<Profile/>} />
             <Route path="/profileMobile" element={<ProfileMobile/>} />
+            <Route path="/frequency" element={<Frequency/>} />
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}
