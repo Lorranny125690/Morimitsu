@@ -3,12 +3,7 @@ import { motion } from "framer-motion";
 import { AiOutlineTeam } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
-interface StudentProfileProps {
-  closeModal: () => void;
-  student: () => void;
-}
-
-export const UserProfile = ({ closeModal }: StudentProfileProps) => {
+export const UserProfile = () => {
 
   const navigate = useNavigate();
   
