@@ -19,7 +19,7 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
       >
         {/* Header */}
         <motion.div
-          className="flex h-60 flex-col bg-[#7C9FC9] p-6"
+          className="flex h-[25vh] flex-col bg-[#7C9FC9] p-6"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -45,10 +45,10 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
               <img
                 src="https://i.pinimg.com/736x/a5/cb/1a/a5cb1a5651d178a1bde6c41e391dacd2.jpg"
                 alt="Perfil"
-                className="h-50 w-50 items-center justify-center flex rounded-full hover:scale-110 transition-all cursor-pointer"
+                className="h-auto w-[21vh] max-h-[21vh] items-center justify-center flex rounded-full hover:scale-110 transition-all cursor-pointer"
               />
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-15 font-bold text-white">Garu</h1>
+                <h1 className="text-[50px] h-12 font-bold text-white">Garu</h1>
                 <p className="text-[40px] font-medium text-white/60">Faixa preta</p>
                 <p className="text-[20px] text-white">15 anos</p>
               </div>
