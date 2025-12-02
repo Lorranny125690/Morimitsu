@@ -34,7 +34,7 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
               size={30}
             />
 
-            <button className="hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full">
+            <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full">
               Promover a professor
             </button>
           </div>
@@ -94,7 +94,7 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
             <div className="flex flex-row gap-4 items-start justify-start">
               <h2 className="text-[16px] font-semibold text-white">Frequências</h2>
 
-              <button className="hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
+              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
                 Graduar
               </button>
             </div>
