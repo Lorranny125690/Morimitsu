@@ -7,19 +7,19 @@ export {
 } from "react-router-dom";
 
 export { useAuth, AuthProvider } from "@/context/authContext";
-
+export { Frequency } from "@/screens/frequency/frequency";
 export { Home } from "@/screens/home/home";
-export { Login } from "@/screens/auth/login";
-export { SelectLogin } from "@/screens/auth/userType";
+export { Login } from "@/screens/auth/login/pages/login";
+export { SelectLogin } from "@/screens/auth/userType/pages/userType";
 export { HeaderExport } from "@/components/index";
 export { Footer } from "@/components/footer";
 export { Dashboard } from "@/screens/dashboard/dashboard";
 export { StudentScreen } from "@/screens/student/screens/add";
 export { AddClass } from "@/screens/classes/screens/add_classes";
 export { Student } from "@/screens/student";
-export { Password } from "@/screens/auth/changePassword";
+export { Password } from "@/screens/auth/password/pages/password";
 export { Code } from "@/screens/auth/code";
-export { Email } from "@/screens/auth/emailVerification";
+export { Email } from "@/screens/auth/email/pages/email";
 export { AnimatePresence, motion } from "framer-motion";
 export { StudentNotification } from "@/screens/student/indexNotification";
 export { Classes } from "@/screens/classes";

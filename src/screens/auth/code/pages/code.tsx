@@ -1,89 +1,23 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaLock } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import image from "../../assets/logo.png";
 import sideImage from "../../assets/image.png";
 import bgImage from "../../assets/image1.png";
-import { useAuth } from "@/context/authContext";
-import { ModalMsg } from "./login";
-
-type FieldProps = {
-  icon: React.ReactNode;
-  label: string;
-  type?: string;
-  value: number | string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
-
-const Field = ({ icon, label, type = "text", onChange, value }: FieldProps) => (
-  <div className="flex w-full lg:w-[300px] border border-[#C54848]">
-    <div className="flex items-center justify-center w-12 bg-[#222121] border-r border-[#C54848]">
-      {icon}
-    </div>
-    <div className="flex-1 flex flex-col">
-      <div className="h-5 flex items-center px-1 bg-[#222121] border-b border-[#C54848]">
-        <span className="text-[10px] text-gray-200 font-serif">{label}</span>
-      </div>
-      <input
-        type={type}
-        className="h-5 w-full bg-[#222121] px-1 text-[12px] text-white placeholder-gray-400 focus:outline-none"
-        value={value}
-        onChange={onChange}
-      />
-    </div>
-  </div>
-);
+import { codeController } from "../hooks/codeController";
+import { Field } from "../components/field";
+import { ModalMsg } from "@/components/modal";
 
 export function Code() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [code, setCode] = useState<number | "">("");
-  const { onCode } = useAuth();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMsg, setModalMsg] = useState("");
-  const [modalType, setModalType] = useState<"error" | "success">("error");
-
-  const handleLogin = async () => {
-    if (!code) {
-      setModalMsg("📧 Oops... falta preencher tudo!");
-      setModalType("error");
-      setModalVisible(true);
-      return;
-    }
-  
-    setLoading(true);
-  
-    try {
-      const res = await onCode(code);
-
-      if (!res.error) {
-        setModalMsg("🎉 Login feito com sucesso! Bem-vindo de volta 💖");
-        setModalType("success");
-        setModalVisible(true);
-        setTimeout(() => navigate("/code"), 500);
-      } else {
-        if (res.status === 400) {
-          setModalMsg("⚠️ " + res.msg);
-        } else if (res.status === 401) {
-          setModalMsg("🙈 " + res.msg);
-        } else if (res.status === 422) {
-          setModalMsg("🚫 " + res.msg);
-        } else {
-          setModalMsg("😕 " + res.msg);
-        }
-    
-        setModalType("error");
-        setModalVisible(true);
-      }
-    } catch {
-      setModalMsg("💥 Erro inesperado! Verifica tua conexão, ok?");
-      setModalType("error");
-      setModalVisible(true);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const {
+    loading,
+    code,
+    setCode,
+    modalVisible,
+    modalMsg,
+    modalType,
+    handleCode,
+    setModalVisible,
+  } = codeController();  
 
   return (
     <div
@@ -127,7 +61,7 @@ export function Code() {
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
             className="mt-2 w-[109px] h-[37px] bg-[#C54848] hover:bg-red-700 hover:cursor-pointer text-white font-serif text-[15px] rounded-t-[30px] rounded-b-[20px] transition disabled:opacity-50"
-            onClick={handleLogin}
+            onClick={handleCode}
             disabled={loading || !code}
           >
             {loading ? "Carregando..." : "Entrar"}
