@@ -5,6 +5,7 @@ import { beltClasses } from "../components/beltclasses";
 import { Choice } from "../components/choose";
 import { useState } from "react";
 import { StudentProfile } from "./profile";
+import { FiltroDropdown } from "../components/dropdown";
 
 export function StudentDesktop() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +20,7 @@ export function StudentDesktop() {
   // Função para fechar o modal
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedStudent(null); // Limpar o aluno selecionado
+    setSelectedStudent(null);
   };
 
   return (
@@ -42,15 +43,10 @@ export function StudentDesktop() {
                 Adicionar aluno
               </motion.button>
             </a>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="hover:cursor-pointer px-5 py-2 bg-[#0070F3] hover:bg-blue-700 rounded-md font-medium transition"
-            >
-              Filtrar por ▾
-            </motion.button>
+            <FiltroDropdown />
           </div>
         </div>
+
 
         {/* Card com tabela */}
         <motion.div
@@ -127,7 +123,7 @@ export function StudentDesktop() {
       {isModalOpen && selectedStudent && (
         <StudentProfile
           closeModal={closeModal}
-          student={selectedStudent} // se quiser mostrar os dados reais
+          student={selectedStudent}
         />
       )}
     </div>
