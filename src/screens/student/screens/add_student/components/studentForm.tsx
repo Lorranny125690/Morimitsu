@@ -1,0 +1,199 @@
+// src/components/student/StudentForm.tsx
+
+import type { FormDataType } from "../hooks/studentProps";
+
+interface Props {
+  formData: FormDataType;
+  handleChange: (e: any) => void;
+  handleSubmit: () => void;
+  navigate: (v: any) => void;
+}
+
+export function StudentForm({ formData, handleChange, handleSubmit, navigate }: Props) {
+  return (
+    <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
+      <div className="flex flex-col w-full">
+        <div className="border-b-2 border-gray-200 py-5 mb-4 flex items-center">
+          <h3 className="px-4 text-gray-700 font-medium text-[10px]">Dados</h3>
+          <h3 className="hover:cursor-pointer text-gray-400 font-regular text-[10px]">Enturmar</h3>
+        </div>
+
+        <form
+          className="px-6 md:px-10 gap-6"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 80px",
+            gridAutoRows: "min-content",
+            alignItems: "start",
+            gap: "16px",
+          }}
+        >
+
+          {/* Nome */}
+          <div>
+            <label className="block text-[10px] text-black">Nome</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          {/* Data de nascimento */}
+          <div>
+            <label className="block text-[10px] text-black">Data de nascimento</label>
+            <input
+              type="date"
+              name="birth_date"
+              value={formData.birth_date}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          {/* Grau */}
+          <div>
+            <label className="block text-[10px] text-black">Grau</label>
+            <select
+              name="grade"
+              value={formData.grade}
+              onChange={handleChange}
+              className="w-16 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
+            >
+              <option value=""> </option>
+              <option value="1">1º</option>
+              <option value="2">2º</option>
+              <option value="3">3º</option>
+              <option value="4">4º</option>
+              <option value="5">5º</option>
+            </select>
+          </div>
+
+          {/* Contato */}
+          <div>
+            <label className="block text-[10px] text-black">Contato</label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          {/* Matrícula */}
+          <div>
+            <label className="block text-[10px] text-black">Matrícula (opcional)</label>
+            <input
+              type="text"
+              name="enrollment"
+              value={formData.enrollment}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          <div />
+
+          {/* Email */}
+          <div>
+            <label className="block text-[10px] text-black">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          {/* Frequência */}
+          <div>
+            <label className="block text-[10px] text-black">Frequência</label>
+            <input
+              type="text"
+              name="current_frequency"
+              value={formData.current_frequency}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          <div />
+
+          {/* CPF */}
+          <div>
+            <label className="block text-[10px] text-black">CPF</label>
+            <input
+              type="text"
+              name="cpf"
+              value={formData.cpf}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] focus:ring-2 focus:ring-blue-400 shadow-sm"
+            />
+          </div>
+
+          {/* Faixa */}
+          <div>
+            <label className="block text-[10px] text-black">Faixa</label>
+            <select
+              name="belt"
+              value={formData.belt}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
+            >
+              <option value="">Escolher faixa</option>
+              <option value="WHITE">Faixa branca</option>
+              <option value="GRAY">Faixa cinza</option>
+              <option value="YELLOW">Faixa amarela</option>
+              <option value="ORANGE">Faixa laranja</option>
+              <option value="GREEN">Faixa verde</option>
+              <option value="BLUE">Faixa azul</option>
+              <option value="PURPLE">Faixa roxa</option>
+              <option value="BROWN">Faixa marrom</option>
+              <option value="BLACK">Faixa preta</option>
+            </select>
+          </div>
+
+          {/* Gênero */}
+          <div style={{ gridColumn: "1 / 2" }}>
+            <label className="block text-[10px] text-black">Gênero</label>
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
+            >
+              <option value="">Escolher gênero</option>
+              <option value="MALE">Masculino</option>
+              <option value="FEMALE">Feminino</option>
+            </select>
+          </div>
+
+        </form>
+
+        {/* Botões */}
+        <div className="w-full px-10 h-[1px] flex items-center justify-end">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="cursor-pointer text-gray-400 text-sm hover:text-gray-600 mr-6"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
+          >
+            Confirmar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}

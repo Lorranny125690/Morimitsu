@@ -3,13 +3,16 @@ import {
   BrowserRouter as Router,
 } from "react-router-dom";
 import { AppContent } from "./routers";
+import { StudentProvider } from "@/context/studentContext";
 
 function Routers() {
   return (
     <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <StudentProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </StudentProvider>
     </Router>
   );
 }

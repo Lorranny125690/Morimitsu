@@ -14,7 +14,7 @@ export { SelectLogin } from "@/screens/auth/userType/pages/userType";
 export { HeaderExport } from "@/components/index";
 export { Footer } from "@/components/footer";
 export { Dashboard } from "@/screens/dashboard/dashboard";
-export { StudentScreen } from "@/screens/student/screens/add";
+export { StudentScreen } from "@/screens/student/screens/add_student/add";
 export { AddClass } from "@/screens/classes/screens/add_classes";
 export { Student } from "@/screens/student";
 export { Password } from "@/screens/auth/password/pages/password";
