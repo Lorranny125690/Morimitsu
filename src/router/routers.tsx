@@ -1,4 +1,4 @@
-import { Frequency } from "@/screens/frequency/frequencyScreen";
+import { Frequency } from "@/screens/frequency/frequency";
 import {
   Routes,
   Route,
