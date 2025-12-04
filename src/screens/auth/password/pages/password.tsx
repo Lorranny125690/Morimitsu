@@ -1,8 +1,8 @@
 import { FaLock } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import image from "../../assets/logo.png";
-import sideImage from "../../assets/image.png";
-import bgImage from "../../assets/image1.png";
+import image from "@/assets/logo.svg"
+import sideImage from "@/assets/image.png";
+import bgImage from "@/assets/image1.png";
 import { ModalMsg } from "../../login/pages/login";
 import { Field } from "../components/field";
 import { LoginController } from "../hooks/password";

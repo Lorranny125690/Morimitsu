@@ -1,8 +1,8 @@
 import { FaUser } from "react-icons/fa";
 import { motion } from "framer-motion";
-import image from "../../assets/logo.png";
-import sideImage from "../../assets/image.png";
-import bgImage from "../../assets/image1.png";
+import image from "@/assets/logo.svg"
+import sideImage from "@/assets/image.png";
+import bgImage from "@/assets/image1.png";
 import { ModalMsg } from "../../login/pages/login";
 import { emailController } from "../hooks/email";
 import { Field } from "../components/field";

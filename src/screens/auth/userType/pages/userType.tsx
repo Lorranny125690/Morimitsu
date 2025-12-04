@@ -1,7 +1,7 @@
 import { FaUserShield, FaChalkboardTeacher } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import bgImage from "../../assets/image1.png";
-import image from "../../assets/logo.png";
+import bgImage from "../../../../assets/image1.png";
+import image from "../../../../assets/logo.svg"
 import { motion } from "framer-motion";
 import { Card } from "../components/card";
 

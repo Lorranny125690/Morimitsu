@@ -18,7 +18,7 @@ export { StudentScreen } from "@/screens/student/screens/add";
 export { AddClass } from "@/screens/classes/screens/add_classes";
 export { Student } from "@/screens/student";
 export { Password } from "@/screens/auth/password/pages/password";
-export { Code } from "@/screens/auth/code";
+export { Code } from "../screens/auth/code/pages/code"
 export { Email } from "@/screens/auth/email/pages/email";
 export { AnimatePresence, motion } from "framer-motion";
 export { StudentNotification } from "@/screens/student/indexNotification";
