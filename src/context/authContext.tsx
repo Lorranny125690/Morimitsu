@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string, role: string): Promise<ApiResponse> => {
     try {
       const result = await api.post(`/auth/login`, { email, password, role });
-      const { token, user, status } = result.data;
+      const { token, user, status, id } = result.data;
 
       if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -80,6 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem("username", user.username);
         localStorage.setItem("role", user.role);
         localStorage.setItem("status", status);
+        localStorage.setItem("id", id);
 
         setAuthState({
           token,
@@ -155,7 +156,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const changePassword = async (password: string): Promise<ApiResponse> => {
     try {
-      const result = await api.post(`/auth/reset-password`, { password });
+      const id = localStorage.getItem("id");
+      console.log(id)
+      const result = await api.post(`/auth/reset-password/${id}`, { password });
       return {
         error: false,
         msg: result.data?.msg || "Senha alterada com sucesso",
@@ -176,7 +179,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const askforRegister = async (email: string): Promise<ApiResponse> => {
     try {
-      const result = await api.post(`/auth/register-request`, { email });
+      const result = await api.post(`/auth/request-registration`, { email });
       return {
         error: false,
         msg: result.data?.msg || "Pedido enviado com sucesso",

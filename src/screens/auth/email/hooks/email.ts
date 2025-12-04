@@ -33,7 +33,7 @@ export function emailController() {
       const res = await onAskRequest(email);
     
       if (!res.error) {
-        setModalMsg("🎉 Login feito com sucesso! Bem-vindo de volta 💖");
+        setModalMsg("🎉 Pedido feito com sucesso! 💖");
         setModalType("success");
         setModalVisible(true);
         setTimeout(() => navigate("/"), 1500);
@@ -74,7 +74,7 @@ export function emailController() {
       const res = await onVerify(email);
 
       if (!res.error) {
-        setModalMsg("🎉 Login feito com sucesso! Bem-vindo de volta 💖");
+        setModalMsg("🎉 Código enviado! 💖");
         setModalType("success");
         setModalVisible(true);
         setTimeout(() => navigate("/code"), 500);
