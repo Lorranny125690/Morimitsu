@@ -1,6 +1,7 @@
 import { FaCalendar, FaDownload } from "react-icons/fa";
 import bg from "../../assets/bakcgorund.png";
 import { IoMdClose } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 // Dados simulados
 const alunos = [
@@ -28,13 +29,15 @@ const alunos = [
 ];
 
 export function Frequency() {
+
+  const navigate = useNavigate();
+
   return (
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center px-4"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <div className="w-[90%] h-[90vh] bg-white rounded-[30px] shadow-xl p-8 overflow-hidden">
-
+      <div className="relative w-[80%] min-h-[90vh] max-h-screen bg-white border border-gray-300 rounded-xl p-4 mx-auto overflow-hidden">
         {/* HEADER */}
         <div className="flex flex-wrap items-center justify-between mb-8">
 
@@ -61,16 +64,16 @@ export function Frequency() {
                   className="text-black outline-none w-45 text-xl"
                 />
               </div>
-              <FaCalendar size={20} className="text-[#560000]" />
+              <FaCalendar size={20} className="cursor-pointer text-[#560000]" />
             </div>
 
-            <button className="flex items-center gap-2 text-red-900 text-sm">
+            <button className="flex cursor-pointer items-center gap-2 text-red-900 text-sm">
               <FaDownload size={20} className="text-[#560000]" /> 
               Baixar relatório
             </button>
           </div>
           
-          <IoMdClose className="text-[#460000] w-30" size={32}/>
+          <IoMdClose onClick={() => navigate(-1)} className="cursor-pointer text-[#460000] w-30" size={32}/>
         </div>
 
         {/* TABELA */}
@@ -78,13 +81,13 @@ export function Frequency() {
           <table className="w-full text-sm text-left">
             <thead className="bg-[#EDEDED] text-gray-700">
               <tr>
-                <th className="py-3 px-4 font-semibold text-center w-12">#</th>
-                <th className="py-3 px-4 font-semibold">Nome</th>
-                <th className="py-3 px-4 font-semibold text-center w-28">Presença</th>
-                <th className="py-3 px-4 font-semibold text-start">
+                <th className="py-3 font-semibold text-center w-12">#</th>
+                <th className="py-3 px-3 font-semibold w-12">Nome</th>
+                <th className="py-3 px-20 font-semibold text-center">Presença</th>
+                <th className="px-80 py-3 font-semibold text-start">
                   Últimos 7 dias de aula
                 </th>
-                <th className="py-3 px-4 font-semibold text-center w-40">
+                <th className="py-3 pr-4 font-semibold text-center">
                   Total de Presenças
                 </th>
               </tr>
@@ -102,7 +105,7 @@ export function Frequency() {
                     {aluno.nome}
                   </td>
 
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-4 px-20 text-center">
                     <input
                       type="checkbox"
                       checked={aluno.presencaHoje}
@@ -111,7 +114,7 @@ export function Frequency() {
                     />
                   </td>
 
-                  <td className="py-4 px-4">
+                  <td className="py-4 px-80">
                     <div className="flex items-center justify-start gap-3 text-lg">
                       {aluno.ultimos7dias.map((v, idx) => (
                         <span
@@ -132,8 +135,15 @@ export function Frequency() {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-end items-end absolute bottom-0 right-0 w-full pr-8 pb-6">
+            <button className="w-[140px] rounded-full h-[46px] text-[#989898]">
+              Cancelar
+            </button>
+            <button className="w-[140px] rounded-full h-[46px] text-white bg-[#720000]">
+              Confirmar
+            </button>
+          </div>
         </div>
-
       </div>
     </div>
   );
