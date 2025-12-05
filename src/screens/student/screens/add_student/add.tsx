@@ -44,7 +44,7 @@ export function StudentScreen() {
           transition={{ duration: 0.6 }}
         >
           <StudentProfileCard
-            photo={formData.image_student_url}
+            photo={formData.image_student_url ?? ""}
             nome={formData.name}
             faixa={formData.belt}
             frequencia={formData.current_frequency}

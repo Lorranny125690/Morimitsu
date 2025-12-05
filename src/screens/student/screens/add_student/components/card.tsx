@@ -19,12 +19,13 @@ export function StudentProfileCard({ photo, nome, faixa, frequencia, idade, cpf,
       {/* FOTO + NOME */}
       <div className="flex flex-col items-center">
       <input
-          id="profile-photo-input"
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={onChangeImage}
-        />
+        id="profile-photo-input"
+        type="file"
+        accept="image/*"
+        name="image_student_url"
+        className="hidden"
+        onChange={onChangeImage}
+      />
 
         {/* Foto clicável */}
         <div
@@ -34,7 +35,7 @@ export function StudentProfileCard({ photo, nome, faixa, frequencia, idade, cpf,
           className="cursor-pointer w-[94px] h-[94px] rounded-full overflow-hidden"
         >
           <img
-            src={photo || img}
+            src={photo && photo !== "" ? photo : img}
             alt={nome}
             className="w-full h-full object-cover"
           />

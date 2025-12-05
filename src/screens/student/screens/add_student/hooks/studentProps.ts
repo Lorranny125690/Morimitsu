@@ -22,6 +22,9 @@ export interface FormDataType {
   guardian_phone: string;
   enrollment: string;
   idade: number;
+
+  // 👇 ADICIONAR ISTO
+  file_image?: File | null;
 }
 
 export function useStudentForm() {
@@ -47,41 +50,58 @@ export function useStudentForm() {
     guardian_phone: "",
     enrollment: "",
     idade: 0,
+    file_image: null, // 👈 inicializado
   });
 
-  /** ----------------------------------
-   *  HANDLE CHANGE — universal handler
-   * ---------------------------------- */
+  /** HANDLE CHANGE */
   const handleChange = (e: any) => {
-    // Caso seja mudança manual (como você faz para imagem)
     if (!e.target) return;
 
     const { name, value, files } = e.target;
 
-    // Caso seja file input
     if (files && files[0]) {
       const file = files[0];
-      const url = URL.createObjectURL(file);
+      const preview = URL.createObjectURL(file);
 
       setFormData(prev => ({
         ...prev,
-        [name]: url,     // preview
-        file_image: file // arquivo real p/ API (se quiser)
+        image_student_url: preview, // usado só no front
+        file_image: file            // arquivo real
       }));
 
       return;
     }
 
-    // Input normal
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  /** ----------------------------------
-   *  Função para calcular idade
-   * ---------------------------------- */
+  /** HANDLE SUBMIT */
+  const handleSubmit = async () => {
+    const data = new FormData();
+
+    // Envia tudo EXCETO o preview
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "image_student_url" && key !== "file_image") {
+        data.append(key, value as any);
+      }
+    });
+
+    // Enviar o arquivo real
+    if (formData.file_image) {
+      data.append("image", formData.file_image);
+    }
+
+    const result = await onRegisterStudent(data);
+
+    if (!result.error) {
+      navigate(-1);
+    }
+  };
+
+  /** CÁLCULO DE IDADE */
   const calculateAge = (dateStr: string) => {
     if (!dateStr) return 0;
     const today = new Date();
@@ -98,20 +118,6 @@ export function useStudentForm() {
       idade: calculateAge(prev.birth_date),
     }));
   }, [formData.birth_date]);
-
-  const handleSubmit = async () => {
-    console.log("ENVIANDO PARA API:", formData);
-
-    const result = await onRegisterStudent(formData);
-
-    if (result.error) {
-      alert(result.msg || "Erro ao cadastrar aluno.");
-      return;
-    }
-
-    alert("Aluno cadastrado com sucesso!");
-    navigate(-1);
-  };
 
   return { formData, handleChange, handleSubmit };
 }
