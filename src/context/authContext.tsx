@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 export const API_URL = "https://morimitsu-jiu-jitsu.onrender.com";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_URL,
 });
 

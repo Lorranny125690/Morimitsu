@@ -24,6 +24,7 @@ import {
   Profile,
   ProfileMobile,
   Frequency,
+  StudentAdress
 } from "./index";
 
 
@@ -55,7 +56,8 @@ export function AppContent() {
     "/championship",
     "/add_student",
     "/add_classes",
-    "/profile"
+    "/profile",
+    "add_student_adress"
   ];
 
   if (privateRoutes.includes(location.pathname) && !token) {
@@ -110,6 +112,7 @@ export function AppContent() {
             <Route path="/profile" element={<Profile/>} />
             <Route path="/profileMobile" element={<ProfileMobile/>} />
             <Route path="/frequency" element={<Frequency/>} />
+            <Route path="/add_student_adress" element={<StudentAdress />} />
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}

@@ -6,6 +6,7 @@ export {
   Navigate,
 } from "react-router-dom";
 
+export { StudentAdress } from "@/screens/student/screens/add_student/components/studentAdress"
 export { useAuth, AuthProvider } from "@/context/authContext";
 export { Frequency } from "@/screens/frequency/frequency";
 export { Home } from "@/screens/home/home";

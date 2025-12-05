@@ -186,7 +186,8 @@ export function StudentForm({ formData, handleChange, handleSubmit, navigate }: 
 
           <button
             type="button"
-            onClick={handleSubmit}
+            onChange={handleChange}
+            onClick={() => navigate("/add_student_adress")}
             className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
           >
             Confirmar

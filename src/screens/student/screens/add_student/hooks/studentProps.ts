@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useStudent } from "@/context/studentContext";
 
 export interface FormDataType {
-  photo: string;
   name: string;
   phone: string;
   image_student_url: string;
@@ -30,33 +29,28 @@ export function useStudentForm() {
   const { onRegisterStudent } = useStudent();
 
   const [formData, setFormData] = useState<FormDataType>({
-    photo: "",
-    name: "José Marcelo Bezerra Filho",
-    phone: "33998764356",
-    image_student_url:
-      "https://coisadefotografa.com/wp-content/uploads/2021/09/como-ter-fotos-mais-nitidas-scaled.jpg",
-    email: "marcelo@gmail.com",
-    cpf: "09865432145",
-    gender: "MALE",
-    birth_date: "2025-10-31",
-    current_frequency: "13",
-    belt: "WHITE",
-    grade: "1",
-    city: "Cedro",
-    street: "Rua B",
-    district: "Prado",
-    number: "123",
-    complement: "Casa",
-    guardian_phone: "33998764356",
-    enrollment: "12",
-    idade: 0
+    name: "",
+    phone: "",
+    image_student_url: "",
+    email: "",
+    cpf: "",
+    gender: "",
+    birth_date: "",
+    current_frequency: "",
+    belt: "",
+    grade: "",
+    city: "",
+    street: "",
+    district: "",
+    number: "",
+    complement: "",
+    guardian_phone: "",
+    enrollment: "",
+    idade: 0,
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (e: any) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const calculateAge = (dateStr: string) => {
@@ -69,36 +63,15 @@ export function useStudentForm() {
     return age;
   };
 
-  // Atualiza idade quando birth_date mudar
   useEffect(() => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       idade: calculateAge(prev.birth_date),
     }));
   }, [formData.birth_date]);
 
   const handleSubmit = async () => {
-    const payload = {
-      name: formData.name,
-      phone: formData.phone,
-      image_student_url: formData.image_student_url,
-      email: formData.email,
-      cpf: formData.cpf,
-      gender: formData.gender,
-      birth_date: formData.birth_date,
-      current_frequency: formData.current_frequency,
-      belt: formData.belt,
-      grade: formData.grade,
-      city: formData.city,
-      street: formData.street,
-      district: formData.district,
-      number: formData.number,
-      complement: formData.complement,
-      guardian_phone: formData.guardian_phone,
-      enrollment: formData.enrollment,
-    };
-
-    const result = await onRegisterStudent(payload);
+    const result = await onRegisterStudent(formData);
 
     if (result.error) {
       alert(result.msg || "Erro ao cadastrar aluno.");
@@ -109,10 +82,5 @@ export function useStudentForm() {
     navigate(-1);
   };
 
-  return {
-    formData,
-    setFormData,
-    handleChange,
-    handleSubmit,
-  };
+  return { formData, handleChange, handleSubmit };
 }
