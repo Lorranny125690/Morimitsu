@@ -7,21 +7,38 @@ interface Props {
   frequencia: string;
   idade: number;
   cpf: string;
+  onChangeImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const img = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS84_7_fFb0sw22D9ijKueKKiysMDBLccvWog&s"
 
-export function StudentProfileCard({ photo, nome, faixa, frequencia, idade, cpf }: Props) {
+export function StudentProfileCard({ photo, nome, faixa, frequencia, idade, cpf, onChangeImage}: Props) {
   return (
     <div className="flex flex-col justify-center items-center bg-white shadow-lg space-y-6 p-6 w-[90%] max-w-[220px] md:w-[200px] h-auto md:h-[410px] border border-gray-100 rounded-xl">
 
       {/* FOTO + NOME */}
       <div className="flex flex-col items-center">
-        <img
-          src={photo || img}
-          alt={nome}
-          className="w-[94px] h-[94px] rounded-full object-cover"
+      <input
+          id="profile-photo-input"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={onChangeImage}
         />
+
+        {/* Foto clicável */}
+        <div
+          onClick={() =>
+            document.getElementById("profile-photo-input")?.click()
+          }
+          className="cursor-pointer w-[94px] h-[94px] rounded-full overflow-hidden"
+        >
+          <img
+            src={photo || img}
+            alt={nome}
+            className="w-full h-full object-cover"
+          />
+        </div>
 
         <h2 id="poppins" className="font-medium text-black text-[15px] mt-4">
           {nome || "Nome do aluno"}

@@ -14,13 +14,14 @@ interface Props {
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void;
   goBack: () => void;
+  goNext: () => void;
 }
 
 export function StudentAdress({
   formData,
   handleChange,
-  handleSubmit,
   goBack,
+  goNext
 }: Props) {
   return (
     <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
@@ -49,7 +50,7 @@ export function StudentAdress({
               name="city"
               value={formData.city}
               onChange={handleChange}
-              className="w-full h-6 text-[12px] border border-gray-300 rounded-[2px] px-2 mt-[6px]"
+              className="w-full h-6 text-[12px] border border-gray-300 text-black rounded-[2px] px-2 mt-[6px]"
             />
           </div>
 
@@ -61,7 +62,7 @@ export function StudentAdress({
               name="complement"
               value={formData.complement}
               onChange={handleChange}
-              className="w-full h-6 text-[12px] border border-gray-300 rounded-[2px] px-2 mt-[6px]"
+              className="w-full h-6 text-[12px] border text-black border-gray-300 rounded-[2px] px-2 mt-[6px]"
             />
           </div>
 
@@ -75,7 +76,7 @@ export function StudentAdress({
               name="street"
               value={formData.street}
               onChange={handleChange}
-              className="w-full h-6 text-[12px] border border-gray-300 rounded-[2px] px-2 mt-[6px]"
+              className="w-full h-6 text-[12px] border text-black border-gray-300 rounded-[2px] px-2 mt-[6px]"
             />
           </div>
 
@@ -87,7 +88,7 @@ export function StudentAdress({
               name="guardian_phone"
               value={formData.guardian_phone}
               onChange={handleChange}
-              className="w-full h-6 text-[12px] border border-gray-300 rounded-[2px] px-2 mt-[6px]"
+              className="w-full h-6 text-[12px] border text-black border-gray-300 rounded-[2px] px-2 mt-[6px]"
             />
           </div>
 
@@ -101,7 +102,7 @@ export function StudentAdress({
               name="district"
               value={formData.district}
               onChange={handleChange}
-              className="w-full h-6 text-[12px] border border-gray-300 rounded-[2px] px-2 mt-[6px]"
+              className="w-full h-6 text-[12px] border text-black border-gray-300 rounded-[2px] px-2 mt-[6px]"
             />
           </div>
 
@@ -113,7 +114,7 @@ export function StudentAdress({
               name="number"
               value={formData.number}
               onChange={handleChange}
-              className="w-full h-6 text-[12px] border border-gray-300 rounded-[2px] px-2 mt-[6px]"
+              className="w-full h-6 text-[12px] border text-black border-gray-300 rounded-[2px] px-2 mt-[6px]"
             />
           </div>
         </form>
@@ -132,10 +133,10 @@ export function StudentAdress({
 
           <button
             type="button"
-            onClick={handleSubmit}
+            onClick={goNext}
             className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
           >
-            Enturmar
+            Confirmar
           </button>
       </div>
     </div>
