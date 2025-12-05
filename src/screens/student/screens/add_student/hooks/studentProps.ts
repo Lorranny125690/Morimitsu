@@ -49,10 +49,39 @@ export function useStudentForm() {
     idade: 0,
   });
 
+  /** ----------------------------------
+   *  HANDLE CHANGE — universal handler
+   * ---------------------------------- */
   const handleChange = (e: any) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    // Caso seja mudança manual (como você faz para imagem)
+    if (!e.target) return;
+
+    const { name, value, files } = e.target;
+
+    // Caso seja file input
+    if (files && files[0]) {
+      const file = files[0];
+      const url = URL.createObjectURL(file);
+
+      setFormData(prev => ({
+        ...prev,
+        [name]: url,     // preview
+        file_image: file // arquivo real p/ API (se quiser)
+      }));
+
+      return;
+    }
+
+    // Input normal
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
+  /** ----------------------------------
+   *  Função para calcular idade
+   * ---------------------------------- */
   const calculateAge = (dateStr: string) => {
     if (!dateStr) return 0;
     const today = new Date();
@@ -71,6 +100,8 @@ export function useStudentForm() {
   }, [formData.birth_date]);
 
   const handleSubmit = async () => {
+    console.log("ENVIANDO PARA API:", formData);
+
     const result = await onRegisterStudent(formData);
 
     if (result.error) {

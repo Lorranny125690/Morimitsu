@@ -57,7 +57,6 @@ export function StudentScreen() {
             <StudentForm
               formData={formData}
               handleChange={handleChange}
-              handleSubmit={handleSubmit}
               navigate={navigate}
               goNext={() => setCurrentStep("ADDRESS")}
             />
@@ -68,7 +67,6 @@ export function StudentScreen() {
             <StudentClass
               formData={formData}
               handleChange={handleChange}
-              handleSubmit={handleSubmit}
               navigate={navigate}
               goBack={() => setCurrentStep("ADDRESS")}
             />

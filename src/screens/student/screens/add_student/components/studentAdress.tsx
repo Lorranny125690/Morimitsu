@@ -12,17 +12,19 @@ interface formData {
 interface Props {
   formData: formData;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: () => void;
+  handleSubmit: () => void; 
   goBack: () => void;
   goNext: () => void;
 }
 
-export function StudentAdress({
-  formData,
-  handleChange,
-  goBack,
-  goNext
-}: Props) {
+export function StudentAdress({ formData, handleChange, handleSubmit, goBack, goNext }: Props) {
+
+  const onFinish = async () => {
+    console.log("ENVIANDO PARA API:", formData);
+    await handleSubmit(); // está vindo do StudentScreen — certo!
+    goNext();
+  };
+
   return (
     <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
       <div className="flex flex-col w-full">
@@ -42,7 +44,6 @@ export function StudentAdress({
             gridAutoRows: "min-content",
           }}
         >
-          {/* Cidade */}
           <div>
             <label className="block text-[10px] text-black">Cidade</label>
             <input
@@ -54,7 +55,6 @@ export function StudentAdress({
             />
           </div>
 
-          {/* Complemento */}
           <div>
             <label className="block text-[10px] text-black">Complemento</label>
             <input
@@ -68,7 +68,6 @@ export function StudentAdress({
 
           <div />
 
-          {/* Rua */}
           <div>
             <label className="block text-[10px] text-black">Rua</label>
             <input
@@ -80,7 +79,6 @@ export function StudentAdress({
             />
           </div>
 
-          {/* Contato do responsável */}
           <div>
             <label className="block text-[10px] text-black">Contato do responsável</label>
             <input
@@ -94,7 +92,6 @@ export function StudentAdress({
 
           <div />
 
-          {/* Bairro */}
           <div>
             <label className="block text-[10px] text-black">Bairro</label>
             <input
@@ -106,7 +103,6 @@ export function StudentAdress({
             />
           </div>
 
-          {/* Número */}
           <div>
             <label className="block text-[10px] text-black">Número</label>
             <input
@@ -118,26 +114,24 @@ export function StudentAdress({
             />
           </div>
         </form>
+      </div>
 
-        {/* BOTÕES */}
+      <div className="w-full px-10 mb-7 flex items-center justify-end">
+        <button
+          type="button"
+          onClick={goBack}
+          className="cursor-pointer text-gray-400 text-sm hover:text-gray-600 mr-6"
+        >
+          Voltar
+        </button>
 
-        </div>
-        <div className="w-full px-10 mb-7 flex items-center justify-end">
-          <button
-            type="button"
-            onClick={goBack}
-            className="cursor-pointer text-gray-400 text-sm hover:text-gray-600 mr-6"
-          >
-            Voltar
-          </button>
-
-          <button
-            type="button"
-            onClick={goNext}
-            className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
-          >
-            Confirmar
-          </button>
+        <button
+          type="button"
+          onClick={onFinish}
+          className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
+        >
+          Confirmar
+        </button>
       </div>
     </div>
   );

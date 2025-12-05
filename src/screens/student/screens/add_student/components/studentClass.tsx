@@ -5,7 +5,6 @@ import type { FormDataType } from "../hooks/studentProps";
 interface Props {
   formData: FormDataType;
   handleChange: (e: any) => void;
-  handleSubmit: () => void;
   navigate: (v: any) => void;
   goBack: () => void;
 }

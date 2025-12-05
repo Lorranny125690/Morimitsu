@@ -1,16 +1,18 @@
 // src/components/student/StudentForm.tsx
 
+import { useRef } from "react";
 import type { FormDataType } from "../hooks/studentProps";
 
 interface Props {
   formData: FormDataType;
   handleChange: (e: any) => void;
-  handleSubmit: () => void;
   navigate: (v: any) => void;
   goNext: () => void;
 }
 
 export function StudentForm({ formData, handleChange, navigate, goNext}: Props) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  
   return (
     <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
       <div className="flex flex-col w-full">
@@ -21,7 +23,12 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
         </div>
 
         <form
+          ref={formRef}
           className="px-6 md:px-10 gap-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            goNext();
+          }}
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr 80px",
@@ -187,9 +194,8 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
           </button>
 
           <button
-            type="button"
-            onChange={handleChange}
-            onClick={goNext}
+            type="submit"
+            onClick={() => formRef.current?.requestSubmit()}
             className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
           >
             Confirmar
