@@ -16,7 +16,8 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
       <div className="flex flex-col w-full">
         <div className="border-b-2 border-gray-200 py-5 mb-4 flex items-center">
           <h3 className="px-4 text-gray-700 font-medium text-[10px]">Dados</h3>
-          <h3 className="hover:cursor-pointer text-gray-400 font-regular text-[10px]">Enturmar</h3>
+          <h3 className="text-gray-400 font-regular text-[10px]">Endereço</h3>
+          <h3 className="px-4 text-gray-400 font-regular text-[10px]">Enturmar</h3>
         </div>
 
         <form

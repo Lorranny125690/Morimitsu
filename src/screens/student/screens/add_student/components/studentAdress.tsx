@@ -29,7 +29,8 @@ export function StudentAdress({
         {/* Header */}
         <div className="border-b-2 border-gray-200 py-5 mb-4 flex items-center">
           <h3 className="px-4 text-gray-400 font-medium text-[10px] cursor-pointer" onClick={goBack}>Dados</h3>
-          <h3 className="text-gray-700 font-regular text-[10px]">Enturmar</h3>
+          <h3 className="text-gray-700 font-regular text-[10px]">Endereço</h3>
+          <h3 className="px-4 text-gray-400 font-regular text-[10px]">Enturmar</h3>
         </div>
 
         {/* FORM */}
