@@ -6,10 +6,13 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { StudentProfileCard } from "./components/card";
 import { StudentForm } from "./components/studentForm";
 import { useStudentForm } from "./hooks/studentProps";
+import { useState } from "react";
+import { StudentAdress } from "./components/studentAdress";
 
 export function StudentScreen() {
   const navigate = useNavigate();
   const { formData, handleChange, handleSubmit } = useStudentForm();
+  const [currentStep, setCurrentStep] = useState<"DATA" | "ADDRESS">("DATA");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#41414B] flex-col px-4">
@@ -46,12 +49,24 @@ export function StudentScreen() {
             cpf={formData.cpf}
           />
 
-          <StudentForm
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            navigate={navigate}
-          />
+          {currentStep === "DATA" && (
+            <StudentForm
+              formData={formData}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              navigate={navigate}
+              goNext={() => setCurrentStep("ADDRESS")}
+            />
+          )}
+
+          {currentStep === "ADDRESS" && (
+            <StudentAdress
+              formData={formData}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              goBack={() => setCurrentStep("DATA")}
+            />
+          )}
         </motion.div>
       </div>
     </div>

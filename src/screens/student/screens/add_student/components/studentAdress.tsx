@@ -1,36 +1,35 @@
-import { useState } from "react";
+import type { ChangeEvent } from "react";
 
-export function StudentAdress() {
-  const [formData, setFormData] = useState({
-    city: "",
-    complement: "",
-    street: "",
-    guardian_phone: "",
-    district: "",
-    number: "",
-  });
+interface formData {
+  city: string;
+  complement: string;
+  street: string;
+  guardian_phone: string;
+  district: string;
+  number: string;
+}
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+interface Props {
+  formData: formData;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: () => void;
+  goBack: () => void;
+}
 
-  const handleSubmit = () => {
-    console.log("ENVIADO:", formData);
-    // aqui você chama sua API
-  };
-
-  const navigate = (v: any) => {
-    console.log("navigate:", v);
-  };
-
+export function StudentAdress({
+  formData,
+  handleChange,
+  handleSubmit,
+  goBack,
+}: Props) {
   return (
     <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
       <div className="flex flex-col w-full">
 
         {/* Header */}
-        <div className="border-b-2 border-gray-200 py-5 mb-4 flex items-center gap-4">
-          <h3 className="px-4 text-gray-700 font-medium text-[10px]">Dados</h3>
-          <h3 className="hover:cursor-pointer text-gray-400 text-[10px]">Enturmar</h3>
+        <div className="border-b-2 border-gray-200 py-5 mb-4 flex items-center">
+          <h3 className="px-4 text-gray-400 font-medium text-[10px] cursor-pointer" onClick={goBack}>Dados</h3>
+          <h3 className="text-gray-700 font-regular text-[10px]">Enturmar</h3>
         </div>
 
         {/* FORM */}
@@ -79,7 +78,7 @@ export function StudentAdress() {
             />
           </div>
 
-          {/* Contato Responsável */}
+          {/* Contato do responsável */}
           <div>
             <label className="block text-[10px] text-black">Contato do responsável</label>
             <input
@@ -119,13 +118,15 @@ export function StudentAdress() {
         </form>
 
         {/* BOTÕES */}
-        <div className="w-full px-10 h-[1px] flex items-center justify-end mt-4">
+
+        </div>
+        <div className="w-full px-10 mb-7 flex items-center justify-end">
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="cursor-pointer text-gray-400 text-sm hover:text-gray-600 mr-6"
           >
-            Cancelar
+            Voltar
           </button>
 
           <button
@@ -135,7 +136,6 @@ export function StudentAdress() {
           >
             Enturmar
           </button>
-        </div>
       </div>
     </div>
   );

@@ -7,9 +7,10 @@ interface Props {
   handleChange: (e: any) => void;
   handleSubmit: () => void;
   navigate: (v: any) => void;
+  goNext: () => void;
 }
 
-export function StudentForm({ formData, handleChange, handleSubmit, navigate }: Props) {
+export function StudentForm({ formData, handleChange, navigate, goNext}: Props) {
   return (
     <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
       <div className="flex flex-col w-full">
@@ -187,7 +188,7 @@ export function StudentForm({ formData, handleChange, handleSubmit, navigate }: 
           <button
             type="button"
             onChange={handleChange}
-            onClick={() => navigate("/add_student_adress")}
+            onClick={goNext}
             className="bg-[#4963F5] cursor-pointer hover:bg-[#345ed3] text-white text-sm rounded-full px-5 py-2 shadow-md"
           >
             Confirmar
