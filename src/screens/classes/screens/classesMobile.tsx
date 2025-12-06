@@ -32,7 +32,7 @@ export const ClassesMobile = () => {
   return (
     <motion.div
       id="poppins"
-      className="bg-[#011023] text-white min-h-screen flex flex-col font-sans overflow-hidden"
+      className="overflow-y-auto pb-[100px] bg-[#011023] text-white min-h-screen flex flex-col font-sans overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}

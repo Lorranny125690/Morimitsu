@@ -34,7 +34,7 @@ const students = [
 
 export const NotificationMobile = () => {
   return (
-    <div id="poppins" className="bg-[#011023] text-white min-h-screen flex flex-col font-sans">
+    <div id="poppins" className="bg-[#011023] text-white min-h-screen flex flex-col font-sans overflow-y-auto pb-[100px]">
       {/* Header */}
       <header className="flex justify-between items-center p-9 mt-6  py-0">
         <div className="flex items-center relative">

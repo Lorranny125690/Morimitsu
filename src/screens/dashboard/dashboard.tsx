@@ -106,7 +106,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, accent }) => (
 /* ---------------- Dashboard Page ---------------- */
 export const Dashboard: React.FC = () => {
   return (
-    <div className="bg-gradient-to-br from-[#0D0C15] via-[#161422] to-[#1E1A30]">
+    <div className="overflow-y-auto pb-[100px] bg-gradient-to-br from-[#0D0C15] via-[#161422] to-[#1E1A30]">
     <div className="max-w-6xl mx-auto min-h-screen text-white font-sans px-6 py-10 space-y-12">
       {/* Header */}
       <header className="flex items-center justify-between">

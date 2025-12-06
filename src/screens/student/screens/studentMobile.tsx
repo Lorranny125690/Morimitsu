@@ -29,7 +29,7 @@ const students = [
     age: "16 anos",
     presences: "15 presenças",
     photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  },
+  }
 ];
 
 export const StudentList = () => {
@@ -38,7 +38,7 @@ export const StudentList = () => {
   return (
     <motion.div
       id="poppins"
-      className="bg-[#011023] text-white min-h-screen flex flex-col font-sans overflow-hidden"
+      className="bg-[#011023] text-white min-h-screen flex flex-col font-sans overflow-y-auto pb-[100px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

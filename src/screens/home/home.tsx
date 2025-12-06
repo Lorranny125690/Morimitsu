@@ -17,7 +17,7 @@ export function HomeMobile() {
   return (
     <div
       id="poppins"
-      className="min-h-screen bg-[#201E33] text-white flex flex-col overflow-x-hidden"
+      className="min-h-screen bg-[#201E33] text-white flex flex-col overflow-y-auto pb-[100px] overflow-x-hidden"
     >
       {/* Header */}
       <div className="p-4 max-w-[600px] mx-auto w-full">
