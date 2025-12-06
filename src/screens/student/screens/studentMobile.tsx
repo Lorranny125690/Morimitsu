@@ -4,6 +4,9 @@ import { FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Choice } from "../components/choose";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { ModalAdicionarAluno } from "@/screens/student/screens/add_student/pages/add_mobile";
+import { useStudentForm } from "./add_student/hooks/studentProps";
 
 const students = [
   {
@@ -34,11 +37,13 @@ const students = [
 
 export const StudentList = () => {
   const navigate = useNavigate();
-
+  const [open, setOpen] = useState(false);
+  const { formData, handleChange } = useStudentForm();
+  
   return (
     <motion.div
       id="poppins"
-      className="bg-[#011023] text-white min-h-screen flex flex-col font-sans overflow-y-auto pb-[100px]"
+      className="bg-[#011023] z-0 text-white min-h-screen flex flex-col font-sans overflow-y-auto pb-[100px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -73,6 +78,7 @@ export const StudentList = () => {
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            onClick={() => setOpen(true)}
             className="flex justify-center text-[#02304F] items-center bg-blue-500 h-6 w-6 rounded-sm p-[2px]"
           >
             <IoMdAdd size={16} />
@@ -141,6 +147,13 @@ export const StudentList = () => {
           </motion.div>
         ))}
       </motion.div>
+      <ModalAdicionarAluno
+        open={open}
+        onClose={() => setOpen(false)}
+        formData={formData}
+        handleChange={handleChange}
+        handleNext={() => console.log("ir para Enturmar")}
+      />
     </motion.div>
   );
 };

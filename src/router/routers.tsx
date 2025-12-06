@@ -24,8 +24,8 @@ import {
   Profile,
   ProfileMobile,
   Frequency,
+  StudentClassList,
 } from "./index";
-
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -56,7 +56,8 @@ export function AppContent() {
     "/add_student",
     "/add_classes",
     "/profile",
-    "add_student_adress"
+    "/add_student_adress",
+    "/classStudent"
   ];
 
   if (privateRoutes.includes(location.pathname) && !token) {
@@ -111,6 +112,7 @@ export function AppContent() {
             <Route path="/profile" element={<Profile/>} />
             <Route path="/profileMobile" element={<ProfileMobile/>} />
             <Route path="/frequency" element={<Frequency/>} />
+            <Route path="/classStudent" element={<StudentClassList/>}/>
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}

@@ -1,3 +1,5 @@
+export { StudentClassList } from "@/screens/classes/screens/students";
+
 export {
   BrowserRouter as Router,
   Routes,
@@ -8,7 +10,7 @@ export {
 
 export { StudentAdress } from "@/screens/student/screens/add_student/components/studentAdress"
 export { useAuth, AuthProvider } from "@/context/authContext";
-export { Frequency } from "@/screens/frequency/frequency";
+export { Frequency } from "@/screens/frequency/index";
 export { Home } from "@/screens/home/home";
 export { Login } from "@/screens/auth/login/pages/login";
 export { SelectLogin } from "@/screens/auth/userType/pages/userType";

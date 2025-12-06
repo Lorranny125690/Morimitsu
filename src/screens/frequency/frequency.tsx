@@ -28,7 +28,7 @@ const alunos = [
   },
 ];
 
-export function Frequency() {
+export function FrequencyDesktop() {
 
   const navigate = useNavigate();
 
