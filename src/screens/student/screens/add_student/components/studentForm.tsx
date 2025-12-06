@@ -1,7 +1,8 @@
 // src/components/student/StudentForm.tsx
 
 import { useRef } from "react";
-import type { FormDataType } from "../hooks/studentProps";
+import { useStudentForm, type FormDataType } from "../hooks/studentProps";
+import { ModalMsg } from "@/components/modal";
 
 interface Props {
   formData: FormDataType;
@@ -12,6 +13,12 @@ interface Props {
 
 export function StudentForm({ formData, handleChange, navigate, goNext}: Props) {
   const formRef = useRef<HTMLFormElement | null>(null);
+  const {
+    modalVisible,
+    modalMsg,
+    modalType,
+    setModalVisible,
+  } = useStudentForm();
   
   return (
     <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
@@ -201,6 +208,13 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
             Confirmar
           </button>
         </div>
+
+        <ModalMsg
+        show={modalVisible}
+        onClose={() => setModalVisible(false)}
+        message={modalMsg}
+        type={modalType}
+        />
 
       </div>
     </div>

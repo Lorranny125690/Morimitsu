@@ -17,6 +17,7 @@ interface ApiResponse {
 
 interface StudentProps {
   onRegisterStudent: (data: any) => Promise<ApiResponse>;
+  onDeleteStudent: (id: number) => Promise<ApiResponse>;
 }
 
 interface StudentProviderProps {
@@ -35,6 +36,35 @@ export const useStudent = (): StudentProps => {
 const registerStudent = async (studentData: any): Promise<ApiResponse> => {
   try {
     const result = await api.post("/student/register", studentData);
+    const { id } = result.data;
+    localStorage.setItem("id", id)
+
+    console.log(studentData)
+
+    return {
+      error: false,
+      msg: result.data?.message || "Aluno cadastrado com sucesso!",
+      data: result.data,
+    };
+  } catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    let msg = "Erro ao cadastrar aluno.";
+
+    if (status === 400) msg = data?.message || "Dados faltando!";
+    else if (status === 409) msg = data?.message || "Aluno já cadastrado!";
+    else if (status === 422) msg = data?.message || "Formato inválido (ZOD)!";
+    else if (status >= 500) msg = "Erro no servidor.";
+
+    return { error: true, status, msg };
+  }
+};
+
+const deleteStudent = async (): Promise<ApiResponse> => {
+  try {
+    const id = localStorage.getItem("id");
+    const result = await api.delete(`/student/${id}`);
 
     return {
       error: false,
@@ -59,6 +89,7 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
 export const StudentProvider = ({ children }: StudentProviderProps) => {
   const value: StudentProps = {
     onRegisterStudent: registerStudent,
+    onDeleteStudent: deleteStudent,
   };
 
   return (

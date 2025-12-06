@@ -1,6 +1,5 @@
 // src/hooks/useStudentForm.ts
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useStudent } from "@/context/studentContext";
 
 export interface FormDataType {
@@ -22,14 +21,14 @@ export interface FormDataType {
   guardian_phone: string;
   enrollment: string;
   idade: number;
-
-  // 👇 ADICIONAR ISTO
   file_image?: File | null;
 }
 
 export function useStudentForm() {
-  const navigate = useNavigate();
   const { onRegisterStudent } = useStudent();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
+  const [modalType, setModalType] = useState<"error" | "success">("error");
 
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
@@ -94,11 +93,33 @@ export function useStudentForm() {
       data.append("image", formData.file_image);
     }
 
-    const result = await onRegisterStudent(data);
+    const res = await onRegisterStudent(data);
 
-    if (!result.error) {
-      navigate(-1);
+    if (Object.values(formData).some(v => v === "" || v === null)) {
+      setModalMsg("Preencha todos os campos");
+      setModalType("error");
+      setModalVisible(true);
+      return;
     }
+    if (res.status === 200) {
+      setModalMsg("Aluno cadastrado com sucesso!");
+      setModalType("success");
+      setModalVisible(true);
+      return;
+    } else if (res.status === 400) {
+      setModalMsg("⚠️ " + res.msg);
+    } else if (res.status === 401) {
+      setModalMsg("🙈 " + res.msg);
+    } else if (res.status === 403) {
+      setModalMsg("🚫 " + res.msg);
+    } else if (res.status === 422) {
+      setModalMsg("🚫 " + res.msg);
+    } else {
+      setModalMsg("😕 " + res.msg);
+    }
+
+    setModalType("error");
+    setModalVisible(true);
   };
 
   /** CÁLCULO DE IDADE */
@@ -119,5 +140,5 @@ export function useStudentForm() {
     }));
   }, [formData.birth_date]);
 
-  return { formData, handleChange, handleSubmit };
+  return { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible, };
 }

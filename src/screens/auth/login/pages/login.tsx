@@ -133,7 +133,6 @@ export function Login() {
         message={modalMsg}
         type={modalType}
       />
-
     </div>
   );
 }

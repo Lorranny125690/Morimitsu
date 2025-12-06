@@ -1,4 +1,6 @@
+import { ModalMsg } from "@/components/modal";
 import type { ChangeEvent } from "react";
+import { useStudentForm } from "../hooks/studentProps";
 
 interface formData {
   city: string;
@@ -18,6 +20,12 @@ interface Props {
 }
 
 export function StudentAdress({ formData, handleChange, handleSubmit, goBack, goNext }: Props) {
+  const {
+    modalVisible,
+    modalMsg,
+    modalType,
+    setModalVisible,
+  } = useStudentForm();
 
   const onFinish = async () => {
     console.log("ENVIANDO PARA API:", formData);
@@ -133,6 +141,13 @@ export function StudentAdress({ formData, handleChange, handleSubmit, goBack, go
           Confirmar
         </button>
       </div>
+
+      <ModalMsg
+        show={modalVisible}
+        onClose={() => setModalVisible(false)}
+        message={modalMsg}
+        type={modalType}
+      />
     </div>
   );
 }
