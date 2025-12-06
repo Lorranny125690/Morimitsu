@@ -18,6 +18,7 @@ interface ApiResponse {
 interface StudentProps {
   onRegisterStudent: (data: any) => Promise<ApiResponse>;
   onDeleteStudent: (id: number) => Promise<ApiResponse>;
+  onPutStudent: (id: number) => Promise<ApiResponse>;
 }
 
 interface StudentProviderProps {
@@ -86,10 +87,36 @@ const deleteStudent = async (): Promise<ApiResponse> => {
   }
 };
 
+const putStudent = async (): Promise<ApiResponse> => {
+  try {
+    const id = localStorage.getItem("id");
+    const result = await api.put(`/student/${id}`);
+
+    return {
+      error: false,
+      msg: result.data?.message || "Aluno cadastrado com sucesso!",
+      data: result.data,
+    };
+  } catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    let msg = "Erro ao cadastrar aluno.";
+
+    if (status === 400) msg = data?.message || "Dados faltando!";
+    else if (status === 409) msg = data?.message || "Aluno já cadastrado!";
+    else if (status === 422) msg = data?.message || "Formato inválido (ZOD)!";
+    else if (status >= 500) msg = "Erro no servidor.";
+
+    return { error: true, status, msg };
+  }
+};
+
 export const StudentProvider = ({ children }: StudentProviderProps) => {
   const value: StudentProps = {
     onRegisterStudent: registerStudent,
     onDeleteStudent: deleteStudent,
+    onPutStudent: putStudent,
   };
 
   return (
