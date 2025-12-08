@@ -1,7 +1,7 @@
 export const beltClasses: Record<string, string> = {
-  Branca: "bg-gray-300 text-black",
-  Azul: "bg-blue-500 text-white",
-  Roxa: "bg-purple-600 text-white",
-  Marrom: "bg-amber-800 text-white",
-  Preta: "bg-black text-white",
+  WHITE: "bg-gray-300 text-black",
+  BLUE: "bg-blue-500 text-white",
+  PURPLE: "bg-purple-600 text-white",
+  BROWN: "bg-amber-800 text-white",
+  BLACK: "bg-black text-white",
 };

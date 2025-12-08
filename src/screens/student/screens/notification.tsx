@@ -1,14 +1,49 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { studentsMock } from "../components/studentMosck";
 import { beltClasses } from "../components/beltclasses";
 import { Choice } from "../components/choose";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StudentProfile } from "./profile";
+import type { Student } from "../types/type";
+import { useStudent } from "@/context/studentContext";
+import { useLocation } from "react-router-dom";
 
 export function Notification() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+  const [students, setStudents] = useState<Student[]>([]);
+  const { onGetStudent } = useStudent();
+  const [loading, setLoading] = useState(true);
+
+  const location = useLocation();
+
+  const listVariants = {
+    visible: {
+      transition: {
+        staggerChildren: 0.08, // atraso entre alunos
+      },
+    },
+    hidden: {},
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0 },
+  };
+  
+  useEffect(() => {
+    const loadStudents = async () => {
+      setLoading(true); // começa carregando
+  
+      const res = await onGetStudent();
+      if (!res.error) setStudents(res.data.students);
+  
+      setLoading(false); // terminou
+    };
+  
+    loadStudents();
+  }, [location.pathname]);  
 
   // Função para abrir o modal e mostrar o perfil do aluno
   const openProfileModal = (student: any) => {
@@ -63,33 +98,49 @@ export function Notification() {
                 <th className="py-3 px-4 w-28 text-center">Operação</th>
                 <th className="py-3 px-4 w-24 text-center">Conferir</th>
               </tr>
+              {loading && (
+                <div className="w-full py-10 flex justify-center items-center">
+                  <div className="animate-spin rounded-full h-10 w-10 text-center border-4 border-blue-500 border-t-transparent"></div>
+                </div>
+              )}
             </thead>
-            <tbody>
-              {studentsMock.map((student) => (
-                <motion.tr
-                  key={student.id}
-                  whileHover={{ backgroundColor: "#1E1E2F", scale: 1.01 }}
-                  className="border-b border-gray-800 transition hover:cursor-pointer"
-                  onClick={() => openProfileModal(student)}
-                >
+              <motion.tbody
+                initial="hidden"
+                animate="visible"
+                variants={listVariants}
+              >
+                {students.map((s: any) => (
+                  <motion.tr
+                    variants={itemVariants}
+                    key={s.id}
+                    whileHover={{ backgroundColor: "#1E1E2F", scale: 1.01 }}
+                    className="border-b border-gray-800 transition hover:cursor-pointer"
+                    onClick={() => openProfileModal(s)}
+                  >
                   <td className="py-3 px-4">
-                    <img
-                      src={student.photo || "/foto.jpg"}
-                      alt="Foto"
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                  <img
+                    src={
+                      s.image_student_url
+                        ? s.image_student_url
+                        : "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
+                    }
+                    alt="Foto"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
                   </td>
-                  <td className="py-3 px-4">{student.name}</td>
-                  <td className="py-3 px-4">{student.number}</td>
+                  <td className="py-3 px-4">{s.name}</td>
+                  <td className="py-3 px-4">{s.phone}</td>
                   <td className="py-3 px-4 text-center">
                     <span
-                      className={`inline-block w-6 h-6 rounded-md ${beltClasses[student.beltColor]}`}
+                      className={`inline-block w-6 h-6 rounded-md ${
+                        beltClasses[s.belt] ?? "bg-gray-500"
+                      }`}                      
                     />
                   </td>
-                  <td className="py-3 px-4 text-center">{student.degree}</td>
-                  <td className="py-3 px-4 text-center">{student.frequency}</td>
+                  <td className="py-3 px-4 text-center">{s.grade}</td>
+                  <td className="py-3 px-4 text-center">{s.current_frequency}</td>
                   <td className="py-3 px-4 text-center text-green-500 font-medium">
-                    {student.status}
+                    {s.status}
                   </td>
                   <td className="py-3 px-4 text-center">
                     <div className="flex items-center justify-center gap-3">
@@ -102,14 +153,14 @@ export function Notification() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="hover:cursor-pointer px-4 py-1 bg-[#0070F3] hover:bg-blue-700 rounded-[20px] text-white text-sm font-medium transition"
-                      onClick={() => openProfileModal(student)}
+                      onClick={() => openProfileModal(s)}
                     >
                       Ver
                     </motion.button>
                   </td>
                 </motion.tr>
               ))}
-            </tbody>
+            </motion.tbody>
           </table>
         </motion.div>
       </div>

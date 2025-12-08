@@ -49,12 +49,12 @@ export function useStudentForm() {
     guardian_phone: "",
     enrollment: "",
     idade: 0,
-    file_image: null, // 👈 inicializado
+    file_image: null,
   });
 
   /** HANDLE CHANGE */
   const handleChange = (e: any) => {
-    if (!e.target) return;
+    if (!e?.target) return;
 
     const { name, value, files } = e.target;
 
@@ -64,62 +64,115 @@ export function useStudentForm() {
 
       setFormData(prev => ({
         ...prev,
-        image_student_url: preview, // usado só no front
-        file_image: file            // arquivo real
+        image_student_url: preview, // preview only for UI
+        file_image: file,
       }));
-
       return;
     }
 
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
+  };
+
+  /** VALIDATION helper */
+  const hasEmptyRequired = (data: FormDataType) => {
+    // liste aqui só os campos obrigatórios que o backend exige
+    const required = [
+      "name",
+      "phone",
+      "birth_date",
+      "current_frequency",
+      "belt",
+      "grade",
+      "enrollment",
+    ];
+
+    return required.some(key => {
+      const v = (data as any)[key];
+      return v === "" || v === null || v === undefined;
+    });
   };
 
   /** HANDLE SUBMIT */
   const handleSubmit = async () => {
-    const data = new FormData();
-
-    // Envia tudo EXCETO o preview
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "image_student_url" && key !== "file_image") {
-        data.append(key, value as any);
-      }
-    });
-
-    // Enviar o arquivo real
-    if (formData.file_image) {
-      data.append("image", formData.file_image);
-    }
-
-    const res = await onRegisterStudent(data);
-
-    if (Object.values(formData).some(v => v === "" || v === null)) {
-      setModalMsg("Preencha todos os campos");
+    // validação antes de criar FormData
+    if (hasEmptyRequired(formData)) {
+      setModalMsg("Preencha todos os campos obrigatórios");
       setModalType("error");
       setModalVisible(true);
       return;
     }
-    if (res.status === 200) {
-      setModalMsg("Aluno cadastrado com sucesso!");
-      setModalType("success");
-      setModalVisible(true);
-      return;
-    } else if (res.status === 400) {
-      setModalMsg("⚠️ " + res.msg);
-    } else if (res.status === 401) {
-      setModalMsg("🙈 " + res.msg);
-    } else if (res.status === 403) {
-      setModalMsg("🚫 " + res.msg);
-    } else if (res.status === 422) {
-      setModalMsg("🚫 " + res.msg);
-    } else {
-      setModalMsg("😕 " + res.msg);
+
+    const data = new FormData();
+
+    // append fields explicitamente (evita enviar preview e undefined)
+    data.append("name", formData.name || "");
+    data.append("phone", formData.phone || "");
+    data.append("email", formData.email || "");
+    data.append("cpf", formData.cpf || "");
+    data.append("gender", formData.gender || "");
+    data.append("birth_date", formData.birth_date || "");
+    data.append("current_frequency", formData.current_frequency || "");
+    data.append("belt", formData.belt || "");
+    data.append("grade", formData.grade || "");
+    data.append("city", formData.city || "");
+    data.append("street", formData.street || "");
+    data.append("district", formData.district || "");
+    data.append("number", formData.number || "");
+    data.append("complement", formData.complement || "");
+    data.append("guardian_phone", formData.guardian_phone || "");
+    data.append("enrollment", formData.enrollment || "");
+    data.append("idade", String(formData.idade || 0));
+
+    // --- IMPORTANT: nome do campo do arquivo deve ser o que o backend espera ---
+    // eu coloquei "image" — se o backend espera "image_student_url" ou "file" troque aqui.
+    if (formData.file_image) {
+      data.append("image", formData.file_image);
     }
 
-    setModalType("error");
+    // debug (remova em prod)
+    console.log("Submitting form: file_image ->", formData.file_image);
+    // também dá pra inspecionar o FormData se quiser:
+    // for (const pair of data.entries()) console.log(pair[0], pair[1]);
+
+    const res = await onRegisterStudent(data);
+
+    // lidar com a resposta
+    if (res.error) {
+      setModalMsg(res.msg || "Erro ao cadastrar aluno");
+      setModalType("error");
+      setModalVisible(true);
+      return;
+    }
+
+    // sucesso provável
+    setModalMsg("Aluno cadastrado com sucesso!");
+    setModalType("success");
     setModalVisible(true);
+    // opcional: limpar form
+    setFormData({
+      name: "",
+      phone: "",
+      image_student_url: "",
+      email: "",
+      cpf: "",
+      gender: "",
+      birth_date: "",
+      current_frequency: "",
+      belt: "",
+      grade: "",
+      city: "",
+      street: "",
+      district: "",
+      number: "",
+      complement: "",
+      guardian_phone: "",
+      enrollment: "",
+      idade: 0,
+      file_image: null,
+    });
   };
 
   /** CÁLCULO DE IDADE */
@@ -140,5 +193,13 @@ export function useStudentForm() {
     }));
   }, [formData.birth_date]);
 
-  return { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible, };
+  return {
+    formData,
+    handleChange,
+    handleSubmit,
+    modalVisible,
+    modalMsg,
+    modalType,
+    setModalVisible,
+  };
 }
