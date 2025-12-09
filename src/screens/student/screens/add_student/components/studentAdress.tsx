@@ -20,6 +20,7 @@ interface Props {
 }
 
 export function StudentAdress({ formData, handleChange, handleSubmit, goBack, goNext }: Props) {
+  
   const {
     modalVisible,
     modalMsg,

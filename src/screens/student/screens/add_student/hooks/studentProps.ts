@@ -82,31 +82,34 @@ export function useStudentForm() {
     }));
   };
 
-  // ----------------------------------------------------------
-  // REQUIRED FIELDS
-  // ----------------------------------------------------------
-  const hasEmptyRequired = (data: FormDataType) => {
-    const required = [
-      "name",
-      "phone",
-      "birth_date",
-      "current_frequency",
-      "belt",
-      "grade",
-      "enrollment",
-    ];
+    const validateStepData = (data: FormDataType): string | null => {
+    if (!data.name) return "O nome é obrigatório";
+    if (!data.phone) return "O telefone é obrigatório";
+    if (!data.birth_date) return "A data de nascimento é obrigatória";
 
-    return required.some(key => {
-      const v = (data as any)[key];
-      return v === "" || v === null || v === undefined;
-    });
+    if (data.idade < 3 || data.idade > 120)
+      return "Idade inválida";
+
+    if (!data.current_frequency) return "A frequência atual é obrigatória";
+    if (!data.belt) return "A faixa é obrigatória";
+    if (!data.grade) return "A série escolar é obrigatória";
+
+    return null;
   };
 
-  // ----------------------------------------------------------
-  // SUBMIT (MULTIPART FORMA CORRETA)
-  // ----------------------------------------------------------
+  const validateStepAddress = (data: FormDataType): string | null => {
+    if (!data.city) return "Cidade é obrigatória";
+    if (!data.street) return "Rua é obrigatória";
+    if (!data.district) return "Bairro é obrigatório";
+    if (!data.number) return "Número é obrigatório";
+
+    return null;
+  };
+
   const handleSubmit = async () => {
-    if (hasEmptyRequired(formData)) {
+    const error = validateForm(formData);
+
+    if (error) {
       setModalMsg("Preencha todos os campos obrigatórios");
       setModalType("error");
       setModalVisible(true);
@@ -204,6 +207,36 @@ export function useStudentForm() {
     }));
   }, [formData.birth_date]);
 
+  const validateForm = (data: FormDataType): string | null => {
+    if (!data.name) return "O nome é obrigatório";
+    if (data.name.length < 3) return "O nome deve ter no mínimo 3 caracteres";
+
+    if (!data.phone) return "O telefone é obrigatório";
+    if (!/^\d{10,11}$/.test(data.phone)) return "Telefone inválido (somente números, 10-11 dígitos)";
+
+    if (!data.birth_date) return "A data de nascimento é obrigatória";
+
+    // idade automática
+    if (data.idade < 3 || data.idade > 120) return "Idade inválida";
+
+    if (!data.current_frequency) return "A frequência atual é obrigatória";
+    if (!data.belt) return "A graduação (faixa) é obrigatória";
+    if (!data.grade) return "A série escolar é obrigatória";
+
+    if (!data.enrollment) return "A matrícula é obrigatória";
+
+    // valida email somente se informado
+    if (data.email && !/^\S+@\S+\.\S+$/.test(data.email)) {
+      return "Email inválido";
+    }
+
+    if (data.cpf && !/^\d{11}$/.test(data.cpf)) {
+      return "CPF inválido (somente números, 11 dígitos)";
+    }
+
+    return null; // tudo OK!
+  };
+
   // ----------------------------------------------------------
   return {
     formData,
@@ -213,5 +246,11 @@ export function useStudentForm() {
     modalMsg,
     modalType,
     setModalVisible,
+    setModalType, 
+    setModalMsg,
+
+   // ADD:
+    validateStepData,
+    validateStepAddress
   };
 }

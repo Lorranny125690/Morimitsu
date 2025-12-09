@@ -10,9 +10,10 @@ import bgImage from "../../../../assets/image4.png";
 import { StudentClass } from "./components/studentClass";
 import { ModalMsg } from "@/components/modal";
 
+
 export function StudentScreen() {
   const navigate = useNavigate();
-  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible } = useStudentForm();
+  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible, setModalType, setModalMsg, validateStepData, validateStepAddress} = useStudentForm();
   const [currentStep, setCurrentStep] = useState<"DATA" | "ADDRESS" | "PUT">("DATA");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +64,16 @@ export function StudentScreen() {
               formData={formData}
               handleChange={handleChange}
               navigate={navigate}
-              goNext={() => setCurrentStep("ADDRESS")}
+              goNext={() => {
+                const error = validateStepData(formData);
+                if (error) {
+                  setModalMsg(error);
+                  setModalType("error");
+                  setModalVisible(true);
+                  return;
+                }
+                setCurrentStep("ADDRESS");
+              }}
             />
           )}
 
@@ -83,7 +93,16 @@ export function StudentScreen() {
               handleChange={handleChange}
               handleSubmit={handleSubmit}
               goBack={() => setCurrentStep("DATA")}
-              goNext={() => setCurrentStep("PUT")}
+              goNext={() => {
+                const error = validateStepAddress(formData);
+                if (error) {
+                  setModalMsg(error);
+                  setModalType("error");
+                  setModalVisible(true);
+                  return;
+                }
+                setCurrentStep("ADDRESS");
+              }}
             />
           )}
         </motion.div>
