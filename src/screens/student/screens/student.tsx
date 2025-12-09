@@ -135,17 +135,17 @@ export function StudentDesktop() {
                 <th className="py-3 px-4 w-24 text-center">Conferir</th>
               </tr>
             </thead>
-            {loading && (
-                <div className="w-full py-10 flex justify-center items-center">
-                  <div className="animate-spin rounded-full h-10 w-10 text-center border-4 border-blue-500 border-t-transparent"></div>
-                </div>
-              )}
-              <motion.tbody
-                initial="hidden"
-                animate="visible"
-                variants={listVariants}
-              >
-                {students.map((s: any) => (
+            <motion.tbody variants={listVariants}>
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="py-10">
+                    <div className="w-full flex justify-center items-center">
+                      <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                students.map((s: any) => (
                   <motion.tr
                     variants={itemVariants}
                     key={s.id}
@@ -202,7 +202,7 @@ export function StudentDesktop() {
                     </motion.button>
                   </td>
                 </motion.tr>
-              ))}
+              )))}
             </motion.tbody>
           </table>
         </motion.div>
