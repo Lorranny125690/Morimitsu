@@ -12,7 +12,7 @@ interface StudentProfileProps {
 
 export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => {
   const firstName = student.name.split(" ")[0];
-  
+
   const formatPhone = (phone: string) => {
     const digits = phone.replace(/\D/g, "");
   
@@ -145,7 +145,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               </button>
             </div>
 
-            <span className="text-[30px] font-semibold text-white">15</span>
+            <span className="text-[30px] font-semibold text-white">{student.frequency || 0}</span>
           </motion.div>
         </div>
 
