@@ -8,6 +8,7 @@ import { FiltroDropdown } from "../components/dropdown";
 import type { Student } from "../types/type";
 import { useStudent } from "@/context/studentContext";
 import { useLocation } from "react-router-dom";
+import { ModalMsg } from "@/components/modal";
 
 export function StudentDesktop() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,15 +17,28 @@ export function StudentDesktop() {
   const [students, setStudents] = useState<Student[]>([]);
   const { onGetStudent, onDeleteStudent } = useStudent();
   const [loading, setLoading] = useState(true);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
+  const [modalType, setModalType] = useState<"error" | "success">("error");
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
   const location = useLocation();
 
-  const handleDelete = async (e: any, studentId: number) => {
-    e.stopPropagation();
-    const res = await onDeleteStudent(studentId);
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    const res = await onDeleteStudent(studentToDelete);
+
     if (!res.error) {
-      setStudents(prev => prev.filter(st => st.id !== studentId));
+      setStudents(prev => prev.filter(st => st.id !== studentToDelete));
+
+      setModalMsg("Aluno excluído com sucesso!");
+      setModalType("success");
+      setModalVisible(true);
     }
+
+    setConfirmDeleteOpen(false);
+    setStudentToDelete(null);
   };
 
   const listVariants = {
@@ -157,8 +171,15 @@ export function StudentDesktop() {
                   <td className="py-3 px-4 text-center">
                     <div className="flex items-center justify-center gap-3">
                       <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
-                      <FaTrash className="cursor-pointer hover:text-red-500 transition" onClick={(e) => handleDelete(e, s.id)}/>
-                    </div>
+                  <FaTrash
+                    className="cursor-pointer hover:text-red-500 transition"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setStudentToDelete(s.id);
+                      setConfirmDeleteOpen(true);
+                    }}
+                  />
+                  </div>
                   </td>
                   <td className="py-3 px-4 text-center">
                     <motion.button
@@ -184,6 +205,42 @@ export function StudentDesktop() {
           student={selectedStudent}
         />
       )}
+      
+      {/* Modal de confirmação de exclusão */}
+      {confirmDeleteOpen && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#1E1E2F] p-6 rounded-lg shadow-xl w-80 text-center">
+            <h2 className="text-lg font-semibold mb-4">Confirmar exclusão</h2>
+            <p className="text-gray-300 mb-6">
+              Tem certeza que deseja excluir este aluno?
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setConfirmDeleteOpen(false)}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ModalMsg
+      show={modalVisible}
+      onClose={() => setModalVisible(false)}
+      message={modalMsg}
+      type={modalType}
+      />
+
     </div>
   );
 }

@@ -12,4 +12,5 @@ export type Student = {
   enrollment: string;
   email: string;
   gender: string;
+  image_student_url: string;
 };

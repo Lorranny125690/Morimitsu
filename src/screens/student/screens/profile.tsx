@@ -71,7 +71,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               transition={{ duration: 0.8 }}
             >
               <img
-                src="https://i.pinimg.com/736x/a5/cb/1a/a5cb1a5651d178a1bde6c41e391dacd2.jpg"
+                src={student.image_student_url}
                 alt="Perfil"
                 className="h-auto w-[21vh] max-h-[21vh] flex rounded-full hover:scale-110 transition-all cursor-pointer"
               />
