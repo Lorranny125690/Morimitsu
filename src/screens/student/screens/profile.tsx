@@ -12,6 +12,17 @@ interface StudentProfileProps {
 
 export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => {
   const firstName = student.name.split(" ")[0];
+  
+  const formatPhone = (phone: string) => {
+    const digits = phone.replace(/\D/g, "");
+  
+    const ddd = digits.slice(0, 2);
+    const nine = digits.slice(2, 3);
+    const number1 = digits.slice(3, 7);
+    const number2 = digits.slice(7, 11);
+  
+    return `(${ddd}) ${nine} ${number1}-${number2}`;
+  };
 
   const calculateAge = (birthDate: string | Date) => {
     if (!birthDate) return 0;
@@ -159,7 +170,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             <p>Nome: {student.name}</p>
             <p>Idade: {calculateAge(student.birth_date)}</p>
             <p>Faixa: {belts[student.belt]}</p>
-            <p>Contato: {student.phone}</p>
+            <p>Contato: {formatPhone(student.phone)}</p>
           </div>
 
           <div className="space-y-2">

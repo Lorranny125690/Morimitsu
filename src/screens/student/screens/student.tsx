@@ -80,6 +80,16 @@ export function StudentDesktop() {
     setSelectedStudent(null); // Limpar o aluno selecionado
   };
 
+  const formatPhone = (phone: string) => {
+    const digits = phone.replace(/\D/g, "");
+  
+    const ddd = digits.slice(0, 2);
+    const number1 = digits.slice(2, 7);
+    const number2 = digits.slice(7, 11);
+  
+    return `(${ddd}) ${number1}-${number2}`;
+  };
+
   return (
     <div className="min-h-screen bg-[#0D0C15] text-white font-sans">
       {/* Tabs */}
@@ -155,7 +165,7 @@ export function StudentDesktop() {
                   />
                   </td>
                   <td className="py-3 px-4">{s.name}</td>
-                  <td className="py-3 px-4">{s.phone}</td>
+                  <td className="py-3 px-4">{formatPhone(s.phone)}</td>
                   <td className="py-3 px-4 text-center">
                     <span
                       className={`inline-block w-6 h-6 rounded-md ${
