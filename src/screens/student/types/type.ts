@@ -1,3 +1,4 @@
+
 export type Student = {
   id: number;
   name: string;
@@ -13,4 +14,6 @@ export type Student = {
   email: string;
   gender: string;
   image_student_url: string;
+  nickname: string;
+  role: string;
 };

@@ -218,14 +218,14 @@ export function StudentDesktop() {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setConfirmDeleteOpen(false)}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition"
+                className="cursor-pointer px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition"
               >
                 Cancelar
               </button>
 
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition"
+                className="cursor-pointer px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition"
               >
                 OK
               </button>

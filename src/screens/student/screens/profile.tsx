@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { AiOutlineTeam } from "react-icons/ai";
 import type { Student } from "../types/type";
 import { belts } from "../types/belt";
+import { role } from "../types/role";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -74,13 +75,13 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               <img
                 src={student.image_student_url}
                 alt="Perfil"
-                className="h-auto w-[21vh] max-h-[21vh] flex rounded-full hover:scale-110 transition-all cursor-pointer"
+                className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full hover:scale-110 transition-all cursor-pointer"
               />
 
               <div className="flex items-center flex-col">
                 <h1 className="text-[50px] h-12 font-bold text-white">{firstName}</h1>
                 <p className="text-[40px] font-medium text-white/60">{belts[student.belt]}</p>
-                <p className="text-[20px] text-white">{calculateAge(student.birth_date)}</p>
+                <p className="text-[20px] text-white">{calculateAge(student.birth_date)} anos</p>
               </div>
             </motion.div>
           </div>
@@ -148,19 +149,19 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           <div className="space-y-2">
             <p>Nome: {student.name}</p>
             <p>Idade: {calculateAge(student.birth_date)}</p>
-            <p>Faixa: {student.belt}</p>
+            <p>Faixa: {belts[student.belt]}</p>
             <p>Contato: {student.phone}</p>
           </div>
 
           <div className="space-y-2">
             <p>Matrícula: {student.enrollment}</p>
-            <p>Cargo: estudante</p>
+            <p>Cargo: {role[student.role]}</p>
             <p>Data de nasc.: {student.birth_date}</p>
             <p>Email: {student.email}</p>
           </div>
 
           <div className="space-y-2">
-            <p>Apelido: Boyfriend</p>
+            <p>Apelido: {student.nickname || "não tem"}</p>
             <p>Gênero: {student.gender}</p>
           </div>
         </motion.div>
