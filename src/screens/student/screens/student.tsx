@@ -13,7 +13,6 @@ import { ModalMsg } from "@/components/modal";
 export function StudentDesktop() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
-
   const [students, setStudents] = useState<Student[]>([]);
   const { onGetStudent, onDeleteStudent } = useStudent();
   const [loading, setLoading] = useState(true);
@@ -23,6 +22,38 @@ export function StudentDesktop() {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
   const location = useLocation();
+  const [originalStudents, setOriginalStudents] = useState<Student[]>([]); // cópia original
+
+// Ao carregar
+useEffect(() => {
+  const loadStudents = async () => {
+    setLoading(true);
+    const res = await onGetStudent();
+    if (!res.error) {
+      setStudents(res.data.students);
+      setOriginalStudents(res.data.students); // guarda a ordem original
+    }
+    setLoading(false);
+  };
+  loadStudents();
+}, [location.pathname]);
+
+// Ordenar alfabeticamente
+const sortAlphabetically = () => {
+  setAlphabetical(prev => !prev);
+
+  if (!alphabetical) {
+    // marca: ordena
+    setStudents(prev =>
+      [...prev].sort((a, b) =>
+        a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
+      )
+    );
+  } else {
+    // desmarca: volta ao original
+    setStudents(originalStudents);
+  }
+};
 
   const confirmDelete = async () => {
     if (!studentToDelete) return;
@@ -90,6 +121,53 @@ export function StudentDesktop() {
     return `(${ddd}) ${number1}-${number2}`;
   };
 
+  const [alphabetical, setAlphabetical] = useState(false);
+  
+  const [filters, setFilters] = useState({
+    presencas: false,
+    mista: false,
+    feminina: false,
+    masculina: false,
+    baby: false,
+    kids: false,
+  });
+
+  type FilterKey = "presencas" | "mista" | "feminina" | "masculina" | "baby" | "kids";
+
+  const toggleFilter = (key: FilterKey) => {
+    setFilters(prev => ({ ...prev, [key]: !prev[key] }));
+  };  
+  
+  const applyFilters = () => {
+    let filtered = [...students]; // use a lista bruta vinda do back
+  
+    if (filters.feminina) {
+      filtered = filtered.filter(s => s.gender === "F");
+    }
+  
+    if (filters.masculina) {
+      filtered = filtered.filter(s => s.gender === "M");
+    }
+  
+    if (filters.mista) {
+      filtered = filtered.filter(s => s.classType === "mista");
+    }
+  
+    if (filters.baby) {
+      filtered = filtered.filter(s => s.classType === "baby");
+    }
+  
+    if (filters.kids) {
+      filtered = filtered.filter(s => s.classType === "kids");
+    }
+  
+    if (filters.presencas) {
+      filtered = filtered.filter(s => s.frequency > 0);
+    }
+  
+    setStudents(filtered);
+  };
+
   return (
     <div className="min-h-screen bg-[#0D0C15] text-white font-sans">
       {/* Tabs */}
@@ -110,7 +188,13 @@ export function StudentDesktop() {
                 Adicionar aluno
               </motion.button>
             </a>
-            <FiltroDropdown />
+            <FiltroDropdown
+              filters={filters}
+              alphabetical={alphabetical}
+              onToggleFilter={toggleFilter}
+              onSort={sortAlphabetically}
+              onApply={applyFilters}
+            />
           </div>
         </div>
 

@@ -16,4 +16,5 @@ export type Student = {
   image_student_url: string;
   nickname: string;
   role: string;
+  classType: string
 };

@@ -1,7 +1,20 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function FiltroDropdown() {
+type FilterKey = "presencas" | "mista" | "feminina" | "masculina" | "baby" | "kids";
+
+export function FiltroDropdown({
+  filters,
+  onToggleFilter,
+  alphabetical,
+  onSort,
+}: {
+  filters: Record<FilterKey, boolean>;
+  onToggleFilter: (key: FilterKey) => void;
+  alphabetical: boolean;
+  onSort: () => void;
+  onApply: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -38,43 +51,42 @@ export function FiltroDropdown() {
             transition={{ duration: 0.15 }}
             className="absolute left-0 mt-2 w-44 bg-[#273240] rounded-md shadow-lg p-3 z-50"
           >
-            <div className="flex flex-col gap-4 text-white text-sm">
+            <div className="flex justify-start items-start text-start flex-col gap-4 text-white text-sm">
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Presenças
-              </button>
+            <button className="flex gap-2" onClick={() => onToggleFilter("presencas")}>
+              <input type="checkbox" checked={filters.presencas} />
+              Presenças
+            </button>
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Turma mista
-              </button>
+            <button className="flex gap-2" onClick={() => onToggleFilter("mista")}>
+              <input type="checkbox" checked={filters.mista} />
+              Turma mista
+            </button>
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Turma feminina
-              </button>
+            <button className="flex gap-2" onClick={() => onToggleFilter("feminina")}>
+              <input type="checkbox" checked={filters.feminina} />
+              Turma feminina
+            </button>
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Turma masculina
-              </button>
+            <button className="flex gap-2" onClick={() => onToggleFilter("masculina")}>
+              <input type="checkbox" checked={filters.masculina} />
+              Turma masculina
+            </button>
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Turma baby
-              </button>
+            <button className="flex gap-2" onClick={() => onToggleFilter("baby")}>
+              <input type="checkbox" checked={filters.baby} />
+              Turma baby
+            </button>
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Turma kids
-              </button>
+            <button className="flex gap-2" onClick={() => onToggleFilter("kids")}>
+              <input type="checkbox" checked={filters.kids} />
+              Turma kids
+            </button>
 
-              <button className="flex gap-2 cursor-pointer text-left hover:text-blue-700 transition">
-                <input type="checkbox" />
-                Ordem Alfabética
-              </button>
-
+            <button className="flex gap-2">
+              <input type="checkbox" onChange={onSort} checked={alphabetical}  readOnly/>
+              Ordem Alfabética
+            </button>
             </div>
           </motion.div>
         )}
