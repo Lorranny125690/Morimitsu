@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { AiOutlineTeam } from "react-icons/ai";
 import type { Student } from "../types/type";
 import { belts } from "../types/belt";
-import { role } from "../types/role";
+import { role, gender } from "../types/role";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -33,7 +33,16 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
     return age;
   };
   
-
+  const formatBirth = (birthDate: string | Date) => {
+    const birth = new Date(birthDate);
+  
+    const day = String(birth.getDate() + 1).padStart(2, "0");
+    const month = String(birth.getMonth() + 1).padStart(2, "0");
+    const year = birth.getFullYear();
+  
+    return `${day}/${month}/${year}`;
+  };
+  
   return (
     <div
       className="fixed inset-0 bg-[#000F22]/70 flex items-center justify-center z-50 backdrop-blur-sm"
@@ -156,13 +165,13 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           <div className="space-y-2">
             <p>Matrícula: {student.enrollment}</p>
             <p>Cargo: {role[student.role]}</p>
-            <p>Data de nasc.: {student.birth_date}</p>
+            <p>Data de nasc.: {formatBirth(student.birth_date)}</p>
             <p>Email: {student.email}</p>
           </div>
 
           <div className="space-y-2">
             <p>Apelido: {student.nickname || "não tem"}</p>
-            <p>Gênero: {student.gender}</p>
+            <p>Gênero: {gender[student.gender]}</p>
           </div>
         </motion.div>
       </motion.div>
