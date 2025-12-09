@@ -2,6 +2,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { motion } from "framer-motion";
 import { AiOutlineTeam } from "react-icons/ai";
 import type { Student } from "../types/type";
+import { belts } from "../types/belt";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -78,7 +79,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
 
               <div className="flex items-center flex-col">
                 <h1 className="text-[50px] h-12 font-bold text-white">{firstName}</h1>
-                <p className="text-[40px] font-medium text-white/60">{student.belt}</p>
+                <p className="text-[40px] font-medium text-white/60">{belts[student.belt]}</p>
                 <p className="text-[20px] text-white">{calculateAge(student.birth_date)}</p>
               </div>
             </motion.div>

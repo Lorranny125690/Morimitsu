@@ -1,5 +1,7 @@
 // src/components/student/StudentProfileCard.tsx
 
+import { belts } from "@/screens/student/types/belt";
+
 interface Props {
   photo: string;
   nome: string;
@@ -46,7 +48,7 @@ export function StudentProfileCard({ photo, nome, faixa, frequencia, idade, cpf,
         </h2>
 
         <p className="text-gray-400 text-[10px]">
-          {faixa || "Faixa não selecionada"}
+          {belts[faixa] || "Faixa não selecionada"}
         </p>
       </div>
 
