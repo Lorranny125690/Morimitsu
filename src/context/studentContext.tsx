@@ -63,9 +63,8 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
 };
 
 // DELETE — deletar aluno
-const deleteStudent = async (): Promise<ApiResponse> => {
+const deleteStudent = async (id: number): Promise<ApiResponse> => {
   try {
-    const id = localStorage.getItem("id");
     const result = await api.delete(`/student/${id}`);
 
     return {
@@ -89,9 +88,8 @@ const deleteStudent = async (): Promise<ApiResponse> => {
 };
 
 // PUT — atualizar aluno
-const putStudent = async (): Promise<ApiResponse> => {
+const putStudent = async (id: number): Promise<ApiResponse> => {
   try {
-    const id = localStorage.getItem("id");
     const result = await api.put(`/student/${id}`);
 
     return {

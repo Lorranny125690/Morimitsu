@@ -1,13 +1,37 @@
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { motion } from "framer-motion";
 import { AiOutlineTeam } from "react-icons/ai";
+import type { Student } from "../types/type";
 
 interface StudentProfileProps {
   closeModal: () => void;
-  student: () => void;
+  student: Student;
 }
 
-export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
+export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => {
+  const firstName = student.name.split(" ")[0];
+
+  const calculateAge = (birthDate: string | Date) => {
+    if (!birthDate) return 0;
+  
+    const today = new Date();
+    const birth = new Date(birthDate);
+  
+    let age = today.getFullYear() - birth.getFullYear();
+  
+    const monthDiff = today.getMonth() - birth.getMonth();
+  
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+  
+    return age;
+  };
+  
+
   return (
     <div
       className="fixed inset-0 bg-[#000F22]/70 flex items-center justify-center z-50 backdrop-blur-sm"
@@ -53,9 +77,9 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
               />
 
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-12 font-bold text-white">Garu</h1>
-                <p className="text-[40px] font-medium text-white/60">Faixa preta</p>
-                <p className="text-[20px] text-white">15 anos</p>
+                <h1 className="text-[50px] h-12 font-bold text-white">{firstName}</h1>
+                <p className="text-[40px] font-medium text-white/60">{student.belt}</p>
+                <p className="text-[20px] text-white">{calculateAge(student.birth_date)}</p>
               </div>
             </motion.div>
           </div>
@@ -121,22 +145,22 @@ export const StudentProfile = ({ closeModal }: StudentProfileProps) => {
           transition={{ duration: 0.8 }}
         >
           <div className="space-y-2">
-            <p>Nome: Lorranny</p>
-            <p>Idade: 16</p>
-            <p>Faixa: Preta</p>
-            <p>Contato: 00 0000-0000</p>
+            <p>Nome: {student.name}</p>
+            <p>Idade: {calculateAge(student.birth_date)}</p>
+            <p>Faixa: {student.belt}</p>
+            <p>Contato: {student.phone}</p>
           </div>
 
           <div className="space-y-2">
-            <p>Matrícula: 20231031020358</p>
-            <p>Cargo: rapaz</p>
-            <p>Data de nasc.: 12/12/12</p>
-            <p>Email: socorro@gmail.com</p>
+            <p>Matrícula: {student.enrollment}</p>
+            <p>Cargo: estudante</p>
+            <p>Data de nasc.: {student.birth_date}</p>
+            <p>Email: {student.email}</p>
           </div>
 
           <div className="space-y-2">
-            <p>Apartido: Boyfriend</p>
-            <p>Gênero: masculino</p>
+            <p>Apelido: Boyfriend</p>
+            <p>Gênero: {student.gender}</p>
           </div>
         </motion.div>
       </motion.div>

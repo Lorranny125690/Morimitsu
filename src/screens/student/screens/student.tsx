@@ -14,14 +14,17 @@ export function StudentDesktop() {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
   const [students, setStudents] = useState<Student[]>([]);
-  const { onGetStudent, onDeleteStudent, onPutStudent } = useStudent();
+  const { onGetStudent, onDeleteStudent } = useStudent();
   const [loading, setLoading] = useState(true);
 
   const location = useLocation();
 
   const handleDelete = async (e: any, studentId: number) => {
-    e.stopPropagation(); // Impede abrir modal
-    await onDeleteStudent(studentId);
+    e.stopPropagation();
+    const res = await onDeleteStudent(studentId);
+    if (!res.error) {
+      setStudents(prev => prev.filter(st => st.id !== studentId));
+    }
   };
 
   const listVariants = {

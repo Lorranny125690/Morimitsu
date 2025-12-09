@@ -5,7 +5,7 @@ import { useStudent } from "@/context/studentContext";
 export interface FormDataType {
   name: string;
   phone: string;
-  image_student_url: string;
+  image_student_url: string; // preview ONLY
   email: string;
   cpf: string;
   gender: string;
@@ -21,11 +21,12 @@ export interface FormDataType {
   guardian_phone: string;
   enrollment: string;
   idade: number;
-  file_image?: File | null;
+  file_image: File | null; // FILE REAL
 }
 
 export function useStudentForm() {
   const { onRegisterStudent } = useStudent();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
@@ -52,33 +53,39 @@ export function useStudentForm() {
     file_image: null,
   });
 
-  /** HANDLE CHANGE */
+  // ----------------------------------------------------------
+  // HANDLE INPUT CHANGE + FILE HANDLER
+  // ----------------------------------------------------------
   const handleChange = (e: any) => {
     if (!e?.target) return;
 
     const { name, value, files } = e.target;
 
+    // --- Trata imagem ---
     if (files && files[0]) {
       const file = files[0];
       const preview = URL.createObjectURL(file);
 
       setFormData(prev => ({
         ...prev,
-        image_student_url: preview, // preview only for UI
-        file_image: file,
+        image_student_url: preview, // preview pra UI
+        file_image: file, // o arquivo REAL
       }));
+
       return;
     }
 
+    // --- Campos normais ---
     setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  /** VALIDATION helper */
+  // ----------------------------------------------------------
+  // REQUIRED FIELDS
+  // ----------------------------------------------------------
   const hasEmptyRequired = (data: FormDataType) => {
-    // liste aqui só os campos obrigatórios que o backend exige
     const required = [
       "name",
       "phone",
@@ -95,9 +102,10 @@ export function useStudentForm() {
     });
   };
 
-  /** HANDLE SUBMIT */
+  // ----------------------------------------------------------
+  // SUBMIT (MULTIPART FORMA CORRETA)
+  // ----------------------------------------------------------
   const handleSubmit = async () => {
-    // validação antes de criar FormData
     if (hasEmptyRequired(formData)) {
       setModalMsg("Preencha todos os campos obrigatórios");
       setModalType("error");
@@ -107,39 +115,39 @@ export function useStudentForm() {
 
     const data = new FormData();
 
-    // append fields explicitamente (evita enviar preview e undefined)
-    data.append("name", formData.name || "");
-    data.append("phone", formData.phone || "");
-    data.append("email", formData.email || "");
-    data.append("cpf", formData.cpf || "");
-    data.append("gender", formData.gender || "");
-    data.append("birth_date", formData.birth_date || "");
-    data.append("current_frequency", formData.current_frequency || "");
-    data.append("belt", formData.belt || "");
-    data.append("grade", formData.grade || "");
-    data.append("city", formData.city || "");
-    data.append("street", formData.street || "");
-    data.append("district", formData.district || "");
-    data.append("number", formData.number || "");
-    data.append("complement", formData.complement || "");
-    data.append("guardian_phone", formData.guardian_phone || "");
-    data.append("enrollment", formData.enrollment || "");
-    data.append("idade", String(formData.idade || 0));
+    // Campos de texto
+    Object.entries({
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      cpf: formData.cpf,
+      gender: formData.gender,
+      birth_date: formData.birth_date,
+      current_frequency: formData.current_frequency,
+      belt: formData.belt,
+      grade: formData.grade,
+      city: formData.city,
+      street: formData.street,
+      district: formData.district,
+      number: formData.number,
+      complement: formData.complement,
+      guardian_phone: formData.guardian_phone,
+      enrollment: formData.enrollment,
+      idade: String(formData.idade),
+    }).forEach(([key, val]) => {
+      data.append(key, val || "");
+    });
 
-    // --- IMPORTANT: nome do campo do arquivo deve ser o que o backend espera ---
-    // eu coloquei "image" — se o backend espera "image_student_url" ou "file" troque aqui.
+    // Campo do arquivo — nome EXATO do backend
     if (formData.file_image) {
-      data.append("image", formData.file_image);
+      data.append("image_student_url", formData.file_image);
     }
 
-    // debug (remova em prod)
-    console.log("Submitting form: file_image ->", formData.file_image);
-    // também dá pra inspecionar o FormData se quiser:
-    // for (const pair of data.entries()) console.log(pair[0], pair[1]);
+    console.log("ENVIANDO FILE:", formData.file_image);
 
     const res = await onRegisterStudent(data);
 
-    // lidar com a resposta
+    // Erro:
     if (res.error) {
       setModalMsg(res.msg || "Erro ao cadastrar aluno");
       setModalType("error");
@@ -147,11 +155,12 @@ export function useStudentForm() {
       return;
     }
 
-    // sucesso provável
+    // Sucesso:
     setModalMsg("Aluno cadastrado com sucesso!");
     setModalType("success");
     setModalVisible(true);
-    // opcional: limpar form
+
+    // RESET
     setFormData({
       name: "",
       phone: "",
@@ -175,7 +184,9 @@ export function useStudentForm() {
     });
   };
 
-  /** CÁLCULO DE IDADE */
+  // ----------------------------------------------------------
+  // AUTO-CALCULA IDADE
+  // ----------------------------------------------------------
   const calculateAge = (dateStr: string) => {
     if (!dateStr) return 0;
     const today = new Date();
@@ -193,6 +204,7 @@ export function useStudentForm() {
     }));
   }, [formData.birth_date]);
 
+  // ----------------------------------------------------------
   return {
     formData,
     handleChange,

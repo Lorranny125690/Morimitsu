@@ -17,13 +17,17 @@ export function StudentScreen() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const url = URL.createObjectURL(file);
-
+  
+    const preview = URL.createObjectURL(file);
+  
     handleChange({
-      target: { name: "image_student_url", value: url }
+      target: { 
+        name: "image_student_url",
+        value: preview,
+        files: [file]   // <--- ESSENCIAL!!!
+      }
     });
-  };
+  };  
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#41414B] flex-col px-4">
