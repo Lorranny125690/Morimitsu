@@ -8,10 +8,11 @@ import { StudentForm } from "./components/studentForm";
 import { useStudentForm } from "./hooks/studentProps";
 import bgImage from "../../../../assets/image4.png";
 import { StudentClass } from "./components/studentClass";
+import { ModalMsg } from "@/components/modal";
 
 export function StudentScreen() {
   const navigate = useNavigate();
-  const { formData, handleChange, handleSubmit } = useStudentForm();
+  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible } = useStudentForm();
   const [currentStep, setCurrentStep] = useState<"DATA" | "ADDRESS" | "PUT">("DATA");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,6 +88,13 @@ export function StudentScreen() {
           )}
         </motion.div>
       </div>
+
+      <ModalMsg
+        show={modalVisible}
+        onClose={() => setModalVisible(false)}
+        message={modalMsg}
+        type={modalType}
+      />
     </div>
   );
 }

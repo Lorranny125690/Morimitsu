@@ -53,7 +53,7 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
 
     let msg = "Erro ao cadastrar aluno.";
 
-    if (status === 400) msg = data?.message || "Requisição inválida.";
+    if (status === 400) msg = data?.message || "Dados faltando inválida.";
     else if (status === 409) msg = data?.message || "Aluno já existe.";
     else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
     else if (status >= 500) msg = "Erro interno no servidor.";
