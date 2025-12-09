@@ -4,4 +4,8 @@ export const belts: Record<string, string> = {
   PURPLE: "Faixa roxa",
   BROWN: "Faixa marrom",
   BLACK: "Faixa preta",
+  GRAY: "faixa cinza",
+  YELLOW: "faixa amarela",
+  ORANGE: "faixa laranja",
+  GREEN: "faixa verde"
 };
