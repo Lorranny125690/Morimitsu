@@ -19,7 +19,7 @@ export interface FormDataType {
   number: string;
   complement: string;
   guardian_phone: string;
-  enrollment: string;
+  enrollment?: string;
   idade: number;
   file_image: File | null; // FILE REAL
 }
@@ -85,6 +85,7 @@ export function useStudentForm() {
     const validateStepData = (data: FormDataType): string | null => {
     if (!data.name) return "O nome é obrigatório";
     if (!data.phone) return "O telefone é obrigatório";
+    if (data.phone.length < 11 || data.phone.length > 12) return "O número deve conter 9 + DDD dígitos"
     if (!data.birth_date) return "A data de nascimento é obrigatória";
 
     if (data.idade < 3 || data.idade > 120)
@@ -102,6 +103,7 @@ export function useStudentForm() {
     if (!data.street) return "Rua é obrigatória";
     if (!data.district) return "Bairro é obrigatório";
     if (!data.number) return "Número é obrigatório";
+    if (data.guardian_phone.length < 11 || data.guardian_phone.length > 12) return "O número deve conter 9 + DDD dígitos"
 
     return null;
   };
@@ -219,11 +221,8 @@ export function useStudentForm() {
     // idade automática
     if (data.idade < 3 || data.idade > 120) return "Idade inválida";
 
-    if (!data.current_frequency) return "A frequência atual é obrigatória";
     if (!data.belt) return "A graduação (faixa) é obrigatória";
-    if (!data.grade) return "A série escolar é obrigatória";
-
-    if (!data.enrollment) return "A matrícula é obrigatória";
+    if (!data.grade) return "O grau é obrigatório";
 
     // valida email somente se informado
     if (data.email && !/^\S+@\S+\.\S+$/.test(data.email)) {
