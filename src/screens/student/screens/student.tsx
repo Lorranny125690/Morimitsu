@@ -39,25 +39,25 @@ useEffect(() => {
 }, [location.pathname]);
 
 // Ordenar alfabeticamente
-const sortAlphabetically = () => {
-  setAlphabetical(prev => !prev);
+  const sortAlphabetically = () => {
+    setAlphabetical(prev => !prev);
 
-  if (!alphabetical) {
-    // marca: ordena
-    setStudents(prev =>
-      [...prev].sort((a, b) =>
-        a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
-      )
-    );
-  } else {
-    // desmarca: volta ao original
-    setStudents(originalStudents);
-  }
-};
+    if (!alphabetical) {
+      // marca: ordena
+      setStudents(prev =>
+        [...prev].sort((a, b) =>
+          a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
+        )
+      );
+    } else {
+      // desmarca: volta ao original
+      setStudents(originalStudents);
+    }
+  };
 
   const confirmDelete = async () => {
     if (!studentToDelete) return;
-          
+
     const res = await onDeleteStudent(studentToDelete);
 
     if (!res.error) {

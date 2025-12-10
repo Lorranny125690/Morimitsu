@@ -15,6 +15,8 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   const firstName = student.name.split(" ")[0];
   const { onGraduate } = useStudent();
 
+  const userRole = localStorage.getItem("role");
+
   const formatPhone = (phone: string) => {
     const digits = phone.replace(/\D/g, "");
   
@@ -86,9 +88,11 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               size={30}
             />
 
-            <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full">
-              Promover a professor
-            </button>
+            {userRole !== "TEACHER" && (
+              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full">
+                Promover a professor
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col items-center">
@@ -99,7 +103,11 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               transition={{ duration: 0.8 }}
             >
               <img
-                src={student.image_student_url}
+                src={
+                  student.image_student_url
+                  ? student.image_student_url
+                    : "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
+                }
                 alt="Perfil"
                 className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full hover:scale-110 transition-all cursor-pointer"
               />
@@ -146,9 +154,10 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             <div className="flex flex-row gap-4 items-start justify-start">
               <h2 className="text-[16px] font-semibold text-white">Frequências</h2>
 
-              <button onClick={() => handleGraduate(student.id)} className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
+              {userRole !== "TEACHER" && (
+                <button onClick={() => handleGraduate(student.id)} className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
                 Graduar
-              </button>
+              </button>)}
             </div>
 
             <span className="text-[30px] font-semibold text-white">{student.frequency || 0}</span>
