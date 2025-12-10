@@ -12,7 +12,6 @@ interface StudentProfileProps {
 }
 
 export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => {
-  const firstName = student.name.split(" ")[0];
   const { onGraduate } = useStudent();
 
   const userRole = localStorage.getItem("role");
@@ -27,6 +26,17 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   
     return `(${ddd}) ${nine} ${number1}-${number2}`;
   };
+
+  const studentName = (student: string) => {
+    const firstName = student.split(" ")[0];
+    const secondName = student.split(" ")[1];
+    if (secondName === "de" || secondName === "do" || secondName === "da") {
+      const thirdName = student.split(" ")[2];
+      return (`${firstName} ${secondName} ${thirdName}`)
+    }
+
+    return (`${firstName} ${secondName}`)
+  }
 
   const calculateAge = (birthDate: string | Date) => {
     if (!birthDate) return 0;
@@ -113,7 +123,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               />
 
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-12 font-bold text-white">{firstName}</h1>
+                <h1 className="text-[50px] h-12 font-bold text-white">{studentName(student.name)}</h1>
                 <p className="text-[40px] font-medium text-white/60">{belts[student.belt]}</p>
                 <p className="text-[20px] text-white">{calculateAge(student.birth_date)} anos</p>
               </div>

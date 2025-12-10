@@ -27,7 +27,7 @@ function ScreenCard({ id, titulo, tipo }: ListaCarrosselProps) {
   
       if (tipo === "aniversario") {
         const res = await onGetSTudentBirthday();
-        list = res.data?.studentsBirth ?? [];
+        list = res.data?.celebrants ?? [];
       }
   
       if (tipo === "turmas") {
