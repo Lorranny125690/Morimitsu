@@ -2,22 +2,67 @@ import { AiFillEdit } from "react-icons/ai";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
-const alunoInfo = {
-  nome: "Manoel Gomes da Silva",
-  matricula: "20231031020358",
-  contato: "(88) 8860–8045",
-  dataNascimento: "20/05/2000",
-  cpf: "00000000–00",
-  email: "email@gmail.com",
-  apelido: "caneta azul",
-  faixa: "preta",
-  cargo: "aluno",
-  genero: "M",
-};
+import { useLocation } from "react-router-dom";
+import { belts } from "../types/belt";
+import { gender, role } from "../types/role";
 
 export function ProfileMobile() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const student = state?.student;
+
+  const formatPhone = (phone: string) => {
+    const digits = phone.replace(/\D/g, "");
+  
+    const ddd = digits.slice(0, 2);
+    const number1 = digits.slice(2, 7);
+    const number2 = digits.slice(7, 11);
+  
+    return `(${ddd}) ${number1}-${number2}`;
+  };
+
+  const formatBirth = (birthDate: string | Date) => {
+    const birth = new Date(birthDate);
+  
+    const day = String(birth.getDate() + 1).padStart(2, "0");
+    const month = String(birth.getMonth() + 1).padStart(2, "0");
+    const year = birth.getFullYear();
+  
+    return `${day}/${month}/${year}`;
+  };
+
+  const alunoInfo = {
+    nome: student?.name,
+    matricula: student?.registration,
+    contato: formatPhone(student?.phone),
+    Anivesário: formatBirth(student?.birth_date),
+    cpf: student?.cpf,
+    email: student?.email,
+    apelido: student?.nickname,
+    faixa: belts[student?.belt],
+    cargo: role[student?.role],
+    genero: gender[student?.gender],
+  };
+
+  const calculateAge = (birthDate: string | Date) => {
+    if (!birthDate) return 0;
+  
+    const today = new Date();
+    const birth = new Date(birthDate);
+  
+    let age = today.getFullYear() - birth.getFullYear();
+  
+    const monthDiff = today.getMonth() - birth.getMonth();
+  
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+  
+    return age;
+  };
 
   return (
     <div className="min-h-screen bg-[#011023]">
@@ -54,7 +99,7 @@ export function ProfileMobile() {
             transition={{ delay: 0.1 }}
             className="font-bold text-[28px]"
           >
-            Laura Matos
+            {student.name}
           </motion.p>
           <motion.p
             initial={{ y: 10, opacity: 0 }}
@@ -62,7 +107,7 @@ export function ProfileMobile() {
             transition={{ delay: 0.2 }}
             className="font-medium text-[24px]"
           >
-            Faixa azul
+            {belts[student.belt]}
           </motion.p>
           <motion.p
             initial={{ y: 10, opacity: 0 }}
@@ -70,7 +115,7 @@ export function ProfileMobile() {
             transition={{ delay: 0.3 }}
             className="font-thin text-[20px]"
           >
-            16 anos
+            {calculateAge(student.birth_date)} anos
           </motion.p>
           <motion.p
             initial={{ y: 10, opacity: 0 }}
@@ -78,7 +123,7 @@ export function ProfileMobile() {
             transition={{ delay: 0.4 }}
             className="font-regular text-[16px]"
           >
-            Grau 1
+            {student.grade}° grau
           </motion.p>
         </div>
       </motion.div>
@@ -93,7 +138,7 @@ export function ProfileMobile() {
         >
           <div className="flex flex-row items-center justify-start">
             <p className="px-2 text-[16px]">Frequência</p>
-            <div className="flex justify-center items-center bg-[#011023] py-1 px-2 rounded-full text-[8px]">
+            <div className="text-[#011023] ftext-bold flex justify-center items-center bg-white py-1 px-2 rounded-full text-[10px]">
               Graduar
             </div>
           </div>

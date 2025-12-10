@@ -9,6 +9,7 @@ import { ModalAdicionarAluno } from "@/screens/student/screens/add_student/pages
 import { useStudentForm } from "./add_student/hooks/studentProps";
 import { useStudent } from "@/context/studentContext";
 import type { Student } from "../types/type";
+import { belts } from "../types/belt";
 
 export const StudentList = () => {
   const navigate = useNavigate();
@@ -142,9 +143,9 @@ export const StudentList = () => {
               />
               <div className="flex flex-col">
                 <h3 className="text-[20px] font-semibold">{student.name}</h3>
-                <p className="text-[16px] text-white/60">{student.belt}</p>
+                <p className="text-[16px] text-white/60">{belts[student.belt]}</p>
                 <p className="text-[12px] text-white/60">
-                  {calculateAge(student.birth_date)} | {student.frequency}
+                  {calculateAge(student.birth_date)} anos | {student.frequency || 0} frequência
                 </p>
               </div>
             </div>
@@ -152,7 +153,7 @@ export const StudentList = () => {
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.8 }}
               className="pr-5 flex items-center justify-center text-white rounded-full"
-              onClick={() => navigate("/profileMobile")}
+              onClick={() => navigate("/profileMobile", { state: { student } })}
             >
               <FaEye size={25} />
             </motion.button>
