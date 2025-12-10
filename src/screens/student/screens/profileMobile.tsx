@@ -100,7 +100,7 @@ export function ProfileMobile() {
       >
         <img
           className="h-34 w-34 cover rounded-4xl"
-          src="https://i.pinimg.com/736x/27/ca/57/27ca572a2787b088c8e148c9b4f73e84.jpg"
+          src={student.image_student_url ?? "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"}
           alt="no tenemos"
         />
         <div className="flex flex-col text-center">
