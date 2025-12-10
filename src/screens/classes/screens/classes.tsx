@@ -7,15 +7,15 @@ import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { api } from "@/context/authContext";
+// import { api } from "@/context/authContext";
 
-type FormDataType = {
-  name: string,
-  image_class_url?: string
-  teacher_id: number,
-  local: string,
-  file_image: File | null
-}
+// type FormDataType = {
+//   name: string,
+//   image_class_url?: string
+//   teacher_id: number,
+//   local: string,
+//   file_image: File | null
+// }
 
 
 export function ClassesDesktop() {
@@ -24,26 +24,26 @@ export function ClassesDesktop() {
   const navigate = useNavigate();
 
   
-  const [formData, setFormData] = useState<FormDataType>({
-    name: "",
-    image_class_url: "",
-    teacher_id: 0,
-    local: "",
-    file_image: null,
-  });
+  // const [formData, setFormData] = useState<FormDataType>({
+  //   name: "",
+  //   image_class_url: "",
+  //   teacher_id: 0,
+  //   local: "",
+  //   file_image: null,
+  // });
 
-  const handleCreate = async () => {
-    const data = new FormData();
+  // const handleCreate = async () => {
+  //   const data = new FormData();
   
-    // monta multipart de verdade
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        data.append(key, value as any);
-      }
-    });
+  //   // monta multipart de verdade
+  //   Object.entries(formData).forEach(([key, value]) => {
+  //     if (value !== null && value !== undefined) {
+  //       data.append(key, value as any);
+  //     }
+  //   });
   
-    await api.post(`/class/create`, data);
-  };
+  //   await api.post(`/class/create`, data);
+  // };
   
   // FECHAR AO CLICAR FORA
   useEffect(() => {
