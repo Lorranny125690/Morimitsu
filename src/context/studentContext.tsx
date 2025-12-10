@@ -23,6 +23,15 @@ interface studentProps {
   onGraduate: (id: number) => Promise<ApiResponse>
 }
 
+function denyIfTeacher(): ApiResponse {
+  return {
+    error: true,
+    status: 403,
+    msg: "Professores não têm permissão para realizar esta ação.",
+  };
+}
+
+
 interface StudentProviderProps {
   children: ReactNode;
 }
@@ -66,6 +75,9 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
 // DELETE — deletar aluno
 const deleteStudent = async (id: number): Promise<ApiResponse> => {
   try {
+    if (localStorage.getItem("role") === "teacher") {
+      return denyIfTeacher();
+    }
     const result = await api.delete(`/student/${id}`);
 
     return {
@@ -91,6 +103,9 @@ const deleteStudent = async (id: number): Promise<ApiResponse> => {
 // PUT — atualizar aluno
 const putStudent = async (id: number): Promise<ApiResponse> => {
   try {
+    if (localStorage.getItem("role") === "teacher") {
+      return denyIfTeacher();
+    }
     const result = await api.put(`/student/${id}`);
 
     return {
@@ -145,6 +160,9 @@ const getStudent = async (): Promise<ApiResponse> => {
 
 const graduateStudent = async(id: number) => {
   try{
+    if (localStorage.getItem("role") === "teacher") {
+      return denyIfTeacher();
+    }
     const token = localStorage.getItem("token")
     const res = await api.patch(`/student/graduate/${id}`, {
       headers: {

@@ -57,7 +57,7 @@ const sortAlphabetically = () => {
 
   const confirmDelete = async () => {
     if (!studentToDelete) return;
-
+          
     const res = await onDeleteStudent(studentToDelete);
 
     if (!res.error) {
