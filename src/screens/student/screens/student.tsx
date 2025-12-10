@@ -216,7 +216,7 @@ export function StudentDesktop() {
                 <th className="py-3 px-4 w-16 text-center">Grau</th>
                 <th className="py-3 px-4 w-28 text-center">Frequência</th>
                 <th className="py-3 px-4 w-24 text-center">Status</th>
-                <th className="py-3 px-4 w-28 text-center">Operação</th>
+                {role !== "TEACHER" && <th className="py-3 px-4 w-28 text-center">Operação</th>}
                 <th className="py-3 px-4 w-24 text-center">Conferir</th>
               </tr>
             </thead>
@@ -264,17 +264,17 @@ export function StudentDesktop() {
                     {s.status}
                   </td>
                   <td className="py-3 px-4 text-center">
-                    <div className="flex items-center justify-center gap-3">
+                    {role !== "TEACHER" && <div className="flex items-center justify-center gap-3">
                       <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
-                  {role !== "TEACHER" && <FaTrash
-                    className="cursor-pointer hover:text-red-500 transition"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setStudentToDelete(s.id);
-                      setConfirmDeleteOpen(true);
-                    }}
-                  />}
-                  </div>
+                      <FaTrash
+                      className="cursor-pointer hover:text-red-500 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setStudentToDelete(s.id);
+                        setConfirmDeleteOpen(true);
+                      }}
+                    />
+                  </div>}
                   </td>
                   <td className="py-3 px-4 text-center">
                     <motion.button
