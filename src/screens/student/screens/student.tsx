@@ -136,7 +136,7 @@ const sortAlphabetically = () => {
 
   const toggleFilter = (key: FilterKey) => {
     setFilters(prev => ({ ...prev, [key]: !prev[key] }));
-  };  
+  };
   
   const applyFilters = () => {
     let filtered = [...students]; // use a lista bruta vinda do back

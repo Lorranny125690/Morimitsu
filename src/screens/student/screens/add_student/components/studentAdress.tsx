@@ -30,7 +30,7 @@ export function StudentAdress({ formData, handleChange, handleSubmit, goBack, go
 
   const onFinish = async () => {
     console.log("ENVIANDO PARA API:", formData);
-    await handleSubmit(); // está vindo do StudentScreen — certo!
+    await handleSubmit();
     goNext();
   };
 
