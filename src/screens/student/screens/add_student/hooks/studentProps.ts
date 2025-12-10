@@ -1,7 +1,7 @@
 // src/hooks/useStudentForm.ts
 import { useEffect, useState } from "react";
 import { useStudent } from "@/context/studentContext";
-import { computeAgeFromString, StudentStepDataSchema, formatZodErrors, StudentStepAddressSchema, StudentFullSchema } from "../validations";
+import { computeAgeFromString, StudentStepDataSchema, formatZodErrors, StudentStepAddressSchema, StudentFullSchema } from "../../validations/validations";
 
 export interface FormDataType {
   name: string;
