@@ -4,6 +4,7 @@ import { AiOutlineTeam } from "react-icons/ai";
 import type { Student } from "../types/type";
 import { belts } from "../types/belt";
 import { role, gender } from "../types/role";
+import { useStudent } from "@/context/studentContext";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -12,6 +13,7 @@ interface StudentProfileProps {
 
 export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => {
   const firstName = student.name.split(" ")[0];
+  const { onGraduate } = useStudent();
 
   const formatPhone = (phone: string) => {
     const digits = phone.replace(/\D/g, "");
@@ -53,6 +55,10 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   
     return `${day}/${month}/${year}`;
   };
+
+  const handleGraduate = async(id: number) => {
+    await onGraduate(id)
+  }
   
   return (
     <div
@@ -140,7 +146,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             <div className="flex flex-row gap-4 items-start justify-start">
               <h2 className="text-[16px] font-semibold text-white">Frequências</h2>
 
-              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
+              <button onClick={() => handleGraduate(student.id)} className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
                 Graduar
               </button>
             </div>

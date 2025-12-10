@@ -20,6 +20,7 @@ interface studentProps {
   onDeleteStudent: (id: number) => Promise<ApiResponse>;
   onPutStudent: (id: number) => Promise<ApiResponse>;
   onGetStudent: () => Promise<ApiResponse>;
+  onGraduate: (id: number) => Promise<ApiResponse>
 }
 
 interface StudentProviderProps {
@@ -142,12 +143,43 @@ const getStudent = async (): Promise<ApiResponse> => {
   }
 };
 
+const graduateStudent = async(id: number) => {
+  try{
+    const token = localStorage.getItem("token")
+    const res = await api.patch(`/student/graduate/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }},
+    )
+
+    return {
+      error: false,
+      msg: res.data?.message || "Estudantes encontrados!",
+      data: res.data,
+    };
+  } 
+  catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    let msg = "Erro ao buscar alunos.";
+
+    if (status === 400) msg = data?.message || "Requisição inválida.";
+    else if (status === 404) msg = data?.message || "Nenhum aluno encontrado.";
+    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) msg = "Erro interno no servidor.";
+
+    return { error: true, status, msg };
+  }
+}
+
 export const StudentProvider = ({ children }: StudentProviderProps) => {
   const value: studentProps = {
     onRegisterStudent: registerStudent,
     onDeleteStudent: deleteStudent,
     onPutStudent: putStudent,
     onGetStudent: getStudent,
+    onGraduate:graduateStudent,
   };
 
   return (
