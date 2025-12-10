@@ -1,6 +1,7 @@
 // src/hooks/useStudentForm.ts
 import { useEffect, useState } from "react";
 import { useStudent } from "@/context/studentContext";
+import { computeAgeFromString, StudentStepDataSchema, formatZodErrors, StudentStepAddressSchema, StudentFullSchema } from "../validations";
 
 export interface FormDataType {
   name: string;
@@ -25,6 +26,7 @@ export interface FormDataType {
   file_image: File | null; // FILE REAL
 }
 
+// ------------------ HOOK ------------------
 export function useStudentForm() {
   const { onRegisterStudent } = useStudent();
 
@@ -55,6 +57,8 @@ export function useStudentForm() {
     file_image: null,
   });
 
+  const [zodFieldErrors, setZodFieldErrors] = useState<Record<string, string>>({}); // para UI por-campo
+
   // ----------------------------------------------------------
   // HANDLE INPUT CHANGE + FILE HANDLER
   // ----------------------------------------------------------
@@ -68,7 +72,7 @@ export function useStudentForm() {
       const file = files[0];
       const preview = URL.createObjectURL(file);
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         image_student_url: preview, // preview pra UI
         file_image: file, // o arquivo REAL
@@ -78,48 +82,71 @@ export function useStudentForm() {
     }
 
     // --- Campos normais ---
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-    const validateStepData = (data: FormDataType): string | null => {
-    if (!data.name) return "O nome é obrigatório";
-    if (!data.phone) return "O telefone é obrigatório";
-    if (data.phone.length < 11 || data.phone.length > 12) return "O número deve conter 9 + DDD dígitos"
-    if (!data.birth_date) return "A data de nascimento é obrigatória";
+  // ----------------------------------------------------------
+  // VALIDATION HELPERS (usando zod)
+  // ----------------------------------------------------------
+  const validateStepData = (data: FormDataType): string | null => {
+    // recompute idade from birth_date to ensure zod sees correct number
+    const computedAge = computeAgeFromString(data.birth_date);
+    const toValidate = { ...data, idade: computedAge };
 
-    if (data.idade < 3 || data.idade > 120)
-      return "Idade inválida";
+    const parsed = StudentStepDataSchema.safeParse(toValidate);
+    if (parsed.success) {
+      setZodFieldErrors({});
+      return null;
+    }
 
-    if (!data.current_frequency) return "A frequência atual é obrigatória";
-    if (!data.belt) return "A faixa é obrigatória";
-    if (!data.grade) return "A série escolar é obrigatória";
-
-    return null;
+    const formatted = formatZodErrors(parsed.error);
+    setZodFieldErrors(formatted.byField);
+    return formatted.message;
   };
 
   const validateStepAddress = (data: FormDataType): string | null => {
-    if (!data.city) return "Cidade é obrigatória";
-    if (!data.street) return "Rua é obrigatória";
-    if (!data.district) return "Bairro é obrigatório";
-    if (!data.number) return "Número é obrigatório";
-    if (data.guardian_phone.length < 11 || data.guardian_phone.length > 12) return "O número deve conter 9 + DDD dígitos"
+    const parsed = StudentStepAddressSchema.safeParse({
+      city: data.city,
+      street: data.street,
+      district: data.district,
+      number: data.number,
+      guardian_phone: data.guardian_phone,
+    });
 
-    return null;
+    if (parsed.success) {
+      setZodFieldErrors({});
+      return null;
+    }
+
+    const formatted = formatZodErrors(parsed.error);
+    setZodFieldErrors(formatted.byField);
+    return formatted.message;
   };
 
+  // ----------------------------------------------------------
+  // SUBMIT (usa StudentFullSchema)
+  // ----------------------------------------------------------
   const handleSubmit = async () => {
-    const error = validateForm(formData);
+    // antes de enviar, atualiza idade automaticamente
+    const idadeAtual = computeAgeFromString(formData.birth_date);
+    const toValidate = { ...formData, idade: idadeAtual };
 
-    if (error) {
-      setModalMsg("Preencha todos os campos obrigatórios");
+    // validação completa com zod
+    const parsed = StudentFullSchema.safeParse(toValidate);
+
+    if (!parsed.success) {
+      const formatted = formatZodErrors(parsed.error);
+      setModalMsg(formatted.message || "Existem erros no formulário");
       setModalType("error");
       setModalVisible(true);
+      setZodFieldErrors(formatted.byField);
       return;
     }
 
+    // tudo ok => monta FormData para envio ao backend
     const data = new FormData();
 
     // Campos de texto
@@ -140,56 +167,74 @@ export function useStudentForm() {
       complement: formData.complement,
       guardian_phone: formData.guardian_phone,
       enrollment: formData.enrollment,
-      idade: String(formData.idade),
+      idade: String(idadeAtual),
     }).forEach(([key, val]) => {
       data.append(key, val || "");
     });
 
-    // Campo do arquivo — nome EXATO do backend
     if (formData.file_image) {
       data.append("image_student_url", formData.file_image);
     }
 
-    console.log("ENVIANDO FILE:", formData.file_image);
-
+    // Chamada real
     const res = await onRegisterStudent(data);
 
-    // Erro:
-    if (res.error) {
-      setModalMsg(res.msg || "Erro ao cadastrar aluno");
-      setModalType("error");
-      setModalVisible(true);
-      return;
+    console.log("RESPOSTA DO BACK:", res);
+
+    // --------------------------
+    // 🔥 SEM ADIVINHAR NADA:
+    // Mostra EXACTAMENTE a message do back
+    // --------------------------
+    const backendMessage = res?.data?.message || "O servidor retornou um erro desconhecido.";
+
+    switch (res.status) {
+      case 200:
+        setModalMsg(backendMessage);
+        setModalType("success");
+        break;
+
+      case 400:
+      case 401:
+      case 409:
+      case 422:
+        setModalMsg(backendMessage);
+        setModalType("error");
+        break;
+
+      default:
+        setModalMsg(backendMessage);
+        setModalType("error");
+        break;
     }
 
-    // Sucesso:
-    setModalMsg("Aluno cadastrado com sucesso!");
-    setModalType("success");
     setModalVisible(true);
 
-    // RESET
-    setFormData({
-      name: "",
-      phone: "",
-      image_student_url: "",
-      email: "",
-      cpf: "",
-      gender: "",
-      birth_date: "",
-      current_frequency: "",
-      belt: "",
-      grade: "",
-      city: "",
-      street: "",
-      district: "",
-      number: "",
-      complement: "",
-      guardian_phone: "",
-      enrollment: "",
-      idade: 0,
-      social_name: "",
-      file_image: null,
-    });
+    // Resetar apenas no 200
+    if (res.status === 200) {
+      setFormData({
+        name: "",
+        phone: "",
+        image_student_url: "",
+        email: "",
+        cpf: "",
+        gender: "",
+        birth_date: "",
+        current_frequency: "",
+        belt: "",
+        grade: "",
+        city: "",
+        street: "",
+        district: "",
+        number: "",
+        complement: "",
+        guardian_phone: "",
+        enrollment: "",
+        idade: 0,
+        social_name: "",
+        file_image: null,
+      });
+      setZodFieldErrors({});
+    }
   };
 
   // ----------------------------------------------------------
@@ -206,38 +251,12 @@ export function useStudentForm() {
   };
 
   useEffect(() => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       idade: calculateAge(prev.birth_date),
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.birth_date]);
-
-  const validateForm = (data: FormDataType): string | null => {
-    if (!data.name) return "O nome é obrigatório";
-    if (data.name.length < 3) return "O nome deve ter no mínimo 3 caracteres";
-
-    if (!data.phone) return "O telefone é obrigatório";
-    if (!/^\d{10,11}$/.test(data.phone)) return "Telefone inválido (somente números, 10-11 dígitos)";
-
-    if (!data.birth_date) return "A data de nascimento é obrigatória";
-
-    // idade automática
-    if (data.idade < 3 || data.idade > 120) return "Idade inválida";
-
-    if (!data.belt) return "A graduação (faixa) é obrigatória";
-    if (!data.grade) return "O grau é obrigatório";
-
-    // valida email somente se informado
-    if (data.email && !/^\S+@\S+\.\S+$/.test(data.email)) {
-      return "Email inválido";
-    }
-
-    if (data.cpf && !/^\d{11}$/.test(data.cpf)) {
-      return "CPF inválido (somente números, 11 dígitos)";
-    }
-
-    return null; // tudo OK!
-  };
 
   // ----------------------------------------------------------
   return {
@@ -248,11 +267,16 @@ export function useStudentForm() {
     modalMsg,
     modalType,
     setModalVisible,
-    setModalType, 
+    setModalType,
     setModalMsg,
 
-   // ADD:
+    // ADD:
     validateStepData,
-    validateStepAddress
+    validateStepAddress,
+
+    // expose raw zod field errors so UI can show under inputs
+    zodFieldErrors,
+    // expose helper to format any ZodError if you prefer to handle errors elsewhere
+    formatZodErrors,
   };
 }

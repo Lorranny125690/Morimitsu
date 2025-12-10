@@ -10,7 +10,7 @@ const api = axios.create({
 
 interface ApiResponse {
   error: boolean;
-  msg?: string;
+  message?: string;
   status?: number;
   data?: any;
 }
@@ -28,7 +28,7 @@ function denyIfTeacher(): ApiResponse {
   return {
     error: true,
     status: 403,
-    msg: "Professores não têm permissão para realizar esta ação.",
+    message: "Professores não têm permissão para realizar esta ação.",
   };
 }
 
@@ -61,21 +61,21 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
 
     return {
       error: false,
-      msg: result.data?.message || "Aluno cadastrado com sucesso!",
+      message: result.data?.message || "Aluno cadastrado com sucesso!",
       data: result.data,
     };
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
 
-    let msg = "Erro ao cadastrar aluno.";
+    let message = "Erro ao cadastrar aluno.";
 
-    if (status === 400) msg = data?.message || "Dados faltando inválida.";
-    else if (status === 409) msg = data?.message || "Aluno já existe.";
-    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) msg = "Erro interno no servidor.";
+    if (status === 400) message = data?.message || "Dados faltando inválida.";
+    else if (status === 409) message = data?.message || "Aluno já existe.";
+    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) message = "Erro interno no servidor.";
 
-    return { error: true, status, msg };
+    return { error: true, status, message };
   }
 };
 
@@ -94,21 +94,21 @@ const deleteStudent = async (id: number): Promise<ApiResponse> => {
 
     return {
       error: false,
-      msg: result.data?.message || "Aluno deletado com sucesso!",
+      message: result.data?.message || "Aluno deletado com sucesso!",
       data: result.data,
     };
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
 
-    let msg = "Erro ao deletar aluno.";
+    let message = "Erro ao deletar aluno.";
 
-    if (status === 400) msg = data?.message || "ID inválido.";
-    else if (status === 404) msg = data?.message || "Aluno não encontrado.";
-    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) msg = "Erro interno no servidor.";
+    if (status === 400) message = data?.message || "ID inválido.";
+    else if (status === 404) message = data?.message || "Aluno não encontrado.";
+    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) message = "Erro interno no servidor.";
 
-    return { error: true, status, msg };
+    return { error: true, status, message };
   }
 };
 
@@ -126,21 +126,21 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
 
     return {
       error: false,
-      msg: result.data?.message || "Aluno atualizado com sucesso!",
+      message: result.data?.message || "Aluno atualizado com sucesso!",
       data: result.data,
     };
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
 
-    let msg = "Erro ao atualizar aluno.";
+    let message = "Erro ao atualizar aluno.";
 
-    if (status === 400) msg = data?.message || "Requisição inválida.";
-    else if (status === 404) msg = data?.message || "Aluno não encontrado.";
-    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) msg = "Erro interno no servidor.";
+    if (status === 400) message = data?.message || "Requisição inválida.";
+    else if (status === 404) message = data?.message || "Aluno não encontrado.";
+    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) message = "Erro interno no servidor.";
 
-    return { error: true, status, msg };
+    return { error: true, status, message };
   }
 };
 
@@ -156,21 +156,21 @@ const getStudent = async (): Promise<ApiResponse> => {
 
     return {
       error: false,
-      msg: res.data?.message || "Estudantes encontrados!",
+      message: res.data?.message || "Estudantes encontrados!",
       data: res.data,
     };
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
 
-    let msg = "Erro ao buscar alunos.";
+    let message = "Erro ao buscar alunos.";
 
-    if (status === 400) msg = data?.message || "Requisição inválida.";
-    else if (status === 404) msg = data?.message || "Nenhum aluno encontrado.";
-    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) msg = "Erro interno no servidor.";
+    if (status === 400) message = data?.message || "Requisição inválida.";
+    else if (status === 404) message = data?.message || "Nenhum aluno encontrado.";
+    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) message = "Erro interno no servidor.";
 
-    return { error: true, status, msg };
+    return { error: true, status, message };
   }
 };
 
@@ -184,21 +184,21 @@ const getStudentBirthDay = async (): Promise<ApiResponse> => {
 
     return {
       error: false,
-      msg: res.data?.message || "Estudantes encontrados!",
+      message: res.data?.message || "Estudantes encontrados!",
       data: res.data,
     };
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
 
-    let msg = "Erro ao buscar alunos.";
+    let message = "Erro ao buscar alunos.";
 
-    if (status === 400) msg = data?.message || "Requisição inválida.";
-    else if (status === 404) msg = data?.message || "Nenhum aluno encontrado.";
-    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) msg = "Erro interno no servidor.";
+    if (status === 400) message = data?.message || "Requisição inválida.";
+    else if (status === 404) message = data?.message || "Nenhum aluno encontrado.";
+    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) message = "Erro interno no servidor.";
 
-    return { error: true, status, msg };
+    return { error: true, status, message };
   }
 };
 
@@ -215,7 +215,7 @@ const graduateStudent = async(id: number) => {
 
     return {
       error: false,
-      msg: res.data?.message || "Estudantes encontrados!",
+      message: res.data?.message || "Estudantes encontrados!",
       data: res.data,
     };
   } 
@@ -223,14 +223,14 @@ const graduateStudent = async(id: number) => {
     const status = e.response?.status;
     const data = e.response?.data;
 
-    let msg = "Erro ao buscar alunos.";
+    let message = "Erro ao buscar alunos.";
 
-    if (status === 400) msg = data?.message || "Requisição inválida.";
-    else if (status === 404) msg = data?.message || "Nenhum aluno encontrado.";
-    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) msg = "Erro interno no servidor.";
+    if (status === 400) message = data?.message || "Requisição inválida.";
+    else if (status === 404) message = data?.message || "Nenhum aluno encontrado.";
+    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) message = "Erro interno no servidor.";
 
-    return { error: true, status, msg };
+    return { error: true, status, message };
   }
 }
 
