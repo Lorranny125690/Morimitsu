@@ -11,6 +11,16 @@ export function ProfileMobile() {
   const { state } = useLocation();
   const student = state?.student;
 
+  const studentName = (student: string) => {
+    const firstName = student.split(" ")[0];
+    var secondName = student.split(" ")[1];
+    if (secondName === "de" || secondName === "do" || secondName === "da") {
+      secondName = student.split(" ")[2];
+    }
+
+    return (`${firstName} ${secondName}`)
+  }
+
   const formatPhone = (phone: string) => {
     const digits = phone.replace(/\D/g, "");
   
@@ -99,7 +109,7 @@ export function ProfileMobile() {
             transition={{ delay: 0.1 }}
             className="font-bold text-[28px]"
           >
-            {student.name}
+            {studentName(student?.name)}
           </motion.p>
           <motion.p
             initial={{ y: 10, opacity: 0 }}
