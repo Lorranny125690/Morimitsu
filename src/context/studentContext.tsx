@@ -37,6 +37,8 @@ interface StudentProviderProps {
   children: ReactNode;
 }
 
+const token = localStorage.getItem("my-jwt")
+
 const StudentContext = createContext<studentProps | undefined>(undefined);
 
 export const useStudent = (): studentProps => {
@@ -49,7 +51,11 @@ export const useStudent = (): studentProps => {
 // POST — criar aluno
 const registerStudent = async (studentData: any): Promise<ApiResponse> => {
   try {
-    const result = await api.post("/student/register", studentData);
+    const result = await api.post("/student/register", studentData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const { id } = result.data;
     localStorage.setItem("id", id);
 
@@ -79,7 +85,12 @@ const deleteStudent = async (id: number): Promise<ApiResponse> => {
     if (localStorage.getItem("role") === "teacher") {
       return denyIfTeacher();
     }
-    const result = await api.delete(`/student/${id}`);
+
+    const result = await api.delete(`/student/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
 
     return {
       error: false,
@@ -107,7 +118,11 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
     if (localStorage.getItem("role") === "teacher") {
       return denyIfTeacher();
     }
-    const result = await api.put(`/student/${id}`);
+    const result = await api.put(`/student/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
 
     return {
       error: false,
@@ -131,8 +146,8 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
 
 // GET — listar/buscar alunos
 const getStudent = async (): Promise<ApiResponse> => {
+  console.log(token)
   try {
-    const token = localStorage.getItem("token");
     const res = await api.get(`/student`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -161,7 +176,6 @@ const getStudent = async (): Promise<ApiResponse> => {
 
 const getStudentBirthDay = async (): Promise<ApiResponse> => {
   try {
-    const token = localStorage.getItem("token");
     const res = await api.get(`/celebrants-birth-day`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -193,7 +207,6 @@ const graduateStudent = async(id: number) => {
     if (localStorage.getItem("role") === "teacher") {
       return denyIfTeacher();
     }
-    const token = localStorage.getItem("token")
     const res = await api.patch(`/student/graduate/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,

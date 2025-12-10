@@ -9,6 +9,7 @@ interface formData {
   guardian_phone: string;
   district: string;
   number: string;
+  social_name: string;
 }
 
 interface Props {
@@ -20,7 +21,6 @@ interface Props {
 }
 
 export function StudentAdress({ formData, handleChange, handleSubmit, goBack, goNext }: Props) {
-  
   const {
     modalVisible,
     modalMsg,
@@ -75,7 +75,16 @@ export function StudentAdress({ formData, handleChange, handleSubmit, goBack, go
             />
           </div>
 
-          <div />
+          <div>
+            <label className="block text-[10px] text-black">Apelido (nome social)</label>
+            <input
+              type="text"
+              name="social_name"
+              value={formData.social_name}
+              onChange={handleChange}
+              className="w-full h-6 text-[12px] border text-black border-gray-300 rounded-[2px] px-2 mt-[6px]"
+            />
+          </div>
 
           <div>
             <label className="block text-[10px] text-black">Rua</label>

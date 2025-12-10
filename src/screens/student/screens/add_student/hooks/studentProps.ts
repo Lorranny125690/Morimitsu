@@ -21,6 +21,7 @@ export interface FormDataType {
   guardian_phone: string;
   enrollment?: string;
   idade: number;
+  social_name: string;
   file_image: File | null; // FILE REAL
 }
 
@@ -50,6 +51,7 @@ export function useStudentForm() {
     guardian_phone: "",
     enrollment: "",
     idade: 0,
+    social_name: "",
     file_image: null,
   });
 
@@ -185,6 +187,7 @@ export function useStudentForm() {
       guardian_phone: "",
       enrollment: "",
       idade: 0,
+      social_name: "",
       file_image: null,
     });
   };
