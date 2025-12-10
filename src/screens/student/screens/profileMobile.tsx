@@ -13,9 +13,10 @@ export function ProfileMobile() {
 
   const studentName = (student: string) => {
     const firstName = student.split(" ")[0];
-    var secondName = student.split(" ")[1];
+    const secondName = student.split(" ")[1];
     if (secondName === "de" || secondName === "do" || secondName === "da") {
-      secondName = student.split(" ")[2];
+      const thirdName = student.split(" ")[2];
+      return (`${firstName} ${secondName} ${thirdName}`)
     }
 
     return (`${firstName} ${secondName}`)
