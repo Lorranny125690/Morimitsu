@@ -14,7 +14,7 @@ export type Student = {
   email: string;
   gender: string;
   image_student_url: string;
-  nickname: string;
+  social_name: string;
   role: string;
   classType: string
 };

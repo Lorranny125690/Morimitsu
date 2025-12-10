@@ -123,7 +123,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               />
 
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-12 font-bold text-white">{studentName(student.name)}</h1>
+                <h1 className="text-[50px] h-12 font-bold text-white">{studentName(student.name) || student.social_name}</h1>
                 <p className="text-[40px] font-medium text-white/60">{belts[student.belt]}</p>
                 <p className="text-[20px] text-white">{calculateAge(student.birth_date)} anos</p>
               </div>
@@ -206,7 +206,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           </div>
 
           <div className="space-y-2">
-            <p>Apelido: {student.nickname || "não tem"}</p>
+            <p>Apelido: {student.social_name || "não tem"}</p>
             <p>Gênero: {gender[student.gender]}</p>
           </div>
         </motion.div>
