@@ -4,41 +4,53 @@ import { FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Choice } from "../components/choose";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalAdicionarAluno } from "@/screens/student/screens/add_student/pages/add_mobile";
 import { useStudentForm } from "./add_student/hooks/studentProps";
-
-const students = [
-  {
-    id: 1,
-    name: "Manoel Gomes",
-    belt: "Faixa azul",
-    age: "16 anos",
-    presences: "15 presenças",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  },
-  {
-    id: 2,
-    name: "Manoel Gomes",
-    belt: "Faixa azul",
-    age: "16 anos",
-    presences: "15 presenças",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  },
-  {
-    id: 3,
-    name: "Manoel Gomes",
-    belt: "Faixa azul",
-    age: "16 anos",
-    presences: "15 presenças",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  }
-];
+import { useStudent } from "@/context/studentContext";
+import type { Student } from "../types/type";
 
 export const StudentList = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { formData, handleChange } = useStudentForm();
+  const { onGetStudent } = useStudent();
+  const [_loading, setLoading] = useState(true);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [_originalStudents, setOriginalStudents] = useState<Student[]>([]);
+
+  useEffect(() => {
+    const loadStudents = async () => {
+      setLoading(true);
+      const res = await onGetStudent();
+      if (!res.error) {
+        setStudents(res.data.students);
+        setOriginalStudents(res.data.students);
+      }
+      setLoading(false);
+    };
+    loadStudents();
+  }, [location.pathname]);
+
+  const calculateAge = (birthDate: string | Date) => {
+    if (!birthDate) return 0;
+  
+    const today = new Date();
+    const birth = new Date(birthDate);
+  
+    let age = today.getFullYear() - birth.getFullYear();
+  
+    const monthDiff = today.getMonth() - birth.getMonth();
+  
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+  
+    return age;
+  };
   
   return (
     <motion.div
@@ -122,7 +134,7 @@ export const StudentList = () => {
           >
             <div className="px-4 flex items-center gap-4">
               <motion.img
-                src={student.photo}
+                src={student.image_student_url ?? "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"}
                 alt={student.name}
                 className="w-15 h-15 rounded-full object-cover"
                 whileHover={{ rotate: 3 }}
@@ -132,7 +144,7 @@ export const StudentList = () => {
                 <h3 className="text-[20px] font-semibold">{student.name}</h3>
                 <p className="text-[16px] text-white/60">{student.belt}</p>
                 <p className="text-[12px] text-white/60">
-                  {student.age} | {student.presences}
+                  {calculateAge(student.birth_date)} | {student.frequency}
                 </p>
               </div>
             </div>

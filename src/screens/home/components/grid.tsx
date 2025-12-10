@@ -1,15 +1,61 @@
 import { motion } from "framer-motion";
-import { useRef } from "react";
-import { turmasRecentes, alunosGraduar, alunosAniversariando } from "./list";
+import { useEffect, useRef, useState } from "react";
+import { useStudent } from "@/context/studentContext";
+import type { Student } from "@/screens/student/types/type";
 
 interface ListaCarrosselProps {
   id?: string;
   titulo: string;
-  itens: { id: number; nome: string; imagem: string }[];
+  tipo: "turmas" | "graduar" | "aniversario";
 }
 
-function ScreenCard({ id, titulo, itens }: ListaCarrosselProps) {
+function ScreenCard({ id, titulo, tipo }: ListaCarrosselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { 
+    onGetSTudentBirthday,
+    onGetStudent,
+  } = useStudent();
+  
+  const [students, setStudents] = useState<Student[]>([]);
+  const [_loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+  
+      let list: Student[] = [];
+  
+      if (tipo === "aniversario") {
+        const res = await onGetSTudentBirthday();
+        list = res.data?.studentsBirth ?? [];
+      }
+  
+      if (tipo === "turmas") {
+        const res = await onGetStudent();
+        list = res.data?.recentClasses ?? [];
+      }
+  
+      if (tipo === "graduar") {
+        const res = await onGetStudent();
+        list = res.data?.students ?? [];
+      }
+  
+      // 🚨 fallback UNIFICADO
+      if (!list || list.length === 0) {
+        list = [{
+          id: 0,
+          name: "Sem alunos",
+          image_student_url:
+            "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg",
+        } as Student];
+      }
+  
+      setStudents(list);
+      setLoading(false);
+    }
+  
+    load();
+  }, [tipo]);   
 
   const scrollLeft = () => {
     scrollRef.current?.scrollBy({ left: -320, behavior: "smooth" });
@@ -45,9 +91,9 @@ function ScreenCard({ id, titulo, itens }: ListaCarrosselProps) {
           role="region"
           aria-label={`Carrossel de ${titulo}`}
         >
-          {itens.map((item, i) => (
+          {students.map((s, i) => (
             <motion.div
-              key={item.id}
+              key={s.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: i * 0.08 }}
@@ -58,14 +104,14 @@ function ScreenCard({ id, titulo, itens }: ListaCarrosselProps) {
             >
               <div className="relative">
                 <img
-                  src={item.imagem}
-                  alt={item.nome}
+                  src={s.image_student_url ?? "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"}
+                  alt={s.name}
                   className="w-full h-60 object-cover rounded-t-2xl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
               <div className="bg-white text-black text-center py-3 text-lg font-semibold">
-                {item.nome}
+                {s.name}
               </div>
             </motion.div>
           ))}
@@ -89,13 +135,26 @@ function ScreenCard({ id, titulo, itens }: ListaCarrosselProps) {
 }
 
 export const TurmasRecentes = () => (
-  <ScreenCard id="turmas" titulo="Turmas Recentes" itens={turmasRecentes} />
+  <ScreenCard
+    id="turmas"
+    titulo="Turmas Recentes"
+    tipo="turmas"
+  />
 );
 
 export const AlunosAptosGraduar = () => (
-  <ScreenCard id="graduacoes" titulo="Alunos Aptos a Graduar" itens={alunosGraduar} />
+  <ScreenCard
+    id="graduacoes"
+    titulo="Alunos Aptos a Graduar"
+    tipo="graduar"
+  />
 );
 
 export const AlunosAniversariando = () => (
-  <ScreenCard id="aniversariantes" titulo="Aniversariantes do Mês" itens={alunosAniversariando} />
+  <ScreenCard
+    id="aniversariantes"
+    titulo="Aniversariantes do Mês" 
+    tipo="aniversario"
+  />
 );
+

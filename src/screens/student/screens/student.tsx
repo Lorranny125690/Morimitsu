@@ -22,21 +22,21 @@ export function StudentDesktop() {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
   const location = useLocation();
-  const [originalStudents, setOriginalStudents] = useState<Student[]>([]); // cópia original
+  const [originalStudents, setOriginalStudents] = useState<Student[]>([]);
 
 // Ao carregar
-useEffect(() => {
-  const loadStudents = async () => {
-    setLoading(true);
-    const res = await onGetStudent();
-    if (!res.error) {
-      setStudents(res.data.students);
-      setOriginalStudents(res.data.students); // guarda a ordem original
-    }
-    setLoading(false);
-  };
-  loadStudents();
-}, [location.pathname]);
+  useEffect(() => {
+    const loadStudents = async () => {
+      setLoading(true);
+      const res = await onGetStudent();
+      if (!res.error) {
+        setStudents(res.data.students);
+        setOriginalStudents(res.data.students); // guarda a ordem original
+      }
+      setLoading(false);
+    };
+    loadStudents();
+  }, [location.pathname]);
 
 // Ordenar alfabeticamente
   const sortAlphabetically = () => {
