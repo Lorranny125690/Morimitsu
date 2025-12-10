@@ -5,6 +5,9 @@ import type { Student } from "../types/type";
 import { belts } from "../types/belt";
 import { role, gender } from "../types/role";
 import { useStudent } from "@/context/studentContext";
+import { useState } from "react";
+import { PasswordModal } from "../components/modal";
+import { api } from "@/context/authContext";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -26,6 +29,8 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   
     return `(${ddd}) ${nine} ${number1}-${number2}`;
   };
+
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
 
   const studentName = (student: string) => {
     const firstName = student.split(" ")[0];
@@ -71,6 +76,23 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   const handleGraduate = async(id: number) => {
     await onGraduate(id)
   }
+
+  const handlePromote = async (password: string) => {
+    const email = localStorage.getItem("email");
+    const userRole = localStorage.getItem("role");
+  
+    try {
+      await api.post(`/user/create`, {
+        email,
+        password,
+        userRole,
+      });
+      console.log("Usuário promovido!");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
   
   return (
     <div
@@ -99,7 +121,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             />
 
             {userRole !== "TEACHER" && (
-              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full">
+              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full" onClick={() => setOpenPasswordModal(true)}>
                 Promover a professor
               </button>
             )}
@@ -211,6 +233,16 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           </div>
         </motion.div>
       </motion.div>
+
+      <PasswordModal
+        open={openPasswordModal}
+        onClose={() => setOpenPasswordModal(false)}
+        onConfirm={(pass: string) => {
+          console.log("Senha digitada:", pass);
+          setOpenPasswordModal(false);
+          handlePromote(pass); // aqui você envia pro backend
+        }}
+      />
     </div>
   );
 };

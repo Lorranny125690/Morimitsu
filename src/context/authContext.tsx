@@ -81,6 +81,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem("role", user.role);
         localStorage.setItem("status", status);
         localStorage.setItem("id", id);
+        localStorage.setItem("email", user.email);
+        console.log("email", localStorage.getItem("email"))
 
         setAuthState({
           token,
@@ -111,8 +113,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const verify = async (email: string): Promise<ApiResponse> => {
     try {
       const result = await api.post(`/auth/request-reset`, { email });
-      // const { status } = result.data;
-      // localStorage.setItem("status", status);
 
       return {
         error: false,
