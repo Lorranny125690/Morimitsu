@@ -23,6 +23,7 @@ export function StudentDesktop() {
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
   const location = useLocation();
   const [originalStudents, setOriginalStudents] = useState<Student[]>([]);
+  const role = localStorage.getItem("role")
 
 // Ao carregar
   useEffect(() => {
@@ -265,14 +266,14 @@ export function StudentDesktop() {
                   <td className="py-3 px-4 text-center">
                     <div className="flex items-center justify-center gap-3">
                       <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
-                  <FaTrash
+                  {role !== "TEACHER" && <FaTrash
                     className="cursor-pointer hover:text-red-500 transition"
                     onClick={(e) => {
                       e.stopPropagation();
                       setStudentToDelete(s.id);
                       setConfirmDeleteOpen(true);
                     }}
-                  />
+                  />}
                   </div>
                   </td>
                   <td className="py-3 px-4 text-center">

@@ -44,7 +44,7 @@ export function ClassesDesktop() {
   
   //   await api.post(`/class/create`, data);
   // };
-  
+  const role = localStorage.getItem("role")
   // FECHAR AO CLICAR FORA
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -89,7 +89,7 @@ export function ClassesDesktop() {
               )}
             </div>
 
-            <a href="/add_classes">
+            {role !== "TEACHER" && <a href="/add_classes">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -97,7 +97,7 @@ export function ClassesDesktop() {
               >
                 Adicionar turma <IoMdAdd size={20} />
               </motion.button>
-            </a>
+            </a>}
 
           </div>
         </div>
@@ -115,10 +115,10 @@ export function ClassesDesktop() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
           {classesMock.map((classe, index) => (
             <motion.div key={index} whileHover={{ scale: 1.02 }}>
-              <div className="flex justify-end items-center gap-3 w-full mb-4">
+               {role !== "TEACHER" && <div className="flex justify-end items-center gap-3 w-full mb-4">
                 <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
                 <FaTrash className="cursor-pointer hover:text-red-500 transition" />
-              </div>
+              </div>}
 
               {/* Imagem */}
               <div className="bg-[#19262A] rounded-b-[6px]">
