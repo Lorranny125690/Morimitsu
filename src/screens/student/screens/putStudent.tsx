@@ -7,7 +7,6 @@ import bgImage from "../../../assets/image4.png";
 import { ModalMsg } from "@/components/modal";
 import { useStudentForm } from "./add_student/hooks/studentProps";
 import { StudentProfileCard } from "./add_student/components/card";
-import { StudentClass } from "./add_student/components/studentClass";
 import { StudentForm } from "./add_student/components/studentForm";
 import { useStudent } from "@/context/studentContext";
 
@@ -30,7 +29,25 @@ export function PutStudentScreen() {
   }, [studentData]);
   
   const handleSubmit = async (id: string) => {
-    const res = await onPutStudent(id, formData);
+    let payload: any = formData;
+  
+    // Se tiver imagem nova, cria FormData
+    if (formData.file_image) {
+      const form = new FormData();
+  
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "image_student_url") return; // preview, ignorar
+        if (key === "file_image") {
+          form.append("image_student_url", value); // arquivo real
+        } else {
+          form.append(key, value as any);
+        }
+      });
+  
+      payload = form;
+    }
+  
+    const res = await onPutStudent(id, payload);
   
     if (!res.error) {
       setModalMsg("Aluno atualizado com sucesso!");
@@ -38,6 +55,7 @@ export function PutStudentScreen() {
       setModalVisible(true);
     } else {
       setModalType("error");
+      setModalMsg(res.message || "Erro ao atualizar aluno");
       setModalVisible(true);
     }
   };  
@@ -100,15 +118,6 @@ export function PutStudentScreen() {
                 }
                 setCurrentStep("ADDRESS");
               }}
-            />
-          )}
-
-          {currentStep === "PUT" && (
-            <StudentClass
-              formData={formData}
-              handleChange={handleChange}
-              navigate={navigate}
-              goBack={() => setCurrentStep("ADDRESS")}
             />
           )}
 

@@ -63,29 +63,38 @@ export function useStudentForm() {
   // ----------------------------------------------------------
   const handleChange = (e: any) => {
     if (!e?.target) return;
-
+  
     const { name, value, files } = e.target;
-
+  
     // --- Trata imagem ---
     if (files && files[0]) {
       const file = files[0];
       const preview = URL.createObjectURL(file);
-
+  
       setFormData((prev) => ({
         ...prev,
-        image_student_url: preview, // preview pra UI
-        file_image: file, // o arquivo REAL
+        image_student_url: preview,
+        file_image: file,
       }));
-
+  
       return;
     }
-
+  
+    // --- Campos que DEVEM ser number ---
+    const numericFields = ["grade", "current_frequency"]; 
+  
+    let finalValue = value;
+  
+    if (numericFields.includes(name)) {
+      finalValue = value === "" ? "" : Number(value);
+    }
+  
     // --- Campos normais ---
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: finalValue,
     }));
-  };
+  };  
 
   // ----------------------------------------------------------
   // VALIDATION HELPERS (usando zod)

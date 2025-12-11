@@ -119,17 +119,18 @@ const putStudent = async (id: string, studentData: any): Promise<ApiResponse> =>
       return denyIfTeacher();
     }
 
-    const formData = new FormData();
-    Object.keys(studentData).forEach((key) => {
-      formData.append(key, studentData[key]);
-    });
+    // Se vier FormData do componente, NÃO sobrescreva!
+    let payload = studentData;
+    let headers: any = {
+      Authorization: `Bearer ${token}`,
+    };
 
-    const result = await api.put(`/student/update/${id}`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    // Se tiver arquivo, studentData será FormData
+    if (studentData instanceof FormData) {
+      headers["Content-Type"] = "multipart/form-data";
+    }
+
+    const result = await api.put(`/student/update/${id}`, payload, { headers });
 
     return {
       error: false,
@@ -140,12 +141,7 @@ const putStudent = async (id: string, studentData: any): Promise<ApiResponse> =>
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
-
-    let message = "Erro ao atualizar aluno.";
-
-    if (status === 400) message = data?.message || "Requisição inválida.";
-    else if (status === 404) message = data?.message || "Aluno não encontrado.";
-    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    const message = data?.message || "Erro ao atualizar aluno.";
 
     return { error: true, status, message };
   }
