@@ -50,15 +50,14 @@ export const StudentBaseSchema = z.object({
     }, "Data de nascimento inválida"),
 
   current_frequency: z
-    .string()
-    .min(1, "A frequência atual é obrigatória"),
+    .number().optional().nullable(),
 
   belt: z
     .string()
     .min(1, "A graduação (faixa) é obrigatória"),
 
   grade: z
-    .string()
+    .number()
     .min(1, "O grau é obrigatório"),
 
   city: z.string().optional().nullable(),

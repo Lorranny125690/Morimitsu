@@ -7,7 +7,7 @@ import { StudentProfile } from "./profile";
 import { FiltroDropdown } from "../components/dropdown";
 import type { Student } from "../types/type";
 import { useStudent } from "@/context/studentContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ModalMsg } from "@/components/modal";
 
 export function StudentDesktop() {
@@ -138,6 +138,8 @@ export function StudentDesktop() {
   const toggleFilter = (key: FilterKey) => {
     setFilters(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const navigate = useNavigate();
   
   const applyFilters = () => {
     let filtered = [...students]; // use a lista bruta vinda do back
@@ -265,7 +267,11 @@ export function StudentDesktop() {
                   </td>
                   <td className="py-3 px-4 text-center">
                     {role !== "TEACHER" && <div className="flex items-center justify-center gap-3">
-                      <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
+                      <FaEdit  onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/edit_student/${s.id}`, { state: s });
+                      }}
+                      className="cursor-pointer hover:text-blue-500 transition" />
                       <FaTrash
                       className="cursor-pointer hover:text-red-500 transition"
                       onClick={(e) => {

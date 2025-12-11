@@ -11,9 +11,9 @@ export interface FormDataType {
   cpf: string;
   gender: string;
   birth_date: string;
-  current_frequency: string;
+  current_frequency: number;
   belt: string;
-  grade: string;
+  grade: number;
   city: string;
   street: string;
   district: string;
@@ -29,7 +29,6 @@ export interface FormDataType {
 // ------------------ HOOK ------------------
 export function useStudentForm() {
   const { onRegisterStudent } = useStudent();
-
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
@@ -42,9 +41,9 @@ export function useStudentForm() {
     cpf: "",
     gender: "",
     birth_date: "",
-    current_frequency: "",
+    current_frequency: 0,
     belt: "",
-    grade: "",
+    grade: 0,
     city: "",
     street: "",
     district: "",
@@ -169,7 +168,7 @@ export function useStudentForm() {
       enrollment: formData.enrollment,
       idade: String(idadeAtual),
     }).forEach(([key, val]) => {
-      data.append(key, val || "");
+      data.append(key, String(val ?? ""));
     });
 
     if (formData.file_image) {
@@ -219,9 +218,9 @@ export function useStudentForm() {
         cpf: "",
         gender: "",
         birth_date: "",
-        current_frequency: "",
+        current_frequency: 0,
         belt: "",
-        grade: "",
+        grade: 0,
         city: "",
         street: "",
         district: "",
@@ -269,6 +268,7 @@ export function useStudentForm() {
     setModalVisible,
     setModalType,
     setModalMsg,
+    setFormData,
 
     // ADD:
     validateStepData,

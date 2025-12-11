@@ -18,7 +18,7 @@ interface ApiResponse {
 interface studentProps {
   onRegisterStudent: (data: any) => Promise<ApiResponse>;
   onDeleteStudent: (id: number) => Promise<ApiResponse>;
-  onPutStudent: (id: number) => Promise<ApiResponse>;
+  onPutStudent: (id: string, StudentData: any) => Promise<ApiResponse>;
   onGetStudent: () => Promise<ApiResponse>;
   onGraduate: (id: number) => Promise<ApiResponse>
   onGetSTudentBirthday: () => Promise<ApiResponse>
@@ -113,15 +113,22 @@ const deleteStudent = async (id: number): Promise<ApiResponse> => {
 };
 
 // PUT — atualizar aluno
-const putStudent = async (id: number): Promise<ApiResponse> => {
+const putStudent = async (id: string, studentData: any): Promise<ApiResponse> => {
   try {
     if (localStorage.getItem("role") === "teacher") {
       return denyIfTeacher();
     }
-    const result = await api.put(`/student/${id}`, {
+
+    const formData = new FormData();
+    Object.keys(studentData).forEach((key) => {
+      formData.append(key, studentData[key]);
+    });
+
+    const result = await api.put(`/student/update/${id}`, formData, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     return {
@@ -129,6 +136,7 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
       message: result.data?.message || "Aluno atualizado com sucesso!",
       data: result.data,
     };
+
   } catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
@@ -138,7 +146,6 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
     if (status === 400) message = data?.message || "Requisição inválida.";
     else if (status === 404) message = data?.message || "Aluno não encontrado.";
     else if (status === 422) message = data?.message || "Erro de validação (Zod).";
-    else if (status >= 500) message = "Erro interno no servidor.";
 
     return { error: true, status, message };
   }

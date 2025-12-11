@@ -6,7 +6,7 @@ interface Props {
   photo: string;
   nome: string;
   faixa: string;
-  frequencia: string;
+  frequencia: number;
   idade: number;
   cpf: string;
   onChangeImage: (e: React.ChangeEvent<HTMLInputElement>) => void;

@@ -1,4 +1,5 @@
 
+import { PutStudentScreen } from "@/screens/student/screens/putStudent";
 import {
   Routes,
   Route,
@@ -113,6 +114,7 @@ export function AppContent() {
             <Route path="/profileMobile" element={<ProfileMobile/>} />
             <Route path="/frequency" element={<Frequency/>} />
             <Route path="/classStudent" element={<StudentClassList/>}/>
+            <Route path="/edit_student/:id" element={<PutStudentScreen />} />
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}
