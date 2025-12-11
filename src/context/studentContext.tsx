@@ -61,6 +61,7 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
 
     return {
       error: false,
+      status: result.data?.status,
       message: result.data?.message || "Aluno cadastrado com sucesso!",
       data: result.data,
     };

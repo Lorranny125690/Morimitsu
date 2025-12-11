@@ -189,18 +189,20 @@ export function useStudentForm() {
 
     console.log("RESPOSTA DO BACK:", res);
 
-    // --------------------------
-    // 🔥 SEM ADIVINHAR NADA:
-    // Mostra EXACTAMENTE a message do back
-    // --------------------------
-    const backendMessage = res?.data?.message || "O servidor retornou um erro desconhecido.";
+    const backendMessage =
+    res?.message ||
+    res?.data?.message ||
+    "O servidor retornou um erro desconhecido.";
 
+    if (!res.error && (res.status === 201 || res.data?.status === 201)) {
+      setModalMsg("🎉 Aluno cadastrado com sucesso!");
+      setModalType("success");
+      setModalVisible(true);
+      return; // <---- ESSENCIAL
+    }
+    
+    // daqui pra baixo só erros
     switch (res.status) {
-      case 200:
-        setModalMsg(backendMessage);
-        setModalType("success");
-        break;
-
       case 400:
       case 401:
       case 409:
@@ -208,12 +210,14 @@ export function useStudentForm() {
         setModalMsg(backendMessage);
         setModalType("error");
         break;
-
+    
       default:
         setModalMsg(backendMessage);
         setModalType("error");
         break;
     }
+    
+    setModalVisible(true);    
 
     setModalVisible(true);
 
