@@ -20,7 +20,7 @@ interface studentProps {
   onDeleteStudent: (id: number) => Promise<ApiResponse>;
   onPutStudent: (id: string, data: any) => Promise<ApiResponse>;
   onGetStudent: () => Promise<ApiResponse>;
-  onGraduate: (id: number) => Promise<ApiResponse>;
+  onGraduate: (id: string) => Promise<ApiResponse>;
   onGetSTudentBirthday: () => Promise<ApiResponse>;
   reloadFlag: boolean;
   triggerReload: () => void;
@@ -208,7 +208,7 @@ const getStudentBirthDay = async (): Promise<ApiResponse> => {
   }
 };
 
-const graduateStudent = async(id: number) => {
+const graduateStudent = async(id: string) => {
   try{
     if (localStorage.getItem("role") === "teacher") {
       return denyIfTeacher();

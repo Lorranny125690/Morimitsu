@@ -73,7 +73,8 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
     return `${day}/${month}/${year}`;
   };
 
-  const handleGraduate = async(id: number) => {
+  const handleGraduate = async(id: string) => {
+    console.log(id)
     await onGraduate(id)
   }
 
@@ -141,7 +142,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
                     : "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
                 }
                 alt="Perfil"
-                className="h-auto overflow-hidden w-[21vh] max-h-[21vh] object-cover flex rounded-full hover:scale-110 transition-all cursor-pointer"
+                className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full transition-all cursor-pointer"
               />
 
               <div className="flex items-center flex-col">
@@ -197,7 +198,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               <h2 className="text-[16px] font-semibold text-white">Frequências</h2>
 
               {userRole !== "TEACHER" && (
-                <button onClick={() => handleGraduate(student.id)} className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
+                <button onClick={() => handleGraduate(String(student.id))} className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
                 Graduar
               </button>)}
             </div>
