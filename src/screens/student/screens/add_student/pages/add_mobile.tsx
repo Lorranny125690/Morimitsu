@@ -14,6 +14,21 @@ interface Props {
 export function ModalAdicionarAluno({open, onClose}: Props) {
   if (!open) return null;
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    const preview = URL.createObjectURL(file);
+  
+    handleChange({
+      target: { 
+        name: "image_student_url",
+        value: preview,
+        files: [file]   // <--- ESSENCIAL!!!
+      }
+    });
+  };
+
   const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible } = useStudentForm();
 
   return (
@@ -66,15 +81,21 @@ export function ModalAdicionarAluno({open, onClose}: Props) {
           </div>
 
           {/* Foto */}
-          <div>
+          <div className="flex flex-col gap-1">
             <label className="text-xs text-gray-700">URL da foto</label>
-            <input
-              type="text"
-              name="image_student_url"
-              value={formData.image_student_url}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 h-9 text-sm"
-            />
+            
+            <label className="relative w-full cursor-pointer overflow-hidden rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400 p-[2px]">
+              <span className="block w-full text-center bg-gray-900 text-white font-medium rounded-full py-2 text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                Escolher arquivo
+              </span>
+              <input
+                type="file"
+                name="image_student_url"
+                value={formData.image_student_url}
+                onChange={handleImageChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </label>
           </div>
 
           {/* E-mail */}

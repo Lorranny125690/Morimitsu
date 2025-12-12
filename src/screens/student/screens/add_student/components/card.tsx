@@ -29,18 +29,24 @@ export function StudentProfileCard({ photo, nome, faixa, frequencia, idade, cpf,
           onChange={onChangeImage}
         />
 
-        {/* Foto clicável */}
+        {/* Foto clicável com indicação permanente */}
         <div
-          onClick={() =>
-            document.getElementById("profile-photo-input")?.click()
-          }
-          className="cursor-pointer w-[94px] h-[94px] rounded-full overflow-hidden"
+          onClick={() => document.getElementById("profile-photo-input")?.click()}
+          className="relative cursor-pointer w-[94px] h-[94px] rounded-full overflow-hidden border-2 border-gray-300 hover:border-blue-400 transition"
         >
           <img
             src={photo ? photo : fallback}
             alt={nome}
             className="w-full h-full object-cover"
           />
+
+          {/* Faixa fixa embaixo indicando ação */}
+          <div className="absolute bottom-0 w-full h-full bg-black/55 py-[3px] flex items-center justify-center">
+            <span className="text-white text-[10px] flex items-center gap-1">
+              <i className="font-bold fa-solid fa-camera text-[10px]" />
+              Alterar imagem
+            </span>
+          </div>
         </div>
 
         <h2 className="font-medium text-black text-[15px] mt-4">
