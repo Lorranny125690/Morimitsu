@@ -16,5 +16,6 @@ export type Student = {
   image_student_url: string;
   social_name: string;
   role: string;
-  classType: string
+  classType: string;
+  classes: [{id: string, student_id: string, class_id: string}];
 };

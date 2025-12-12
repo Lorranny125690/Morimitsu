@@ -145,7 +145,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               />
 
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-12 font-bold text-white">{studentName(student.name) || student.social_name}</h1>
+                <h1 className="text-[50px] h-12 font-bold text-white">{student.social_name || studentName(student.name)}</h1>
                 <p className="text-[40px] font-medium text-white/60">{belts[student.belt]}</p>
                 <p className="text-[20px] text-white">{calculateAge(student.birth_date)} anos</p>
               </div>
@@ -169,11 +169,21 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               <h2 className="text-[16px] font-semibold">Turmas</h2>
             </div>
 
-            <ul className="space-y-4 mt-4">
-              <li className="text-[12px] hover:scale-105 transition-all">Turma 1 - Daniel Huckman</li>
-              <li className="text-[12px] hover:scale-105 transition-all">Turma 1 - Daniel Huckman</li>
-              <li className="text-[12px] hover:scale-105 transition-all">Turma 1 - Daniel Huckman</li>
+            <ul>
+              {Array.isArray(student.classes) && student.classes.length > 0 ? (
+                student.classes.map((cls) => (
+                  <li
+                    key={cls.id}
+                    className="text-[12px] hover:scale-105 transition-all"
+                  >
+                    {cls.class_id}
+                  </li>
+                ))
+              ) : (
+                <li className="text-lg text-white/70 mt-2 mb-2">Sem classes</li>
+              )}
             </ul>
+
           </motion.div>
 
           {/* Frequências */}
