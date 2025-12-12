@@ -6,6 +6,10 @@ import { useLocation } from "react-router-dom";
 import { belts } from "../types/belt";
 import { gender, role } from "../types/role";
 import { FaTrash } from "react-icons/fa";
+import { useStudent } from "@/context/studentContext";
+import { useState } from "react";
+import type { Student } from "../types/type";
+import { ModalMsg } from "@/components/modal";
 
 export function ProfileMobile() {
   const navigate = useNavigate();
@@ -22,6 +26,33 @@ export function ProfileMobile() {
 
     return (`${firstName} ${secondName}`)
   }
+
+  const { onDeleteStudent } = useStudent();
+
+  const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
+  const [_students, setStudents] = useState<Student[]>([]);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
+  const [modalType, setModalType] = useState<"error" | "success">("error");
+
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    const res = await onDeleteStudent(studentToDelete);
+
+    if (!res.error) {
+      setStudents(prev => prev.filter(st => st.id !== studentToDelete));
+
+      setModalMsg("Aluno excluído com sucesso!");
+      setModalType("success");
+      setModalVisible(true);
+      navigate(-1)
+    }
+
+    setConfirmDeleteOpen(false);
+    setStudentToDelete(null);
+  };
 
   const formatPhone = (phone: string) => {
     const digits = phone.replace(/\D/g, "");
@@ -93,7 +124,11 @@ export function ProfileMobile() {
         </button>
         <div className="flex flex-row gap-4 items-center">
           <AiFillEdit className="active:scale-105 transition-all" size={20} />
-          <FaTrash className="text-red-500 active:scale-105 transition-all" />
+          <FaTrash className="text-red-500 active:scale-105 transition-all"                       onClick={(e) => {
+                        e.stopPropagation();
+                        setStudentToDelete(student.id);
+                        setConfirmDeleteOpen(true);
+                      }}/>
         </div>
       </motion.header>
 
@@ -194,6 +229,40 @@ export function ProfileMobile() {
           </motion.p>
         ))}
       </motion.div>
+
+      {confirmDeleteOpen && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#1E1E2F] p-6 rounded-lg shadow-xl w-80 text-center">
+            <h2 className="text-lg font-semibold mb-4">Confirmar exclusão</h2>
+            <p className="text-gray-300 mb-6">
+              Tem certeza que deseja excluir este aluno?
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setConfirmDeleteOpen(false)}
+                className="cursor-pointer px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={confirmDelete}
+                className="cursor-pointer px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ModalMsg
+      show={modalVisible}
+      onClose={() => setModalVisible(false)}
+      message={modalMsg}
+      type={modalType}
+      />
     </div>
   );
 }

@@ -168,7 +168,11 @@ export const StudentList = () => {
           },
         }}
       >
-        {students.map((student) => (
+        {students.length === 0 &&
+          <div className="text-white/40">
+            Sem estudantes...
+          </div>
+        }{students.map((student) => (
           <motion.div
             key={student.id}
             variants={{
