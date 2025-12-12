@@ -175,7 +175,7 @@ export function useStudentForm(goNext?: () => void) {
       complement: formData.complement,
       guardian_phone: formData.guardian_phone,
       enrollment: formData.enrollment,
-      idade: String(idadeAtual),
+      social_name: formData.social_name
     }).forEach(([key, val]) => {
       data.append(key, String(val ?? ""));
     });

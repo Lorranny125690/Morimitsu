@@ -1,19 +1,9 @@
 import { ModalMsg } from "@/components/modal";
 import type { ChangeEvent } from "react";
-import { useStudentForm } from "../hooks/studentProps";
-
-interface formData {
-  city: string;
-  complement: string;
-  street: string;
-  guardian_phone: string;
-  district: string;
-  number: string;
-  social_name: string;
-}
+import { useStudentForm, type FormDataType } from "../hooks/studentProps";
 
 interface Props {
-  formData: formData;
+  formData: FormDataType;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void; 
   goBack: () => void;
