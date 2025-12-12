@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
 export const API_URL = "https://morimitsu-jiu-jitsu.onrender.com";
@@ -18,10 +18,12 @@ interface ApiResponse {
 interface studentProps {
   onRegisterStudent: (data: any) => Promise<ApiResponse>;
   onDeleteStudent: (id: number) => Promise<ApiResponse>;
-  onPutStudent: (id: string, StudentData: any) => Promise<ApiResponse>;
+  onPutStudent: (id: string, data: any) => Promise<ApiResponse>;
   onGetStudent: () => Promise<ApiResponse>;
-  onGraduate: (id: number) => Promise<ApiResponse>
-  onGetSTudentBirthday: () => Promise<ApiResponse>
+  onGraduate: (id: number) => Promise<ApiResponse>;
+  onGetSTudentBirthday: () => Promise<ApiResponse>;
+  reloadFlag: boolean;
+  triggerReload: () => void;
 }
 
 function denyIfTeacher(): ApiResponse {
@@ -239,6 +241,12 @@ const graduateStudent = async(id: number) => {
 }
 
 export const StudentProvider = ({ children }: StudentProviderProps) => {
+  const [reloadFlag, setReloadFlag] = useState(false);
+
+  const triggerReload = useCallback(() => {
+    setReloadFlag(prev => !prev);
+  }, []);
+
   const value: studentProps = {
     onRegisterStudent: registerStudent,
     onDeleteStudent: deleteStudent,
@@ -246,6 +254,8 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onGetStudent: getStudent,
     onGraduate:graduateStudent,
     onGetSTudentBirthday: getStudentBirthDay,
+    reloadFlag,
+    triggerReload,
   };
 
   return (
