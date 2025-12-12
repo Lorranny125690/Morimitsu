@@ -236,7 +236,7 @@ export function StudentDesktop() {
                   <motion.tr
                     variants={itemVariants}
                     key={s.id}
-                    whileHover={{ backgroundColor: "#1E1E2F", scale: 1.01 }}
+                    whileHover={{ backgroundColor: "#1E1E2F", scale: 1.011 }}
                     className="border-b border-gray-800 transition hover:cursor-pointer"
                     onClick={() => openProfileModal(s)}
                   >

@@ -141,7 +141,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
                     : "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
                 }
                 alt="Perfil"
-                className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full hover:scale-110 transition-all cursor-pointer"
+                className="h-auto overflow-hidden w-[21vh] max-h-[21vh] object-cover flex rounded-full hover:scale-110 transition-all cursor-pointer"
               />
 
               <div className="flex items-center flex-col">
