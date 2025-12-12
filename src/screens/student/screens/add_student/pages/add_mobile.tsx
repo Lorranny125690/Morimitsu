@@ -1,15 +1,20 @@
 import { motion } from "framer-motion";
+import { useStudentForm } from "../hooks/studentProps";
+import { ModalMsg } from "@/components/modal";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   formData: any;
   handleChange: (e: any) => void;
-  handleNext: () => void;
+  handleSubmit: () => void;
+  goNext: () => void;
 }
 
-export function ModalAdicionarAluno({ open, onClose, formData, handleChange, handleNext }: Props) {
+export function ModalAdicionarAluno({open, onClose}: Props) {
   if (!open) return null;
+
+  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible } = useStudentForm();
 
   return (
     <div className="fixed inset-0 bg-[#011023]/50 backdrop-blur-sm flex items-center justify-center z-[1000]">
@@ -261,13 +266,20 @@ export function ModalAdicionarAluno({ open, onClose, formData, handleChange, han
           </button>
 
           <button
-            onClick={handleNext}
+            onClick={handleSubmit}
             className="bg-[#4963F5] hover:bg-[#345ed3] text-white px-5 py-2 rounded-full text-sm"
           >
             Próximo
           </button>
         </div>
       </motion.div>
+
+      <ModalMsg
+      show={modalVisible}
+      message={modalMsg}
+      type={modalType}
+      onClose={() => setModalVisible(false)}
+      />
     </div>
   );
 }

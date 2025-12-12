@@ -10,15 +10,17 @@ import { useStudentForm } from "./add_student/hooks/studentProps";
 import { useStudent } from "@/context/studentContext";
 import type { Student } from "../types/type";
 import { belts } from "../types/belt";
+import { ModalMsg } from "@/components/modal";
 
 export const StudentList = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { formData, handleChange } = useStudentForm();
   const { onGetStudent } = useStudent();
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const [_originalStudents, setOriginalStudents] = useState<Student[]>([]);
+  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible, setModalType, setModalMsg, validateStepData } = useStudentForm();
+  const [currentStep, setCurrentStep] = useState<"DATA" | "PUT">("DATA");
 
   useEffect(() => {
     const loadStudents = async () => {
@@ -52,6 +54,51 @@ export const StudentList = () => {
   
     return age;
   };
+
+  if (loading) {
+    return(<motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="fixed inset-0 flex items-center justify-center bg-[#011023]/90 backdrop-blur-md z-[9999]"
+    >
+      <motion.div
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 130, damping: 12 }}
+        className="flex flex-col items-center"
+      >
+        {/* Spinner com brilho */}
+        <motion.div
+          animate={{
+            boxShadow: [
+              "0 0 10px #00AAFF",
+              "0 0 20px #00AAFF",
+              "0 0 10px #00AAFF",
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-16 h-16 border-4 border-white/20 border-t-[#00AAFF] rounded-full animate-spin"
+        />
+
+        {/* Texto com glow */}
+        <motion.p
+          className="mt-5 text-white text-lg font-semibold tracking-wide"
+          animate={{
+            textShadow: [
+              "0 0 4px #00AAFF",
+              "0 0 10px #00AAFF",
+              "0 0 4px #00AAFF",
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          Carregando...
+        </motion.p>
+      </motion.div>
+    </motion.div>)
+  }
   
   return (
     <motion.div
@@ -160,12 +207,29 @@ export const StudentList = () => {
           </motion.div>
         ))}
       </motion.div>
-      <ModalAdicionarAluno
+      {currentStep === "DATA" && <ModalAdicionarAluno
         open={open}
         onClose={() => setOpen(false)}
         formData={formData}
         handleChange={handleChange}
-        handleNext={() => console.log("ir para Enturmar")}
+        handleSubmit={handleSubmit}
+        goNext={() => {
+          const error = validateStepData(formData);
+          if (error) {
+            setModalMsg(error);
+            setModalType("error");
+            setModalVisible(true);
+            return;
+          }
+          setCurrentStep("PUT");
+        }}
+      />}
+
+      <ModalMsg
+        show={modalVisible}
+        onClose={() => setModalVisible(false)}
+        message={modalMsg}
+        type={modalType}
       />
     </motion.div>
   );

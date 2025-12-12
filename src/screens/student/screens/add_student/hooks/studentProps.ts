@@ -27,7 +27,7 @@ export interface FormDataType {
 }
 
 // ------------------ HOOK ------------------
-export function useStudentForm() {
+export function useStudentForm(goNext?: () => void) {
   const { onRegisterStudent } = useStudent();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
@@ -198,6 +198,7 @@ export function useStudentForm() {
       setModalMsg("🎉 Aluno cadastrado com sucesso!");
       setModalType("success");
       setModalVisible(true);
+      if (goNext) goNext();
       return; // <---- ESSENCIAL
     }
     

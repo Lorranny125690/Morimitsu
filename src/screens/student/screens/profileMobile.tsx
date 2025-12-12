@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { belts } from "../types/belt";
 import { gender, role } from "../types/role";
+import { FaTrash } from "react-icons/fa";
 
 export function ProfileMobile() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export function ProfileMobile() {
 
   const alunoInfo = {
     nome: student?.name,
-    matricula: student?.registration,
+    matricula: student?.enrollment,
     contato: formatPhone(student?.phone),
     Anivesário: formatBirth(student?.birth_date),
     cpf: student?.cpf,
@@ -85,10 +86,15 @@ export function ProfileMobile() {
         className="p-8 flex flex-row justify-between items-center mb-6"
       >
         <IoMdArrowRoundBack onClick={() => navigate(-1)} size={20} />
-        <button className="bg-[#02304F] py-1 px-4 text-[10px] rounded-full">
+        <button
+          className="active:scale-105 transition-all absolute left-1/2 -translate-x-1/2 bg-[#02304F] py-1 px-4 text-[10px] rounded-full whitespace-nowrap"
+        >
           Promover a professor
         </button>
-        <AiFillEdit size={20} />
+        <div className="flex flex-row gap-4 items-center">
+          <AiFillEdit className="active:scale-105 transition-all" size={20} />
+          <FaTrash className="text-red-500 active:scale-105 transition-all" />
+        </div>
       </motion.header>
 
       {/* Perfil */}
@@ -99,7 +105,7 @@ export function ProfileMobile() {
         className="flex flex-row items-center justify-center gap-5 mb-13"
       >
         <img
-          className="h-34 w-34 cover rounded-4xl"
+          className="h-34 w-34 object-cover rounded-4xl"
           src={student.image_student_url ?? "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"}
           alt="no tenemos"
         />
@@ -108,7 +114,7 @@ export function ProfileMobile() {
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="font-bold text-[28px]"
+            className="font-bold text-[28px] flex flex-wrap w-40 items-center justify-center"
           >
             {studentName(student?.name)}
           </motion.p>
