@@ -23,28 +23,63 @@ export function PutStudentScreen() {
     if (studentData) {
       setFormData(prev => ({
         ...prev,
-        ...studentData
+        ...studentData,
+        birth_date: studentData.birth_date
+          ? new Date(studentData.birth_date).toISOString().split("T")[0]
+          : "",
       }));
     }
-  }, [studentData]);
+  }, [studentData]);  
   
   const handleSubmit = async (id: string) => {
-    let payload: any = formData;
+    let payload: FormData | Record<string, any>;
   
-    // Se tiver imagem nova, cria FormData
     if (formData.file_image) {
       const form = new FormData();
   
       Object.entries(formData).forEach(([key, value]) => {
-        if (key === "image_student_url") return; // preview, ignorar
+        // preview, nunca enviar
+        if (key === "image_student_url") return;
+  
+        // arquivo real
         if (key === "file_image") {
-          form.append("image_student_url", value); // arquivo real
-        } else {
-          form.append(key, value as any);
+          if (value) {
+            form.append("image_student_url", value);
+          }
+          return;
+        }
+  
+        // NÃO enviar null ou undefined
+        if (value === null || value === undefined) return;
+  
+        // nascimento é obrigatório → GARANTE string
+        if (key === "birth_date") {
+          form.append("birth_date", String(value));
+          return;
+        }
+  
+        // números → string
+        if (typeof value === "number") {
+          form.append(key, String(value));
+          return;
+        }
+  
+        // strings válidas
+        if (typeof value === "string" && value.trim() !== "") {
+          form.append(key, value);
         }
       });
   
       payload = form;
+    } else {
+      // JSON PUT (sem imagem)
+      payload = {
+        ...formData,
+        guardian_phone: formData.guardian_phone || undefined,
+        enrollment: formData.enrollment || undefined,
+        file_image: undefined,
+        image_student_url: undefined,
+      };
     }
   
     const res = await onPutStudent(id, payload);
@@ -54,11 +89,12 @@ export function PutStudentScreen() {
       setModalType("success");
       setModalVisible(true);
     } else {
-      setModalType("error");
       setModalMsg(res.message || "Erro ao atualizar aluno");
+      setModalType("error");
       setModalVisible(true);
     }
-  };  
+  };
+   
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

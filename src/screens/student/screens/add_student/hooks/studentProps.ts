@@ -1,12 +1,18 @@
 // src/hooks/useStudentForm.ts
 import { useEffect, useState } from "react";
 import { useStudent } from "@/context/studentContext";
-import { computeAgeFromString, StudentStepDataSchema, formatZodErrors, StudentStepAddressSchema, StudentFullSchema } from "../../validations/validations";
+import {
+  computeAgeFromString,
+  StudentStepDataSchema,
+  StudentStepAddressSchema,
+  StudentFullSchema,
+  formatZodErrors,
+} from "../../validations/validations";
 
 export interface FormDataType {
   name: string;
   phone: string;
-  image_student_url: string; // preview ONLY
+  image_student_url: string;
   email: string;
   cpf: string;
   gender: string;
@@ -23,15 +29,19 @@ export interface FormDataType {
   enrollment?: string;
   idade: number;
   social_name: string;
-  file_image: File | null; // FILE REAL
+  file_image: File | null;
 }
 
-// ------------------ HOOK ------------------
 export function useStudentForm(goNext?: () => void) {
   const { onRegisterStudent } = useStudent();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
+
+  const [zodFieldErrors, setZodFieldErrors] = useState<Record<string, string>>(
+    {}
+  );
 
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
@@ -56,55 +66,45 @@ export function useStudentForm(goNext?: () => void) {
     file_image: null,
   });
 
-  const [zodFieldErrors, setZodFieldErrors] = useState<Record<string, string>>({}); // para UI por-campo
-
   // ----------------------------------------------------------
-  // HANDLE INPUT CHANGE + FILE HANDLER
+  // HANDLE CHANGE
   // ----------------------------------------------------------
   const handleChange = (e: any) => {
     if (!e?.target) return;
-  
+
     const { name, value, files } = e.target;
-  
-    // --- Trata imagem ---
-    if (files && files[0]) {
+
+    // arquivo
+    if (files?.[0]) {
       const file = files[0];
-      const preview = URL.createObjectURL(file);
-  
       setFormData((prev) => ({
         ...prev,
-        image_student_url: preview,
+        image_student_url: URL.createObjectURL(file),
         file_image: file,
       }));
-  
       return;
     }
-  
-    // --- Campos que DEVEM ser number ---
-    const numericFields = ["grade", "current_frequency"]; 
-  
-    let finalValue = value;
-  
-    if (numericFields.includes(name)) {
-      finalValue = value === "" ? "" : Number(value);
-    }
-  
-    // --- Campos normais ---
+
+    const numericFields = ["grade", "current_frequency"];
+
     setFormData((prev) => ({
       ...prev,
-      [name]: finalValue,
+      [name]: numericFields.includes(name)
+        ? value === "" ? 0 : Number(value)
+        : value,
     }));
-  };  
+  };
 
   // ----------------------------------------------------------
-  // VALIDATION HELPERS (usando zod)
+  // VALIDATIONS
   // ----------------------------------------------------------
   const validateStepData = (data: FormDataType): string | null => {
-    // recompute idade from birth_date to ensure zod sees correct number
-    const computedAge = computeAgeFromString(data.birth_date);
-    const toValidate = { ...data, idade: computedAge };
+    const idade = computeAgeFromString(data.birth_date);
+    const parsed = StudentStepDataSchema.safeParse({
+      ...data,
+      idade,
+    });
 
-    const parsed = StudentStepDataSchema.safeParse(toValidate);
     if (parsed.success) {
       setZodFieldErrors({});
       return null;
@@ -121,7 +121,7 @@ export function useStudentForm(goNext?: () => void) {
       street: data.street,
       district: data.district,
       number: data.number,
-      guardian_phone: data.guardian_phone,
+      guardian_phone: data.guardian_phone || undefined,
     });
 
     if (parsed.success) {
@@ -135,162 +135,82 @@ export function useStudentForm(goNext?: () => void) {
   };
 
   // ----------------------------------------------------------
-  // SUBMIT (usa StudentFullSchema)
+  // SUBMIT
   // ----------------------------------------------------------
   const handleSubmit = async () => {
-    // antes de enviar, atualiza idade automaticamente
-    const idadeAtual = computeAgeFromString(formData.birth_date);
-    const toValidate = { ...formData, idade: idadeAtual };
+    const idade = computeAgeFromString(formData.birth_date);
+    const toValidate = { ...formData, idade };
 
-    // validação completa com zod
     const parsed = StudentFullSchema.safeParse(toValidate);
 
     if (!parsed.success) {
       const formatted = formatZodErrors(parsed.error);
-      setModalMsg(formatted.message || "Existem erros no formulário");
+      setModalMsg(formatted.message);
       setModalType("error");
       setModalVisible(true);
       setZodFieldErrors(formatted.byField);
       return;
     }
 
-    // tudo ok => monta FormData para envio ao backend
     const data = new FormData();
 
-    // Campos de texto
-    Object.entries({
-      name: formData.name,
-      phone: formData.phone,
-      email: formData.email,
-      cpf: formData.cpf,
-      gender: formData.gender,
-      birth_date: formData.birth_date,
-      current_frequency: formData.current_frequency,
-      belt: formData.belt,
-      grade: formData.grade,
-      city: formData.city,
-      street: formData.street,
-      district: formData.district,
-      number: formData.number,
-      complement: formData.complement,
-      guardian_phone: formData.guardian_phone,
-      enrollment: formData.enrollment,
-      social_name: formData.social_name
-    }).forEach(([key, val]) => {
-      data.append(key, String(val ?? ""));
+    Object.entries(toValidate).forEach(([key, value]) => {
+      if (
+        value === null ||
+        value === undefined ||
+        value === "" ||
+        key === "file_image" ||
+        key === "image_student_url"
+      ) {
+        return;
+      }
+
+      data.append(key, String(value));
     });
 
     if (formData.file_image) {
       data.append("image_student_url", formData.file_image);
     }
 
-    // Chamada real
     const res = await onRegisterStudent(data);
 
-    console.log("RESPOSTA DO BACK:", res);
-
-    const backendMessage =
-    res?.message ||
-    res?.data?.message ||
-    "O servidor retornou um erro desconhecido.";
-
-    if (!res.error && (res.status === 201 || res.data?.status === 201)) {
+    if (!res.error) {
       setModalMsg("🎉 Aluno cadastrado com sucesso!");
       setModalType("success");
       setModalVisible(true);
-      if (goNext) goNext();
-      return; // <---- ESSENCIAL
+      goNext?.();
+      return;
     }
-    
-    // daqui pra baixo só erros
-    switch (res.status) {
-      case 400:
-      case 401:
-      case 409:
-      case 422:
-        setModalMsg(backendMessage);
-        setModalType("error");
-        break;
-    
-      default:
-        setModalMsg(backendMessage);
-        setModalType("error");
-        break;
-    }
-    
-    setModalVisible(true);    
 
+    setModalMsg(res.message || "Erro ao cadastrar aluno");
+    setModalType("error");
     setModalVisible(true);
-
-    // Resetar apenas no 200
-    if (res.status === 200) {
-      setFormData({
-        name: "",
-        phone: "",
-        image_student_url: "",
-        email: "",
-        cpf: "",
-        gender: "",
-        birth_date: "",
-        current_frequency: 0,
-        belt: "",
-        grade: 0,
-        city: "",
-        street: "",
-        district: "",
-        number: "",
-        complement: "",
-        guardian_phone: "",
-        enrollment: "",
-        idade: 0,
-        social_name: "",
-        file_image: null,
-      });
-      setZodFieldErrors({});
-    }
   };
 
   // ----------------------------------------------------------
-  // AUTO-CALCULA IDADE
+  // AUTO AGE
   // ----------------------------------------------------------
-  const calculateAge = (dateStr: string) => {
-    if (!dateStr) return 0;
-    const today = new Date();
-    const birth = new Date(dateStr);
-    let age = today.getFullYear() - birth.getFullYear();
-    const m = today.getMonth() - birth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-    return age;
-  };
-
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      idade: calculateAge(prev.birth_date),
+      idade: computeAgeFromString(prev.birth_date),
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.birth_date]);
 
   // ----------------------------------------------------------
   return {
     formData,
+    setFormData,
     handleChange,
     handleSubmit,
+    validateStepData,
+    validateStepAddress,
     modalVisible,
     modalMsg,
     modalType,
     setModalVisible,
     setModalType,
     setModalMsg,
-    setFormData,
-
-    // ADD:
-    validateStepData,
-    validateStepAddress,
-
-    // expose raw zod field errors so UI can show under inputs
     zodFieldErrors,
-    // expose helper to format any ZodError if you prefer to handle errors elsewhere
-    formatZodErrors,
   };
 }
