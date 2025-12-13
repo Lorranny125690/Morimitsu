@@ -75,7 +75,8 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
 
   const handleGraduate = async(id: string) => {
     console.log(id)
-    await onGraduate(id)
+    const res = await onGraduate(id)
+    console.log(res.status)
   }
 
   const handlePromote = async (password: string) => {

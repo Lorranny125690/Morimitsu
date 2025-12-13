@@ -213,11 +213,18 @@ const graduateStudent = async(id: string) => {
     if (localStorage.getItem("role") === "teacher") {
       return denyIfTeacher();
     }
-    const res = await api.patch(`/student/graduate/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }},
-    )
+
+    const token = localStorage.getItem("my-jwt");
+console.log("token", token)
+    const res = await api.patch(
+      `/student/graduate/${id}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );    
 
     return {
       error: false,
@@ -225,6 +232,7 @@ const graduateStudent = async(id: string) => {
       data: res.data,
     };
   } 
+
   catch (e: any) {
     const status = e.response?.status;
     const data = e.response?.data;
@@ -252,7 +260,7 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onDeleteStudent: deleteStudent,
     onPutStudent: putStudent,
     onGetStudent: getStudent,
-    onGraduate:graduateStudent,
+    onGraduate: graduateStudent,
     onGetSTudentBirthday: getStudentBirthDay,
     reloadFlag,
     triggerReload,
