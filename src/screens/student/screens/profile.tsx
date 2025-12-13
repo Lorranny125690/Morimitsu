@@ -237,6 +237,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             <p>Idade: {calculateAge(student.birth_date)}</p>
             <p>Faixa: {belts[student.belt]}</p>
             <p>Contato: {formatPhone(student.phone)}</p>
+            <p>Bairro: {student.district} </p>
           </div>
 
           <div className="space-y-2">
@@ -244,6 +245,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             <p>Cargo: {role[student.role]}</p>
             <p>Data de nasc.: {formatBirth(student.birth_date)}</p>
             <p>Email: {student.email}</p>
+            <p>Cidade: {student.city}</p>
           </div>
 
           <div className="space-y-2">
@@ -251,6 +253,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             <p>Gênero: {gender[student.gender]}</p>
             <p>Grau: {student.grade}</p>
             <p>CPF: {formatCPF(student.cpf)}</p>
+            <p>Rua: {student.street}, {student.number}</p>
           </div>
         </motion.div>
       </motion.div>

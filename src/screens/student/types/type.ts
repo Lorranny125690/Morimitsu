@@ -19,5 +19,8 @@ export type Student = {
   classType: string;
   cpf: string;
   grade: string;
+  city: string;
+  street: string;
+  district: string;
   classes: [{id: string, student_id: string, class_id: string}];
 };
