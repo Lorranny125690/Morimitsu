@@ -251,7 +251,7 @@ export function StudentDesktop() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   </td>
-                  <td className="py-3 px-4">{s.name}</td>
+                  <td className="py-3 px-4">{s.social_name}</td>
                   <td className="py-3 px-4">{formatPhone(s.phone)}</td>
                   <td className="py-3 px-4 text-center">
                     <span
