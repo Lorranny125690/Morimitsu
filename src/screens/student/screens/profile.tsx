@@ -94,6 +94,14 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
     }
   };
   
+  const formatCPF = (cpf_number: string) => {
+    const first = cpf_number.slice(0, 3);
+    const second = cpf_number.slice(3, 6);
+    const third = cpf_number.slice(6, 9);
+    const fourth = cpf_number.slice(9, 12);
+
+    return (`${first}.${second}.${third}-${fourth}`)
+  }
   
   return (
     <div
@@ -241,6 +249,8 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           <div className="space-y-2">
             <p>Apelido: {student.social_name || "não tem"}</p>
             <p>Gênero: {gender[student.gender]}</p>
+            <p>Grau: {student.grade}</p>
+            <p>CPF: {formatCPF(student.cpf)}</p>
           </div>
         </motion.div>
       </motion.div>

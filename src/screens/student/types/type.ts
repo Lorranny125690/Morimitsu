@@ -17,5 +17,7 @@ export type Student = {
   social_name: string;
   role: string;
   classType: string;
+  cpf: string;
+  grade: string;
   classes: [{id: string, student_id: string, class_id: string}];
 };

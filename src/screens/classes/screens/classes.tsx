@@ -12,8 +12,6 @@ export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  
-  
 
   const role = localStorage.getItem("role")
   // FECHAR AO CLICAR FORA
