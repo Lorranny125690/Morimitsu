@@ -113,7 +113,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-hidden bg-white rounded-lg shadow-lg"
+        className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-hidden bg-white rounded-lg shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -123,7 +123,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex h-0.5 justify-between items-center">
+          <div className="flex h-0.5 md:mt-2 md:mb-2 justify-between items-center">
             <IoMdArrowRoundBack
               className="hover:scale-110 cursor-pointer transition-all"
               onClick={closeModal}
@@ -131,7 +131,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             />
 
             {userRole !== "TEACHER" && (
-              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full" onClick={() => setOpenPasswordModal(true)}>
+              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full " onClick={() => setOpenPasswordModal(true)}>
                 Promover a professor
               </button>
             )}
