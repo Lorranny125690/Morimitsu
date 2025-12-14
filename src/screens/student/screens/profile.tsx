@@ -118,12 +118,12 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
       >
         {/* Header */}
         <motion.div
-          className="flex h-[25vh] md:min-h-[200px] flex-col bg-[#7C9FC9] p-6"
+          className="flex min-h-[25vh] md:min-h-[240px] md:gap-8 flex-col bg-[#7C9FC9] p-6"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex h-0.5 md:mt-2 md:mb-2 justify-between items-center">
+          <div className="flex h-0.5 justify-between items-center">
             <IoMdArrowRoundBack
               className="hover:scale-110 cursor-pointer transition-all"
               onClick={closeModal}
