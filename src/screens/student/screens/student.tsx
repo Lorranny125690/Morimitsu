@@ -2,128 +2,37 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { beltClasses } from "../components/beltclasses";
 import { Choice } from "../components/choose";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StudentProfile } from "./profile";
 import { FiltroDropdown } from "../components/dropdown";
 import type { Student } from "../types/type";
 import { useStudent } from "@/context/studentContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ModalMsg } from "@/components/modal";
+import { formatPhone } from "../utils/formatPhone";
+import type { FilterKey } from "../types/filterKey";
+import { useDisplayStudents } from "../hooks/hooks";
 
 export function StudentDesktop() {
+  const {
+    loading,
+    triggerReload,
+    onDeleteStudent,
+  } = useStudent();
+
+  const navigate = useNavigate();
+  const role = localStorage.getItem("role");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [students, setStudents] = useState<Student[]>([]);
-  const { onGetStudent, onDeleteStudent } = useStudent();
-  const [loading, setLoading] = useState(true);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
+
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
-  const location = useLocation();
-  const [originalStudents, setOriginalStudents] = useState<Student[]>([]);
-  const role = localStorage.getItem("role")
 
-// Ao carregar
-  useEffect(() => {
-    const loadStudents = async () => {
-      setLoading(true);
-      const res = await onGetStudent();
-      if (!res.error) {
-        setStudents(res.data.students);
-        setOriginalStudents(res.data.students); // guarda a ordem original
-      }
-      setLoading(false);
-    };
-    loadStudents();
-  }, [location.pathname]);
-
-// Ordenar alfabeticamente
-  const sortAlphabetically = () => {
-    setAlphabetical(prev => !prev);
-
-    if (!alphabetical) {
-      // marca: ordena
-      setStudents(prev =>
-        [...prev].sort((a, b) =>
-          a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
-        )
-      );
-    } else {
-      // desmarca: volta ao original
-      setStudents(originalStudents);
-    }
-  };
-
-  const confirmDelete = async () => {
-    if (!studentToDelete) return;
-
-    const res = await onDeleteStudent(studentToDelete);
-
-    if (!res.error) {
-      setStudents(prev => prev.filter(st => st.id !== studentToDelete));
-
-      setModalMsg("Aluno excluído com sucesso!");
-      setModalType("success");
-      setModalVisible(true);
-    }
-
-    setConfirmDeleteOpen(false);
-    setStudentToDelete(null);
-  };
-
-  const listVariants = {
-    visible: {
-      transition: {
-        staggerChildren: 0.08, // atraso entre alunos
-      },
-    },
-    hidden: {},
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0 },
-  };
-  
-  useEffect(() => {
-    const loadStudents = async () => {
-      setLoading(true); // começa carregando
-  
-      const res = await onGetStudent();
-      if (!res.error) setStudents(res.data.students);
-  
-      setLoading(false); // terminou
-    };
-  
-    loadStudents();
-  }, [location.pathname]);  
-
-  // Função para abrir o modal e mostrar o perfil do aluno
-  const openProfileModal = (student: any) => {
-    setSelectedStudent(student);
-    setIsModalOpen(true);
-  };
-
-  // Função para fechar o modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedStudent(null); // Limpar o aluno selecionado
-  };
-
-  const formatPhone = (phone: string) => {
-    const digits = phone.replace(/\D/g, "");
-  
-    const ddd = digits.slice(0, 2);
-    const number1 = digits.slice(2, 7);
-    const number2 = digits.slice(7, 11);
-  
-    return `(${ddd}) ${number1}-${number2}`;
-  };
-
-  const [alphabetical, setAlphabetical] = useState(false);
-  
   const [filters, setFilters] = useState({
     presencas: false,
     mista: false,
@@ -133,42 +42,48 @@ export function StudentDesktop() {
     kids: false,
   });
 
-  type FilterKey = "presencas" | "mista" | "feminina" | "masculina" | "baby" | "kids";
+  const [alphabetical, setAlphabetical] = useState(false);
+
+  const displayStudents = useDisplayStudents(filters, alphabetical);
 
   const toggleFilter = (key: FilterKey) => {
     setFilters(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const navigate = useNavigate();
-  
-  const applyFilters = () => {
-    let filtered = [...students]; // use a lista bruta vinda do back
-  
-    if (filters.feminina) {
-      filtered = filtered.filter(s => s.gender === "F");
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    const res = await onDeleteStudent(studentToDelete);
+
+    if (!res.error) {
+      triggerReload();
+      setModalMsg("Aluno excluído com sucesso!");
+      setModalType("success");
+      setModalVisible(true);
     }
-  
-    if (filters.masculina) {
-      filtered = filtered.filter(s => s.gender === "M");
-    }
-  
-    if (filters.mista) {
-      filtered = filtered.filter(s => s.classType === "mista");
-    }
-  
-    if (filters.baby) {
-      filtered = filtered.filter(s => s.classType === "baby");
-    }
-  
-    if (filters.kids) {
-      filtered = filtered.filter(s => s.classType === "kids");
-    }
-  
-    if (filters.presencas) {
-      filtered = filtered.filter(s => s.frequency > 0);
-    }
-  
-    setStudents(filtered);
+
+    setConfirmDeleteOpen(false);
+    setStudentToDelete(null);
+  };
+
+  const openProfileModal = (student: Student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedStudent(null);
+  };
+
+  const listVariants = {
+    visible: { transition: { staggerChildren: 0.08 } },
+    hidden: {},
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
@@ -195,8 +110,8 @@ export function StudentDesktop() {
               filters={filters}
               alphabetical={alphabetical}
               onToggleFilter={toggleFilter}
-              onSort={sortAlphabetically}
-              onApply={applyFilters}
+              onSort={() => setAlphabetical(prev => !prev)}
+              onApply={() => {}}
             />
           </div>
         </div>
@@ -232,7 +147,7 @@ export function StudentDesktop() {
                   </td>
                 </tr>
               ) : (
-                students.map((s: any) => (
+                displayStudents.map((s: any) => (
                   <motion.tr
                     variants={itemVariants}
                     key={s.id}

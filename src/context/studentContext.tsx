@@ -1,5 +1,6 @@
+import type { Student } from "@/screens/student/types/type";
 import axios from "axios";
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 export const API_URL = "https://morimitsu-jiu-jitsu.onrender.com";
@@ -24,6 +25,8 @@ interface studentProps {
   onGetSTudentBirthday: () => Promise<ApiResponse>;
   reloadFlag: boolean;
   triggerReload: () => void;
+  students: Student[];
+  loading: boolean;
 }
 
 function denyIfTeacher(): ApiResponse {
@@ -249,19 +252,39 @@ console.log("token", token)
 }
 
 export const StudentProvider = ({ children }: StudentProviderProps) => {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(false);
 
   const triggerReload = useCallback(() => {
     setReloadFlag(prev => !prev);
   }, []);
 
+  const fetchStudents = useCallback(async () => {
+    setLoading(true);
+
+    const res = await getStudent();
+    if (!res.error) {
+      setStudents(res.data.students);
+    }
+
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents, reloadFlag]);
+
   const value: studentProps = {
     onRegisterStudent: registerStudent,
     onDeleteStudent: deleteStudent,
     onPutStudent: putStudent,
-    onGetStudent: getStudent,
+    onGetStudent: getStudent, // opcional
     onGraduate: graduateStudent,
     onGetSTudentBirthday: getStudentBirthDay,
+
+    students,   // 👈 EXPÕE OS DADOS
+    loading,    // 👈 EXPÕE O LOADING
     reloadFlag,
     triggerReload,
   };
