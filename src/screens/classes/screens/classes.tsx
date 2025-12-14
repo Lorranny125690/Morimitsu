@@ -116,7 +116,7 @@ export function ClassesDesktop() {
         transition={{ duration: 0.5 }}
         className="flex max-w-6xl mx-auto mt-10"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
+        <div onClick={() => navigate("/class", {state: classes})} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
           {classes.map((classe, index) => (
             <motion.div key={index} whileHover={{ scale: 1.02 }}>
               {role !== "TEACHER" && (

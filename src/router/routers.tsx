@@ -27,6 +27,7 @@ import {
   Frequency,
   StudentClassList,
 } from "./index";
+import ClassDesktop from "@/screens/classes/screens/class";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -116,6 +117,7 @@ export function AppContent() {
             <Route path="/frequency" element={<Frequency/>} />
             <Route path="/classStudent" element={<StudentClassList/>}/>
             <Route path="/edit_student/:id" element={<PutStudentScreen />} />
+            <Route path="/class" element={<ClassDesktop />} />
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}
