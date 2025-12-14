@@ -3,19 +3,63 @@ import { motion } from "framer-motion";
 import { IoMdAdd } from "react-icons/io";
 import { PiStudentBold } from "react-icons/pi";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useClasses } from "../hooks/classes";
 import { formatBirth } from "@/utils/formatDate";
 import { deleteClass } from "../services/services";
+import { api } from "@/context/authContext";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { classes } = useClasses();
-  const role = localStorage.getItem("role")
+  const role = localStorage.getItem("role");
+
+  // Mapeia teacher_id para o nome do professor
+  const [professores, setProfessores] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchProfessores = async () => {
+      const token = localStorage.getItem("my-jwt");
+      if (!token || classes.length === 0) return;
+
+      try {
+        const results = await Promise.all(
+          classes.map(async (classe) => {
+            if (!classe.teacher_id) return null;
+
+            const res = await api.get("/user/filter", {
+              params: { id: classe.teacher_id },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            return {
+              teacher_id: classe.teacher_id,
+              name: res.data.users[0].username,
+            };
+          })
+        );
+
+        const map: Record<string, string> = {};
+        results.forEach((item) => {
+          if (item?.teacher_id && item?.name) {
+            map[item.teacher_id] = item.name;
+          }
+        });
+
+        setProfessores(map);
+      } catch (err) {
+        console.error("Erro ao buscar professores:", err);
+      }
+    };
+
+    fetchProfessores();
+  }, [classes]);
 
   return (
     <div className="min-h-screen bg-[#0D0C15] mb-40 text-white font-sans">
@@ -25,7 +69,6 @@ export function ClassesDesktop() {
         <div className="flex items-center justify-end mb-4">
           {/* Search + Add button */}
           <div className="flex items-center justify-center gap-6">
-
             {/* SEARCH COM CLICK-FORA */}
             <div
               ref={searchRef}
@@ -49,16 +92,17 @@ export function ClassesDesktop() {
               )}
             </div>
 
-            {role !== "TEACHER" && <a href="/add_classes">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="cursor-pointer flex justify-center flex-row text-[15px] items-center h-10 w-[177px] gap-2 py-2 bg-[#076185] hover:bg-blue-700 rounded-[10px] font-medium transition"
-              >
-                Adicionar turma <IoMdAdd size={20} />
-              </motion.button>
-            </a>}
-
+            {role !== "TEACHER" && (
+              <a href="/add_classes">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="cursor-pointer flex justify-center flex-row text-[15px] items-center h-10 w-[177px] gap-2 py-2 bg-[#076185] hover:bg-blue-700 rounded-[10px] font-medium transition"
+                >
+                  Adicionar turma <IoMdAdd size={20} />
+                </motion.button>
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -75,10 +119,15 @@ export function ClassesDesktop() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
           {classes.map((classe, index) => (
             <motion.div key={index} whileHover={{ scale: 1.02 }}>
-               {role !== "TEACHER" && <div className="flex justify-end items-center gap-3 w-full mb-4">
-                <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
-                <FaTrash onClick={() => deleteClass(classe.id)} className="cursor-pointer hover:text-red-500 transition" />
-              </div>}
+              {role !== "TEACHER" && (
+                <div className="flex justify-end items-center gap-3 w-full mb-4">
+                  <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
+                  <FaTrash
+                    onClick={() => deleteClass(classe.id)}
+                    className="cursor-pointer hover:text-red-500 transition"
+                  />
+                </div>
+              )}
 
               {/* Imagem */}
               <div className="bg-[#19262A] rounded-b-[6px]">
@@ -100,7 +149,7 @@ export function ClassesDesktop() {
                   <div className="flex items-center gap-2">
                     <FaUser className="text-gray-300" size={14} />
                     <p className="text-gray-300 text-sm">
-                      {classe.teacher_id || "Instrutor não definido"}
+                      {professores[classe.teacher_id] || "Instrutor não definido"}
                     </p>
                     <div className="relative group">
                       <RiEditLine
