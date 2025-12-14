@@ -1,6 +1,6 @@
 
 export type Student = {
-  id: number;
+  id: any;
   name: string;
   number: string;
   belt: string;

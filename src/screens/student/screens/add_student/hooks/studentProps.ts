@@ -39,6 +39,7 @@ export function useStudentForm(goNext?: () => void) {
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
   const [onConfirm, setOnConfirm] = useState(false)
+  const [createdStudentId, setCreatedStudentId] = useState<string>("");
 
   const [zodFieldErrors, setZodFieldErrors] = useState<Record<string, string>>(
     {}
@@ -180,6 +181,8 @@ export function useStudentForm(goNext?: () => void) {
       setModalType("success");
       setModalVisible(true);
       setOnConfirm(true)
+      console.log(res.data.students[0].id      )
+      setCreatedStudentId(res.data.id);
       goNext?.();
       return;
     }
@@ -215,5 +218,6 @@ export function useStudentForm(goNext?: () => void) {
     setModalMsg,
     zodFieldErrors,
     onConfirm,
+    createdStudentId
   };
 }

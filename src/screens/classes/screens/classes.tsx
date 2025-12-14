@@ -1,30 +1,21 @@
 import { FaUser, FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { IoMdAdd } from "react-icons/io";
-import { classesMock } from "../components/classesMock";
 import { PiStudentBold } from "react-icons/pi";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { useClasses } from "../hooks/classes";
+import { formatBirth } from "@/utils/formatDate";
+import { deleteClass } from "../services/services";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
+  const { classes } = useClasses();
   const role = localStorage.getItem("role")
-  // FECHAR AO CLICAR FORA
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#0D0C15] mb-40 text-white font-sans">
@@ -82,18 +73,18 @@ export function ClassesDesktop() {
         className="flex max-w-6xl mx-auto mt-10"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
-          {classesMock.map((classe, index) => (
+          {classes.map((classe, index) => (
             <motion.div key={index} whileHover={{ scale: 1.02 }}>
                {role !== "TEACHER" && <div className="flex justify-end items-center gap-3 w-full mb-4">
                 <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
-                <FaTrash className="cursor-pointer hover:text-red-500 transition" />
+                <FaTrash onClick={() => deleteClass(classe.id)} className="cursor-pointer hover:text-red-500 transition" />
               </div>}
 
               {/* Imagem */}
               <div className="bg-[#19262A] rounded-b-[6px]">
                 <div className="h-[200px] w-full overflow-hidden">
                   <img
-                    src={classe.image}
+                    src={classe.image_class_url}
                     alt={classe.name}
                     className="h-full w-full object-cover"
                   />
@@ -109,7 +100,7 @@ export function ClassesDesktop() {
                   <div className="flex items-center gap-2">
                     <FaUser className="text-gray-300" size={14} />
                     <p className="text-gray-300 text-sm">
-                      {classe.professor || "Instrutor não definido"}
+                      {classe.teacher_id || "Instrutor não definido"}
                     </p>
                     <div className="relative group">
                       <RiEditLine
@@ -134,11 +125,11 @@ export function ClassesDesktop() {
                   <div className="flex flex-row gap-2 mt-12 text-gray-400 text-[10px]">
                     <div className="flex items-center gap-2">
                       <PiStudentBold size={14} />
-                      <p>{classe.classmates || "0"}</p>
+                      <p>{classe.classMates || "0"}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <FaCalendarAlt size={14} />
-                      <p>{classe.data || "00/00/0000"}</p>
+                      <p>{formatBirth(classe.createdAt) || "00/00/0000"}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <FaMapMarkerAlt size={14} />

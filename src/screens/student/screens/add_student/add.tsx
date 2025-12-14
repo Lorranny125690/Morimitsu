@@ -13,7 +13,7 @@ import { ModalMsg } from "@/components/modal";
 
 export function StudentScreen() {
   const navigate = useNavigate();
-  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible, setModalType, setModalMsg, validateStepData, validateStepAddress} = useStudentForm();
+  const { formData, handleChange, handleSubmit, modalVisible, modalMsg, modalType, setModalVisible, setModalType, setModalMsg, validateStepData, validateStepAddress, createdStudentId} = useStudentForm();
   const [currentStep, setCurrentStep] = useState<"DATA" | "ADDRESS" | "PUT">("DATA");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,8 +80,7 @@ export function StudentScreen() {
           
           {currentStep === "PUT" && (
             <StudentClass
-              formData={formData}
-              handleChange={handleChange}
+              studentId={createdStudentId}
               navigate={navigate}
               goBack={() => setCurrentStep("ADDRESS")}
             />
@@ -101,7 +100,7 @@ export function StudentScreen() {
                   setModalVisible(true);
                   return;
                 }
-                setCurrentStep("ADDRESS");
+                setCurrentStep("PUT");
               }}
             />
           )}

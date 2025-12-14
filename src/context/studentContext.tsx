@@ -23,6 +23,7 @@ interface studentProps {
   onGetStudent: () => Promise<ApiResponse>;
   onGraduate: (id: string) => Promise<ApiResponse>;
   onGetSTudentBirthday: () => Promise<ApiResponse>;
+  onPutStudentOnClass: (studentId: string, classId: string) => Promise<ApiResponse>;
   reloadFlag: boolean;
   triggerReload: () => void;
   students: Student[];
@@ -218,7 +219,7 @@ const graduateStudent = async(id: string) => {
     }
 
     const token = localStorage.getItem("my-jwt");
-console.log("token", token)
+
     const res = await api.patch(
       `/student/graduate/${id}`,
       null,
@@ -251,6 +252,45 @@ console.log("token", token)
   }
 }
 
+const putStudentOnClass = async (
+  studentId: string,
+  classId: string
+): Promise<ApiResponse> => {
+  try {
+    const token = localStorage.getItem("my-jwt");
+
+    const res = await api.post(
+      `/class/add-student/${classId}`, // class_id na URL
+      {
+        student_id: studentId,        // student_id no body
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return {
+      error: false,
+      status: res.status,
+      message: res.data?.message || "Aluno enturmado com sucesso!",
+      data: res.data,
+    };
+  } catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    return {
+      error: true,
+      status,
+      message: data?.message || "Erro ao enturmar aluno.",
+    };
+  }
+};
+
+
+
 export const StudentProvider = ({ children }: StudentProviderProps) => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
@@ -282,6 +322,7 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onGetStudent: getStudent, // opcional
     onGraduate: graduateStudent,
     onGetSTudentBirthday: getStudentBirthDay,
+    onPutStudentOnClass: putStudentOnClass,
 
     students,   // 👈 EXPÕE OS DADOS
     loading,    // 👈 EXPÕE O LOADING
