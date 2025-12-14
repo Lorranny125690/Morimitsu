@@ -113,12 +113,12 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg"
+        className="w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-hidden bg-white rounded-lg shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <motion.div
-          className="flex h-[25vh] flex-col bg-[#7C9FC9] p-6"
+          className="flex h-[25vh] md:min-h-[200px] flex-col bg-[#7C9FC9] p-6"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -155,7 +155,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               />
 
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-12 font-bold text-white">{student.social_name || studentName(student.name)}</h1>
+                <h1 className="text-[50px] h-12 leading-tight font-bold text-white">{student.social_name || studentName(student.name)}</h1>
                 <p className="text-[40px] font-medium text-white/60">{belts[student.belt]}</p>
                 <p className="text-[20px] text-white">{calculateAge(student.birth_date)} anos</p>
               </div>
