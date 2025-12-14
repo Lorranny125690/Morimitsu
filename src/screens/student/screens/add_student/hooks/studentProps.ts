@@ -38,6 +38,7 @@ export function useStudentForm(goNext?: () => void) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
+  const [onConfirm, setOnConfirm] = useState(false)
 
   const [zodFieldErrors, setZodFieldErrors] = useState<Record<string, string>>(
     {}
@@ -178,6 +179,7 @@ export function useStudentForm(goNext?: () => void) {
       setModalMsg("🎉 Aluno cadastrado com sucesso!");
       setModalType("success");
       setModalVisible(true);
+      setOnConfirm(true)
       goNext?.();
       return;
     }
@@ -212,5 +214,6 @@ export function useStudentForm(goNext?: () => void) {
     setModalType,
     setModalMsg,
     zodFieldErrors,
+    onConfirm,
   };
 }

@@ -183,6 +183,7 @@ export function PutStudentScreen() {
         onClose={() => setModalVisible(false)}
         message={modalMsg}
         type={modalType}
+        onConfirm={() => navigate(-1)}
       />
     </div>
   );

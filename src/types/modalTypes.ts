@@ -3,4 +3,5 @@ export type ModalMsgProps = {
   onClose: () => void;
   message: string;
   type?: "error" | "success";
+  onConfirm?: () => void;
 };
