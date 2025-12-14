@@ -12,6 +12,7 @@ import { ModalMsg } from "@/components/modal";
 import { formatPhone } from "../utils/formatPhone";
 import type { FilterKey } from "../types/filterKey";
 import { useDisplayStudents } from "../hooks/hooks";
+import { itemVariants, listVariants } from "@/utils/variants";
 
 export function StudentDesktop() {
   const {
@@ -74,16 +75,6 @@ export function StudentDesktop() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedStudent(null);
-  };
-
-  const listVariants = {
-    visible: { transition: { staggerChildren: 0.08 } },
-    hidden: {},
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0 },
   };
 
   return (
