@@ -181,8 +181,8 @@ export function useStudentForm(goNext?: () => void) {
       setModalType("success");
       setModalVisible(true);
       setOnConfirm(true)
-      console.log(res.data.students[0].id      )
-      setCreatedStudentId(res.data.id);
+      console.log(res.data.student.id)
+      setCreatedStudentId(res.data.student.id);
       goNext?.();
       return;
     }

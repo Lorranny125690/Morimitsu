@@ -13,6 +13,7 @@ import { formatPhone } from "../utils/formatPhone";
 import type { FilterKey } from "../types/filterKey";
 import { useDisplayStudents } from "../hooks/hooks";
 import { itemVariants, listVariants } from "@/utils/variants";
+import { studentName } from "../utils/formatName";
 
 export function StudentDesktop() {
   const {
@@ -157,7 +158,7 @@ export function StudentDesktop() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   </td>
-                  <td className="py-3 px-4">{s.social_name}</td>
+                  <td className="py-3 px-4">{s.social_name || studentName(s.name)}</td>
                   <td className="py-3 px-4">{formatPhone(s.phone)}</td>
                   <td className="py-3 px-4 text-center">
                     <span

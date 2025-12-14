@@ -28,12 +28,16 @@ export function useDisplayStudents(
     if (filters.presencas) list = list.filter(s => s.frequency > 0);
 
     if (alphabetical) {
-      list.sort((a, b) =>
-        a.social_name.localeCompare(b.social_name, "pt-BR", {
+      list.sort((a, b) => {
+        const nameA = (a.social_name || a.name).toLowerCase();
+        const nameB = (b.social_name || b.name).toLowerCase();
+    
+        return nameA.localeCompare(nameB, "pt-BR", {
           sensitivity: "base",
-        })
-      );
+        });
+      });
     }
+    
 
     return list;
   }, [students, filters, alphabetical]);
