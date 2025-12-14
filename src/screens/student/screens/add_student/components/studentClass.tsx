@@ -57,7 +57,7 @@ export function StudentClass({ studentId, navigate, goBack }: Props) {
             <div
               key={cls.id}
               onClick={() => setSelectedClassId(cls.id)}
-              className={`cursor-pointer flex items-center gap-3 border rounded-lg px-4 py-3 text-sm transition-all
+              className={`cursor-pointer text-black flex items-center gap-3 border rounded-lg px-4 py-3 text-sm transition-all
                 ${
                   selectedClassId === cls.id
                     ? "border-blue-500 bg-blue-50 text-blue-700"
