@@ -116,9 +116,9 @@ export function ClassesDesktop() {
         transition={{ duration: 0.5 }}
         className="flex max-w-6xl mx-auto mt-10"
       >
-        <div onClick={() => navigate("/class", {state: classes})} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
-          {classes.map((classe, index) => (
-            <motion.div key={index} whileHover={{ scale: 1.02 }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[64px] w-full">
+          {classes.map((classe) => (
+            <motion.div key={classe.id} whileHover={{ scale: 1.02 }}>
               {role !== "TEACHER" && (
                 <div className="flex justify-end items-center gap-3 w-full mb-4">
                   <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
@@ -130,13 +130,17 @@ export function ClassesDesktop() {
               )}
 
               {/* Imagem */}
-              <div className="bg-[#19262A] rounded-b-[6px]">
+              <div onClick={() => navigate("/class", { state: classe })} className="bg-[#19262A] rounded-b-[6px]">
                 <div className="h-[200px] w-full overflow-hidden">
-                  <img
-                    src={classe.image_class_url}
-                    alt={classe.name}
-                    className="h-full w-full object-cover"
-                  />
+                <img
+  src={
+    classe.image_class_url ??
+    "https://via.placeholder.com/400x200?text=Turma"
+  }
+  alt={classe.name}
+  className="h-full w-full object-cover"
+/>
+
                 </div>
 
                 {/* Conteúdo */}

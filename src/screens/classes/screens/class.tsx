@@ -1,16 +1,27 @@
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { itemVariants, listVariants } from "@/utils/variants";
 import { studentName } from "@/screens/student/utils/formatName";
 import { formatPhone } from "@/screens/student/utils/formatPhone";
+import { useEffect, useState } from "react";
+import type { Class } from "../components/type";
+import { api } from "@/context/authContext";
 
 export default function ClassDesktop() {
   const navigate = useNavigate();
+  const [classData, setClassData] = useState<Class | null>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state) {
+      setClassData(location.state as Class);
+    }
+  }, [location.state]);
+  
 
   // 🔧 mocks mínimos (substitua pelo que você já tem)
   const loading = false;
-  const displayStudents: any[] = [];
 
   const beltClasses: Record<string, string> = {
     branca: "bg-white",
@@ -32,6 +43,32 @@ export default function ClassDesktop() {
     console.log(state);
   }
 
+  const [professores, setProfessores] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchProfessor = async () => {
+      const token = localStorage.getItem("my-jwt");
+      if (!token || !classData?.teacher_id) return;
+  
+      try {
+        const res = await api.get("/user/filter", {
+          params: { id: classData.teacher_id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        setProfessores({
+          [classData.teacher_id]: res.data.users[0].username,
+        });
+      } catch (err) {
+        console.error("Erro ao buscar professor:", err);
+      }
+    };
+  
+    fetchProfessor();
+  }, [classData]);  
+  
   const role = localStorage.getItem("role")
 
   return (
@@ -43,10 +80,9 @@ export default function ClassDesktop() {
         {/* HEADER */}
         <div className="mt-10 flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-2xl font-bold">Turma número 01</h2>
-            <p className="text-gray-400 text-sm">Faixa azul · Sub-16</p>
+            <h2 className="text-2xl font-bold">{classData?.name}</h2>
           </div>
-          <p className="text-sm">Prof.: Daniel Heckman</p>
+          <p className="text-sm">  Prof.: {professores[classData?.teacher_id ?? ""] ?? "Carregando..."}</p>
         </div>
   
       </div>
@@ -99,86 +135,102 @@ export default function ClassDesktop() {
           </thead>
 
           <motion.tbody
-            variants={listVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {loading ? (
-              <tr>
-                <td colSpan={role !== "TEACHER" ? 9 : 8} className="py-10">
-                  <div className="flex justify-center">
-                    <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full" />
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              displayStudents.map((s) => (
-                <motion.tr
-                  key={s.id}
-                  variants={itemVariants}
-                  whileHover={{ backgroundColor: "#1E1E2F", scale: 1.01 }}
-                  className="border-b border-gray-800"
-                  onClick={() => openProfileModal(s)}
-                >
-                  <td className="py-3 px-4">
-                    <img
-                      src={s.image_student_url || "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  </td>
+  variants={listVariants}
+  initial="hidden"
+  animate="visible"
+>
+  {loading ? (
+    <tr>
+      <td colSpan={role !== "TEACHER" ? 9 : 8} className="py-10">
+        <div className="flex justify-center">
+          <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full" />
+        </div>
+      </td>
+    </tr>
+  ) : (
+    classData?.students.map((item) => {
+      const s = item.student;
 
-                  <td className="py-3 px-4">
-                    {s.social_name || studentName(s.name)}
-                  </td>
+      return (
+        <motion.tr
+          key={item.id}
+          variants={itemVariants}
+          whileHover={{ backgroundColor: "#1E1E2F", scale: 1.01 }}
+          className="border-b border-gray-800"
+          onClick={() => openProfileModal(s)}
+        >
+          <td className="py-3 px-4">
+            <img
+              src={
+                s.image_student_url ??
+                "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
+              }
+              className="w-12 h-12 rounded-full object-cover"
+            />
+          </td>
 
-                  <td className="py-3 px-4">{formatPhone(s.phone)}</td>
+          <td className="py-3 px-4">
+            {s.social_name || studentName(s.name)}
+          </td>
 
-                  <td className="py-3 px-4 text-center">
-                    <span className={`w-6 h-6 inline-block rounded-md ${beltClasses[s.belt] || "bg-gray-500"}`} />
-                  </td>
+          <td className="py-3 px-4">
+            {formatPhone(s.phone)}
+          </td>
 
-                  <td className="py-3 px-4 text-center">{s.grade}</td>
-                  <td className="py-3 px-4 text-center">{s.current_frequency}</td>
+          <td className="py-3 px-4 text-center">
+            <span
+              className={`w-6 h-6 inline-block rounded-md ${
+                beltClasses[s.belt?.toLowerCase()] ?? "bg-gray-500"
+              }`}
+            />
+          </td>
 
-                  <td className="py-3 px-4 text-center text-green-500">
-                    {s.status}
-                  </td>
+          <td className="py-3 px-4 text-center">{s.grade}</td>
 
-                  {role !== "TEACHER" && (
-                    <td className="py-3 px-4 text-center">
-                      <div className="flex justify-center gap-3">
-                        <FaEdit
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/edit_student/${s.id}`, { state: s });
-                          }}
-                          className="cursor-pointer hover:text-blue-500"
-                        />
-                        <FaTrash
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setStudentToDelete(s.id);
-                            setConfirmDeleteOpen(true);
-                          }}
-                          className="cursor-pointer hover:text-red-500"
-                        />
-                      </div>
-                    </td>
-                  )}
+          <td className="py-3 px-4 text-center">
+            {s.frequency}
+          </td>
 
-                  <td className="py-3 px-4 text-center">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-4 py-1 bg-[#0070F3] rounded-full text-sm"
-                    >
-                      Ver
-                    </motion.button>
-                  </td>
-                </motion.tr>
-              ))
-            )}
-          </motion.tbody>
+          <td className="py-3 px-4 text-center text-green-500">
+            {s.status}
+          </td>
+
+          {role !== "TEACHER" && (
+            <td className="py-3 px-4 text-center">
+              <div className="flex justify-center gap-3">
+                <FaEdit
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/edit_student/${s.id}`, { state: s });
+                  }}
+                  className="cursor-pointer hover:text-blue-500"
+                />
+                <FaTrash
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setStudentToDelete(s.id);
+                    setConfirmDeleteOpen(true);
+                  }}
+                  className="cursor-pointer hover:text-red-500"
+                />
+              </div>
+            </td>
+          )}
+
+          <td className="py-3 px-4 text-center">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-4 py-1 bg-[#0070F3] rounded-full text-sm"
+            >
+              Ver
+            </motion.button>
+          </td>
+        </motion.tr>
+      );
+    })
+  )}
+</motion.tbody>
         </table>
       </motion.div>
   
