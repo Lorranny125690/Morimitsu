@@ -1,3 +1,32 @@
+interface Teacher {
+  id: string;
+  username: string;
+  email: string;
+  image_user_url: string | null;
+  role: "ADMIN" | "TEACHER" | "STUDENT";
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Class {
+  id: string;
+  teacher_id: string;
+  image_class_url: string | null;
+  name: string;
+  local: string;
+  createdAt: string;
+  updatedAt: string;
+  teacher: Teacher;
+}
+
+interface StudentClass {
+  id: string;
+  student_id: string;
+  class_id: string;
+  createdAt: string;
+  updatedAt: string;
+  class: Class;
+}
 
 export type Student = {
   id: any;
@@ -22,5 +51,5 @@ export type Student = {
   city: string;
   street: string;
   district: string;
-  classes: [{id: string, student_id: string, class_id: string}];
+  classes: StudentClass[];
 };

@@ -167,7 +167,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
         <div className="gap-12 p-6 mb-8 justify-items-center flex justify-center">
           {/* Turmas */}
           <motion.div
-            className="hover:scale-110 transition-all flex flex-col justify-center items-center bg-[#7C9FC9] text-white rounded-lg p-4"
+            className="hover:scale-110 transition-all flex flex-col justify-center items-center gap-2 w-[258px] bg-[#7C9FC9] text-white rounded-lg p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
@@ -183,10 +183,10 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               {Array.isArray(student.classes) && student.classes.length > 0 ? (
                 student.classes.map((cls) => (
                   <li
-                    key={cls.id}
+                    key={cls.class.name}
                     className="text-[12px] hover:scale-105 transition-all"
                   >
-                    {cls.class_id}
+                    {cls.class.name} - {cls.class.teacher.username}
                   </li>
                 ))
               ) : (
