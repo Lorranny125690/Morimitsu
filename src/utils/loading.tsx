@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 
 export function LoadingScreen() {
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0D0C15] text-white">
       <motion.div
@@ -27,7 +28,7 @@ export function LoadingScreen() {
           transition={{ delay: 0.2 }}
           className="text-sm tracking-widest text-gray-300 uppercase"
         >
-          Carregando turmas...
+          Carregando...
         </motion.span>
       </motion.div>
     </div>

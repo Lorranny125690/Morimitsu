@@ -41,6 +41,7 @@ import {
   type WeekGraphic,
   type MonthGraphic,
 } from "@/utils/get";
+import { LoadingScreen } from "@/utils/loading";
 
 /* ---------------- Components ---------------- */
 interface StatCardProps {
@@ -131,7 +132,7 @@ export const Dashboard: React.FC = () => {
     load();
   }, []);  
 
-  if (loading || !summary) return null;
+  if (loading || !summary) return <LoadingScreen />;
   
   return (
     <div className="overflow-y-auto pb-[100px] bg-gradient-to-br from-[#0D0C15] via-[#161422] to-[#1E1A30]">
