@@ -9,12 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { useClasses, useDeleteClass } from "../hooks/classes";
 import { formatBirth } from "@/utils/formatDate";
 import { api } from "@/context/authContext";
+import { LoadingScreen } from "@/utils/loading";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { data: classes = [] } = useClasses();
+  const { data: classes = [], isLoading} = useClasses();
   const { mutate: removeClass } = useDeleteClass();
 
   const role = localStorage.getItem("role");
@@ -61,6 +62,10 @@ export function ClassesDesktop() {
 
     fetchProfessores();
   }, [classes]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }  
 
   return (
     <div className="min-h-screen bg-[#0D0C15] mb-40 text-white font-sans">
