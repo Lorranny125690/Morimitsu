@@ -3,9 +3,9 @@ import { MdAddBox } from "react-icons/md";
 import { useStudent } from "@/context/studentContext";
 import { getInitials } from "@/screens/student/utils/getInitials";
 import { useNavigate, useParams } from "react-router-dom";
+import { usePutStudentOnClassRQ } from "../hooks/classes";
 
 export function ClassStudents() {
-  const { onPutStudentOnClass } = useStudent();
   const { id } = useParams<{ id: string }>();
   const { students } = useStudent();
   const navigate = useNavigate();
@@ -15,18 +15,30 @@ export function ClassStudents() {
 
   const classId = id;
 
-  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [selectedStudentId, setSelectedStudentId] = useState<string[]>([]);
+
+  const { mutateAsync } = usePutStudentOnClassRQ(classId);
 
   const handlePut = async () => {
-    const res = await onPutStudentOnClass(selectedStudentId, classId);
-
-    if (res?.error) {
-      alert(res.message);
-      return;
+    try {
+      await Promise.all(
+        selectedStudentId.map(id => mutateAsync(id))
+      );
+  
+      alert("Alunos enturmados com sucesso!");
+      navigate(-1);
+    } catch {
+      alert("Erro ao enturmar alunos");
     }
+  };  
 
-    navigate(-1);
-  };
+  const toggleStudent = (studentId: string) => {
+    setSelectedStudentId(prev =>
+      prev.includes(studentId)
+        ? prev.filter(id => id !== studentId)
+        : [...prev, studentId]
+    );
+  };  
 
   return (
     <div className="min-h-screen w-full bg-gray-50 flex justify-center">
@@ -45,13 +57,13 @@ export function ClassStudents() {
         {/* LISTA */}
         <main className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
           {students.map((student) => {
-            const selected = selectedStudentId === student.id;
+            const selected = selectedStudentId.includes(student.id);
 
             return (
               <button
                 key={student.id}
                 type="button"
-                onClick={() => setSelectedStudentId(student.id)}
+                onClick={() => toggleStudent(student.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition
                   ${
                     selected
@@ -96,13 +108,13 @@ export function ClassStudents() {
           </button>
 
           <button
-            disabled={!selectedStudentId}
+            disabled={selectedStudentId.length === 0}
             onClick={handlePut}
             className={`px-6 py-2 rounded-full text-sm font-medium transition
               ${
-                selectedStudentId
-                  ? "bg-blue-600 hover:bg-blue-700 text-white"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                selectedStudentId.length
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
           >
             Enturmar aluno

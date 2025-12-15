@@ -38,7 +38,6 @@ function denyIfTeacher(): ApiResponse {
   };
 }
 
-
 interface StudentProviderProps {
   children: ReactNode;
 }

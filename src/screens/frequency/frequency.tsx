@@ -59,11 +59,34 @@ export function FrequencyDesktop() {
         )
       );
   
+      // ✅ Atualiza UI local
+      setAlunos(prev =>
+        prev.map(aluno => ({
+          ...aluno,
+          total: aluno.presencaHoje
+            ? aluno.total + 1
+            : aluno.total,
+          presencaHoje: false,
+        }))
+      );
+  
       alert("Frequência registrada com sucesso!");
-      navigate(-1);
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao registrar frequência");
+    } catch (error: any) {
+      const status = error?.response?.status;
+  
+      if (status === 401) {
+        alert("Acesso negado. Faça login novamente.");
+        navigate("/login");
+        return;
+      }
+  
+      if (status === 404) {
+        alert("Aula ou aluno não encontrado.");
+        return;
+      }
+  
+      console.error("Erro ao registrar frequência:", error);
+      alert("Erro inesperado ao registrar frequência.");
     } finally {
       setCreating(false);
     }
@@ -206,10 +229,12 @@ export function FrequencyDesktop() {
               Cancelar
             </button>
             <button
+              disabled={_creating}
               onClick={confirmarPresenca}
-              className="w-[140px] rounded-full h-[46px] text-white bg-[#720000]"
+              className={`w-[140px] rounded-full h-[46px] text-white 
+                ${_creating ? "bg-gray-400 cursor-not-allowed" : "bg-[#720000]"}`}
             >
-              Confirmar
+              {_creating ? "Salvando..." : "Confirmar"}
             </button>
           </div>
         </div>

@@ -9,6 +9,7 @@ export function useClasses() {
 }
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useStudent } from "@/context/studentContext";
 
 export function useDeleteClass() {
   const queryClient = useQueryClient();
@@ -20,3 +21,21 @@ export function useDeleteClass() {
     },
   });
 }
+
+export function usePutStudentOnClassRQ(classId: string) {
+  const { onPutStudentOnClass } = useStudent();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (studentId: string) =>
+      onPutStudentOnClass(studentId, classId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["class", classId] });
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+    },
+  });
+}
+
+
+

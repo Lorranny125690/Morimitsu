@@ -1,4 +1,4 @@
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { itemVariants, listVariants } from "@/utils/variants";
@@ -19,6 +19,14 @@ export default function ClassDesktop() {
       setClassData(location.state as Class);
     }
   }, [location.state]);
+
+  const handleDelete = async(class_id: string, student_id: string) => {
+    await api.delete(`/class/remove-student/${class_id}`, {
+      data: {
+        student_id
+      }
+    })
+  }
   
 
   // 🔧 mocks mínimos (substitua pelo que você já tem)
@@ -34,14 +42,6 @@ export default function ClassDesktop() {
 
   function openProfileModal(student: any) {
     console.log(student);
-  }
-
-  function setStudentToDelete(id: number) {
-    console.log(id);
-  }
-
-  function setConfirmDeleteOpen(state: boolean) {
-    console.log(state);
   }
 
   const [professores, setProfessores] = useState<Record<string, string>>({});
@@ -195,17 +195,14 @@ export default function ClassDesktop() {
                   </td>
                   <td className="py-3 px-4 text-center">
                     {role !== "TEACHER" && <div className="flex items-center justify-center gap-3">
-                      <FaEdit  onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/edit_student/${s.id}`, { state: s });
-                      }}
-                      className="cursor-pointer hover:text-blue-500 transition" />
                       <FaTrash
                       className="cursor-pointer hover:text-red-500 transition"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setStudentToDelete(s.id);
-                        setConfirmDeleteOpen(true);
+                        handleDelete(
+                          classData?.id,
+                          s.id
+                        )                        
                       }}
                     />
                   </div>}
