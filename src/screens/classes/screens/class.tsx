@@ -7,6 +7,7 @@ import { formatPhone } from "@/screens/student/utils/formatPhone";
 import { useEffect, useState } from "react";
 import type { Class } from "../components/type";
 import { api } from "@/context/authContext";
+import { getInitials } from "@/screens/student/utils/getInitials";
 
 export default function ClassDesktop() {
   const navigate = useNavigate();
@@ -117,123 +118,99 @@ export default function ClassDesktop() {
         transition={{ duration: 0.5 }}
         className="bg-[#162026] mt-10 rounded-md shadow-lg overflow-hidden max-w-6xl mx-auto"
       >
-        <table className="w-full border-collapse text-left table-fixed">
-          <thead className="text-gray-400 text-sm">
-            <tr className="border-b border-gray-700">
-              <th className="py-3 px-4 w-24">Foto</th>
-              <th className="py-3 px-4 w-40">Nome</th>
-              <th className="py-3 px-4 w-32">Número</th>
-              <th className="py-3 px-4 w-20 text-center">Faixa</th>
-              <th className="py-3 px-4 w-16 text-center">Grau</th>
-              <th className="py-3 px-4 w-28 text-center">Frequência</th>
-              <th className="py-3 px-4 w-24 text-center">Status</th>
-              {role !== "TEACHER" && (
-                <th className="py-3 px-4 w-28 text-center">Operação</th>
-              )}
-              <th className="py-3 px-4 w-24 text-center">Conferir</th>
-            </tr>
-          </thead>
-
-          <motion.tbody
-  variants={listVariants}
-  initial="hidden"
-  animate="visible"
->
-  {loading ? (
-    <tr>
-      <td colSpan={role !== "TEACHER" ? 9 : 8} className="py-10">
-        <div className="flex justify-center">
-          <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full" />
-        </div>
-      </td>
-    </tr>
-  ) : (
-    classData?.students.map((item) => {
-      const s = item.student;
-
-      return (
-        <motion.tr
-          key={item.id}
-          variants={itemVariants}
-          whileHover={{ backgroundColor: "#1E1E2F", scale: 1.01 }}
-          className="border-b border-gray-800"
-          onClick={() => openProfileModal(s)}
-        >
-          <td className="py-3 px-4">
-            <img
-              src={
-                s.image_student_url ??
-                "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
-              }
-              className="w-12 h-12 rounded-full object-cover"
-            />
-          </td>
-
-          <td className="py-3 px-4">
-            {s.social_name || studentName(s.name)}
-          </td>
-
-          <td className="py-3 px-4">
-            {formatPhone(s.phone)}
-          </td>
-
-          <td className="py-3 px-4 text-center">
-            <span
-              className={`w-6 h-6 inline-block rounded-md ${
-                beltClasses[s.belt?.toLowerCase()] ?? "bg-gray-500"
-              }`}
-            />
-          </td>
-
-          <td className="py-3 px-4 text-center">{s.grade}</td>
-
-          <td className="py-3 px-4 text-center">
-            {s.frequency}
-          </td>
-
-          <td className="py-3 px-4 text-center text-green-500">
-            {s.status}
-          </td>
-
-          {role !== "TEACHER" && (
-            <td className="py-3 px-4 text-center">
-              <div className="flex justify-center gap-3">
-                <FaEdit
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/edit_student/${s.id}`, { state: s });
-                  }}
-                  className="cursor-pointer hover:text-blue-500"
-                />
-                <FaTrash
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setStudentToDelete(s.id);
-                    setConfirmDeleteOpen(true);
-                  }}
-                  className="cursor-pointer hover:text-red-500"
-                />
-              </div>
-            </td>
-          )}
-
-          <td className="py-3 px-4 text-center">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-4 py-1 bg-[#0070F3] rounded-full text-sm"
-            >
-              Ver
-            </motion.button>
-          </td>
-        </motion.tr>
-      );
-    })
-  )}
-</motion.tbody>
-        </table>
-      </motion.div>
-  
+          <table className="w-full border-collapse text-left table-fixed">
+            <thead className="text-gray-400 text-sm">
+              <tr className="border-b border-gray-700">
+                <th className="py-3 px-4 w-24">Foto</th>
+                <th className="py-3 px-3 w-38">Nome</th>
+                <th className="py-3 px-4 w-38">Número</th>
+                <th className="py-3 px-4 w-20 text-center">Faixa</th>
+                <th className="py-3 px-4 w-16 text-center">Grau</th>
+                <th className="py-3 px-4 w-28 text-center">Frequência</th>
+                <th className="py-3 px-4 w-24 text-center">Status</th>
+                {role !== "TEACHER" && <th className="py-3 px-4 w-28 text-center">Operação</th>}
+                <th className="py-3 px-4 w-24 text-center">Conferir</th>
+              </tr>
+            </thead>
+            <motion.tbody variants={listVariants}>
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="py-10">
+                    <div className="w-full flex justify-center items-center">
+                      <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                classData?.students.map((item) => {
+                  const s = item.student;
+                  return(
+                  <motion.tr
+                    variants={itemVariants}
+                    key={item.id}
+                    whileHover={{ backgroundColor: "#1E1E2F", scale: 1.011 }}
+                    className="border-b border-gray-800 transition hover:cursor-pointer"
+                    onClick={() => openProfileModal(s)}
+                  >
+                  <td className="py-3 px-4">
+                  {s.image_student_url ? (
+                  <img
+                    src={s.image_student_url}
+                    alt="Perfil"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  ) : (
+                    <div className="w-12 h-12 max-h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-[12px] select-none">
+                      {getInitials(s.social_name || s.name)}
+                    </div>
+                  )}
+                  </td>
+                  <td className="py-3 px-4">{s.social_name || studentName(s.name)}</td>
+                  <td className="py-3 px-4">{formatPhone(s.phone)}</td>
+                  <td className="py-3 px-4 text-center">
+                    <span
+                      className={`inline-block w-6 h-6 rounded-md ${
+                        beltClasses[s.belt] ?? "bg-gray-500"
+                      }`}                      
+                    />
+                  </td>
+                  <td className="py-3 px-4 text-center">{s.grade}</td>
+                  <td className="py-3 px-4 text-center">{s.current_frequency}</td>
+                  <td className="py-3 px-4 text-center text-green-500 font-medium">
+                    {s.status}
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    {role !== "TEACHER" && <div className="flex items-center justify-center gap-3">
+                      <FaEdit  onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/edit_student/${s.id}`, { state: s });
+                      }}
+                      className="cursor-pointer hover:text-blue-500 transition" />
+                      <FaTrash
+                      className="cursor-pointer hover:text-red-500 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setStudentToDelete(s.id);
+                        setConfirmDeleteOpen(true);
+                      }}
+                    />
+                  </div>}
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="hover:cursor-pointer px-4 py-1 bg-[#0070F3] hover:bg-blue-700 rounded-[20px] text-white text-sm font-medium transition"
+                      onClick={() => openProfileModal(s)}
+                    >
+                      Ver
+                    </motion.button>
+                  </td>
+                </motion.tr>)
+                }))}
+             </motion.tbody>
+           </table>
+         </motion.div>
       </div>
     </div>
   );

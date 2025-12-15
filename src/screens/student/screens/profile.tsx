@@ -275,7 +275,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               </button>)}
             </div>
 
-            <span className="text-[30px] font-semibold text-white">{student.frequency || 0}</span>
+            <span className="text-[30px] font-semibold text-white">{student.current_frequency || 0}</span>
           </motion.div>
         </div>
 

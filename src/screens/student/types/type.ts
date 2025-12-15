@@ -35,7 +35,8 @@ export type Student = {
   belt: string;
   degree: string;
   status: string;
-  frequency: number;
+  current_frequency: number;
+  total_frequency: number;
   photo?: string;
   phone: string;
   birth_date: string;

@@ -31,8 +31,8 @@ export function StudentDesktop() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
-  const [modalType, setModalType] = useState<"error" | "success">("error");
-
+  const [modalType, setModalType] = useState<"error" | "success">("error"); 
+  
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
 
