@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import bgImage from "../../../assets/image4.png";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { api } from "@/context/authContext";
+import { turmasRecentes } from "../components/images";
 
 type FormDataType = {
   name: string;
   teacher_id: string;
   local: string;
-  file_image: File | null;
+  image_class_url: string;
 };
 
 export function AddClass() {
@@ -19,10 +20,10 @@ export function AddClass() {
     name: "",
     teacher_id: "",
     local: "",
-    file_image: null,
+    image_class_url: "",
   });
 
-  // ========= HANDLERS ======================
+  // ================= HANDLERS =================
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -33,126 +34,149 @@ export function AddClass() {
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    setFormData((prev) => ({
-      ...prev,
-      file_image: file,
-    }));
-  };
-
   const handleCreate = async () => {
-    const data = new FormData();
-
-    data.append("name", formData.name);
-    data.append("teacher_id", String(formData.teacher_id));
-    data.append("local", formData.local);
-
-    // 👉 ENVIA O ARQUIVO COM O NOME CORRETO EXIGIDO PELA API
-    if (formData.file_image) {
-      data.append("image_class_url", formData.file_image);
-    }
-
-    await api.post(`/class/create`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
+    await api.post("/class/create", {
+      name: formData.name,
+      teacher_id: formData.teacher_id,
+      local: formData.local,
+      image_class_url: formData.image_class_url,
     });
-
+  
     navigate(-1);
-  };
+  };  
 
-  // =========================================
+  // ============================================
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#41414B] flex-col">
-      {/* Voltar */}
-      <div className="w-full px-6 m-[-50px] flex justify-start max-w-7xl mb-6">
+      {/* VOLTAR */}
+      <div className="w-full px-6 flex justify-start max-w-7xl mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="hover:cursor-pointer text-gray-300 hover:text-white transition"
+          className="text-gray-300 hover:text-white transition"
         >
           <IoMdArrowRoundBack size={28} />
         </button>
       </div>
 
-      {/* Container */}
-      <div className="relative w-full max-w-7xl h-[721px] bg-white flex items-center justify-center shadow-xl overflow-hidden">
+      {/* CONTAINER PRINCIPAL */}
+      <div className="relative w-full max-w-7xl h-[721px] bg-white shadow-xl overflow-hidden">
+        {/* TOPO COM IMAGEM */}
         <div
           className="absolute top-0 left-0 w-full h-[40%] bg-cover bg-center"
           style={{ backgroundImage: `url(${bgImage})` }}
         />
+
+        {/* BASE BRANCA */}
         <div className="absolute bottom-0 left-0 w-full h-[60%] bg-white" />
 
         <motion.div
-          className="relative flex gap-12 z-10"
+          className="relative z-10 flex justify-center items-center h-full"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100 justify-between">
-            <div className="flex flex-col w-full">
-              <div className="border-b-2 border-gray-200 py-5 mb-4 flex items-center">
-                <h3 className="px-4 text-gray-700 font-medium text-[10px]">Dados</h3>
-                <h3 className="hover:cursor-pointer text-gray-400 font-regular text-[10px]">
-                  Enturmar
-                </h3>
-              </div>
+          {/* CARD */}
+          <div className="bg-white shadow-lg w-[680px] h-[460px] border border-gray-100 flex flex-col">
+            {/* HEADER */}
+            <div className="border-b border-gray-200 px-6 py-4 flex gap-4">
+              <span className="text-[10px] text-gray-700 font-medium">
+                Dados
+              </span>
+              <span className="text-[10px] text-gray-400">Enturmar</span>
+            </div>
 
-              {/* FORM */}
-              <form className="flex items-center justify-center flex-col gap-6">
-                {/* NOME */}
+            {/* FORM */}
+            <form className="flex-1 overflow-hidden flex flex-col">
+              {/* CAMPOS */}
+              <div className="flex flex-col gap-5 px-6 py-4">
                 <div>
-                  <label className="block text-[10px] text-black">Nome</label>
+                  <label className="block text-[10px] text-black mb-1">
+                    Nome
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-50 h-5 text-[12px] text-black border-gray-300 border rounded-[2px] py-3 px-3 mt-[2px] focus:ring-2 focus:ring-blue-400 box-border shadow-md"
+                    className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
                   />
                 </div>
 
-                {/* PROFESSOR ID */}
                 <div>
-                  <label className="block text-[10px] text-black">Professor (ID)</label>
+                  <label className="block text-[10px] text-black mb-1">
+                    Professor (ID)
+                  </label>
                   <input
-                    type="string"
+                    type="text"
                     name="teacher_id"
                     value={formData.teacher_id}
                     onChange={handleChange}
-                    className="w-50 h-5 text-[12px] text-black border-gray-300 border rounded-[2px] py-3 px-3 mt-[2px] focus:ring-2 focus:ring-blue-400 box-border shadow-md"
+                    className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
                   />
                 </div>
 
-                {/* LOCAL */}
                 <div>
-                  <label className="block text-[10px] text-black">Local</label>
+                  <label className="block text-[10px] text-black mb-1">
+                    Local
+                  </label>
                   <input
                     type="text"
                     name="local"
                     value={formData.local}
                     onChange={handleChange}
-                    className="w-50 h-5 text-[12px] text-black border-gray-300 border rounded-[2px] py-3 px-3 mt-[2px] focus:ring-2 focus:ring-blue-400 box-border shadow-md"
+                    className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
                   />
                 </div>
+              </div>
 
-                {/* IMAGEM */}
-                <div>
-                  <label className="block text-[10px] text-black">Imagem da Turma</label>
-                  <input
-                    type="file"
-                    name="file_image"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="w-50 h-5 text-[12px] text-black"
-                  />
+              {/* IMAGENS */}
+              <div className="px-6">
+                <label className="block overflow-hidden text-[10px] text-black mb-2">
+                  Escolha uma imagem
+                </label>
+
+                <div className="max-h-[140px] pr-1">
+                  <div className="grid grid-cols-5 gap-3">
+                    {turmasRecentes.map((turma) => (
+                      <button
+                        key={turma.id}
+                        type="button"
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            image_class_url: turma.imagem,
+                          }))
+                        }
+                        className={`relative w-24 h-24 rounded-md overflow-hidden border-2 transition
+                          ${
+                            formData.image_class_url === turma.imagem
+                              ? "border-blue-500 scale-105"
+                              : "border-transparent hover:border-gray-300"
+                          }`}
+                      >
+                        <img
+                          src={turma.imagem}
+                          alt={turma.nome}
+                          className="w-full h-full object-cover"
+                        />
+
+                        {formData.image_class_url === turma.imagem && (
+                          <div className="absolute inset-0 bg-blue-500/40 flex items-center justify-center text-white text-[10px] font-semibold">
+                            Selecionada
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </form>
+              </div>
 
-              {/* BOTÕES */}
-              <div className="flex justify-end items-center mt-8 space-x-6">
+              {/* FOOTER FIXO */}
+              <div className="mt-auto border-t border-gray-200 px-6 py-4 flex justify-end gap-6">
                 <button
-                  onClick={() => navigate(-1)}
                   type="button"
+                  onClick={() => navigate(-1)}
                   className="text-gray-400 text-[10px] hover:text-gray-600 transition"
                 >
                   Cancelar
@@ -161,12 +185,12 @@ export function AddClass() {
                 <button
                   type="button"
                   onClick={handleCreate}
-                  className="hover:cursor-pointer mr-5 bg-blue-500 hover:bg-blue-600 text-white text-[10px] rounded-full h-[30px] w-[90px] shadow-md transition"
+                  className="bg-blue-500 hover:bg-blue-600 text-white text-[10px] rounded-full h-[32px] w-[100px] shadow-md transition"
                 >
                   Enturmar
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </motion.div>
       </div>
