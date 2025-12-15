@@ -25,7 +25,7 @@ export function useDisplayStudents(
     if (filters.mista) list = list.filter(s => s.classType === "mista");
     if (filters.baby) list = list.filter(s => s.classType === "baby");
     if (filters.kids) list = list.filter(s => s.classType === "kids");
-    if (filters.presencas) list = list.filter(s => s.frequency > 0);
+    if (filters.presencas) list = list.filter(s => s.current_frequency > 0);
 
     if (alphabetical) {
       list.sort((a, b) => {
