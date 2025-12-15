@@ -244,8 +244,9 @@ const graduateStudent = async(id: string) => {
     let message = "Erro ao buscar alunos.";
 
     if (status === 400) message = data?.message || "Requisição inválida.";
-    else if (status === 404) message = data?.message || "Nenhum aluno encontrado.";
-    else if (status === 422) message = data?.message || "Erro de validação (Zod).";
+    else if (status === 401) message = data?.message || "Acesso negado.";
+    else if (status === 404) message = data?.message || "Aluno não encontrado.";
+    else if (status === 405) message = data?.message || "Aluno não apto a graduar.";
     else if (status >= 500) message = "Erro interno no servidor.";
 
     return { error: true, status, message };
