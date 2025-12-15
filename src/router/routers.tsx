@@ -49,7 +49,8 @@ export function AppContent() {
   const noHeaderRoutes = ["/", "/login", "/password", "/code", "/email", "/add_student", "/add_classes", "/profileMobile", "/frequency", "/add_student_adress"];
   const isEditStudent = location.pathname.startsWith("/edit_student/");
   const isEditStudent2 = location.pathname.startsWith("/enturmar/");
-  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent;
+  const isEditStudent3 = location.pathname.startsWith("/frequency/");
+  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent3 && !isEditStudent;
 
   const privateRoutes = [
     "/home",
@@ -116,7 +117,7 @@ export function AppContent() {
             <Route path="/add_classes" element={<AddClass />} />
             <Route path="/profile" element={<Profile/>} />
             <Route path="/profileMobile" element={<ProfileMobile/>} />
-            <Route path="/frequency" element={<Frequency/>} />
+            <Route path="/frequency/:id" element={<Frequency/>} />
             <Route path="/classStudent" element={<StudentClassList/>}/>
             <Route path="/edit_student/:id" element={<PutStudentScreen />} />
             <Route path="/class" element={<ClassDesktop />} />

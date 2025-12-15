@@ -107,7 +107,21 @@ export default function ClassDesktop() {
           <div className="flex gap-3">
             <button className="hover:scale-105 transition-all cursor-pointer px-4 h-10 rounded-lg bg-[#076185]">Editar turma</button>
             <button onClick={() => navigate(`/enturmar/${classData?.id}`)} className="hover:scale-105 transition-all cursor-pointer px-4 h-10 rounded-lg bg-[#076185]">Adicionar aluno</button>
-            <button className="cursor-pointer hover:scale-105 transition-all px-4 h-10 rounded-lg bg-[#076185]">Fazer frequência</button>
+            <button
+              onClick={() =>
+                navigate(`/frequency/${classData?.id}`, {
+                  state: {
+                    classId: classData?.id,
+                    teacherId: classData?.teacher_id,
+                    classroomName: classData?.name,
+                    students: classData?.students,
+                  },
+                })                
+              }
+              className="cursor-pointer hover:scale-105 transition-all px-4 h-10 rounded-lg bg-[#076185]"
+            >
+              Fazer frequência
+            </button>
           </div>
         </div>
   

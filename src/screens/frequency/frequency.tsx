@@ -2,36 +2,92 @@ import { FaCalendar, FaDownload } from "react-icons/fa";
 import bg from "../../assets/bakcgorund.png";
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-
-// Dados simulados
-const alunos = [
-  {
-    id: 1,
-    nome: "Laura",
-    presencaHoje: false,
-    ultimos7dias: [0, 0, 0, 0, 0, 1, 1],
-    total: 18,
-  },
-  {
-    id: 2,
-    nome: "Miguel",
-    presencaHoje: true,
-    ultimos7dias: [1, 1, 0, 1, 1, 1, 1],
-    total: 23,
-  },
-  {
-    id: 3,
-    nome: "Ana",
-    presencaHoje: false,
-    ultimos7dias: [0, 1, 0, 0, 1, 0, 0],
-    total: 12,
-  },
-];
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { api } from "@/context/authContext";
 
 export function FrequencyDesktop() {
-
+  const location = useLocation();
   const navigate = useNavigate();
+  const { classId, teacherId } = location.state || {};
 
+  interface FrequencyStudent {
+    id: string;
+    nome: string;
+    presencaHoje: boolean;
+    ultimos7dias: number[];
+    total: number;
+  }
+
+  const [dataAula, setDataAula] = useState("");
+  const [classroomId, setClassroomId] = useState<string | null>(null);
+  const [_creating, setCreating] = useState(false);
+
+  async function criarAulaSeNecessario(): Promise<string> {
+    if (classroomId) return classroomId;
+  
+    if (!dataAula) {
+      alert("Defina a data da aula");
+      throw new Error("Data não definida");
+    }
+  
+    const res = await api.post(`/classroom/${classId}`, {
+      teacher_id: teacherId,
+      classroom_date: dataAula,
+    });
+  
+    const newClassroomId = res.data.clasroom.id;
+  
+    setClassroomId(newClassroomId);
+    return newClassroomId;
+  }  
+  
+  const [alunos, setAlunos] = useState<FrequencyStudent[]>([]);
+
+  async function confirmarPresenca() {
+    try {
+      setCreating(true);
+  
+      const classroom_id = await criarAulaSeNecessario();
+  
+      await Promise.all(
+        alunos.map(aluno =>
+          api.post(`/presence/add/${classroom_id}`, {
+            student_id: aluno.id,
+            presence: aluno.presencaHoje,
+          })
+        )
+      );
+  
+      alert("Frequência registrada com sucesso!");
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao registrar frequência");
+    } finally {
+      setCreating(false);
+    }
+  }  
+
+  useEffect(() => {
+    if (!location.state?.students) return;
+  
+    const alunosFormatados: FrequencyStudent[] =
+      location.state.students.map((item: any) => {
+        const s = item.student;
+  
+        return {
+          id: s.id,
+          nome: s.social_name || s.name,
+          presencaHoje: false,
+          ultimos7dias: [],
+          total: s.current_frequency ?? 0,
+        };
+      });
+  
+    setAlunos(alunosFormatados);
+  }, [location.state]);  
+  
   return (
     <div
       className="w-full h-screen bg-cover bg-center flex items-center justify-center px-4"
@@ -59,8 +115,9 @@ export function FrequencyDesktop() {
               <div className="flex flex-col leading-none">
                 <p className="text-[#560000]/60 text-[16px]">Data</p>
                 <input
-                  type="text"
-                  placeholder="00/00/0000"
+                  type="date"
+                  value={dataAula}
+                  onChange={(e) => setDataAula(e.target.value)}
                   className="text-black outline-none w-45 text-xl"
                 />
               </div>
@@ -110,7 +167,16 @@ export function FrequencyDesktop() {
                       type="checkbox"
                       checked={aluno.presencaHoje}
                       className="h-4 w-4 accent-green-600 cursor-pointer"
-                      onChange={() => {}}
+                      onChange={() => {
+                        setAlunos(prev =>
+                          prev.map(a =>
+                            a.id === aluno.id
+                              ? { ...a, presencaHoje: !a.presencaHoje }
+                              : a
+                          )
+                        );
+                      }}
+                      
                     />
                   </td>
 
@@ -139,7 +205,10 @@ export function FrequencyDesktop() {
             <button className="w-[140px] rounded-full h-[46px] text-[#989898]">
               Cancelar
             </button>
-            <button className="w-[140px] rounded-full h-[46px] text-white bg-[#720000]">
+            <button
+              onClick={confirmarPresenca}
+              className="w-[140px] rounded-full h-[46px] text-white bg-[#720000]"
+            >
               Confirmar
             </button>
           </div>
