@@ -20,7 +20,7 @@ interface CarouselItem {
 function ScreenCard({ id, titulo, tipo }: ListaCarrosselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { onGetSTudentBirthday, onGetStudent } = useStudent();
-  const { classes } = useClasses();
+  const { data: classes = [] } = useClasses();
 
   const [items, setItems] = useState<CarouselItem[]>([]);
   const [_loading, setLoading] = useState(true);

@@ -1,24 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
-import type { Class } from "../components/type";
-import { getClasses } from "../services/services";
+import { useQuery } from "@tanstack/react-query";
+import { deleteClass, getClasses } from "../services/services";
 
 export function useClasses() {
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [loading, setLoading] = useState(false);
+  return useQuery({
+    queryKey: ["classes"],
+    queryFn: getClasses,
+  });
+}
 
-  const fetchClasses = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await getClasses();
-      setClasses(data);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-  useEffect(() => {
-    fetchClasses();
-  }, [fetchClasses]);
+export function useDeleteClass() {
+  const queryClient = useQueryClient();
 
-  return { classes, loading, fetchClasses };
+  return useMutation({
+    mutationFn: deleteClass,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+    },
+  });
 }

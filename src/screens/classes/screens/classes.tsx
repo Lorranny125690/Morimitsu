@@ -6,16 +6,17 @@ import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { useClasses } from "../hooks/classes";
+import { useClasses, useDeleteClass } from "../hooks/classes";
 import { formatBirth } from "@/utils/formatDate";
-import { deleteClass } from "../services/services";
 import { api } from "@/context/authContext";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { classes } = useClasses();
+  const { data: classes = [] } = useClasses();
+  const { mutate: removeClass } = useDeleteClass();
+
   const role = localStorage.getItem("role");
 
   // Mapeia teacher_id para o nome do professor
@@ -24,7 +25,7 @@ export function ClassesDesktop() {
   useEffect(() => {
     const fetchProfessores = async () => {
       const token = localStorage.getItem("my-jwt");
-      if (!token || classes.length === 0) return;
+      if (!token || !classes?.length) return;
 
       try {
         const results = await Promise.all(
@@ -123,9 +124,10 @@ export function ClassesDesktop() {
                 <div className="flex justify-end items-center gap-3 w-full mb-4">
                   <FaEdit className="cursor-pointer hover:text-blue-500 transition" />
                   <FaTrash
-                    onClick={() => deleteClass(classe.id)}
-                    className="cursor-pointer hover:text-red-500 transition"
-                  />
+  onClick={() => removeClass(classe.id)}
+  className="cursor-pointer hover:text-red-500 transition"
+/>
+
                 </div>
               )}
 

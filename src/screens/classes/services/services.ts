@@ -6,8 +6,7 @@ export const getClasses = async (): Promise<Class[]> => {
 
   const res = await api.get("/class", {
     headers: {
-      Authorization: `Bearer ${token}`,
-    },
+      Authorization: `Bearer ${token}` },
   });
 
   return res.data.classes;
@@ -18,8 +17,6 @@ export const deleteClass = async (id: string): Promise<void> => {
 
   await api.delete(`/class/${id}`, {
     headers: {
-      Authorization: `Bearer ${token}`,
-    },
+      Authorization: `Bearer ${token}` },
   });
 };
-
