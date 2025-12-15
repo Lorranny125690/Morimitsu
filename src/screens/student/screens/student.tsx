@@ -14,6 +14,7 @@ import type { FilterKey } from "../types/filterKey";
 import { useDisplayStudents } from "../hooks/hooks";
 import { itemVariants, listVariants } from "@/utils/variants";
 import { studentName } from "../utils/formatName";
+import { getInitials } from "../utils/getInitials";
 
 export function StudentDesktop() {
   const {
@@ -148,15 +149,17 @@ export function StudentDesktop() {
                     onClick={() => openProfileModal(s)}
                   >
                   <td className="py-3 px-4">
+                  {s.image_student_url ? (
                   <img
-                    src={
-                      s.image_student_url
-                        ? s.image_student_url
-                        : "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
-                    }
-                    alt="Foto"
+                    src={s.image_student_url}
+                    alt="Perfil"
                     className="w-12 h-12 rounded-full object-cover"
                   />
+                  ) : (
+                    <div className="w-12 h-12 max-h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-[12px] select-none">
+                      {getInitials(s.social_name || s.name)}
+                    </div>
+                  )}
                   </td>
                   <td className="py-3 px-4">{s.social_name || studentName(s.name)}</td>
                   <td className="py-3 px-4">{formatPhone(s.phone)}</td>

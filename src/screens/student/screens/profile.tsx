@@ -8,6 +8,7 @@ import { useStudent } from "@/context/studentContext";
 import { useState } from "react";
 import { PasswordModal } from "../components/modal";
 import { api } from "@/context/authContext";
+import { getInitials } from "../utils/getInitials";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -144,15 +145,17 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
-              <img
-                src={
-                  student.image_student_url
-                  ? student.image_student_url
-                    : "https://i.pinimg.com/736x/64/99/f8/6499f89b3bd815780d60f2cbc210b2bd.jpg"
-                }
-                alt="Perfil"
-                className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full transition-all cursor-pointer"
-              />
+              {student.image_student_url ? (
+                <img
+                  src={student.image_student_url}
+                  alt="Perfil"
+                  className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full transition-all cursor-pointer"
+                />
+              ) : (
+                <div className="w-[21vh] h-[21vh] max-h-[21vh] rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-[64px] select-none">
+                  {getInitials(student.social_name || student.name)}
+                </div>
+              )}
 
               <div className="flex items-center flex-col">
                 <h1 className="text-[50px] h-12 leading-tight font-bold text-white">{student.social_name || studentName(student.name)}</h1>
