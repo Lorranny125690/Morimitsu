@@ -11,7 +11,7 @@ interface Props {
 
 export function StudentClass({ studentId, navigate, goBack }: Props) {
   const { onPutStudentOnClass } = useStudent();
-  const { classes, loading } = useClasses();
+  const { data: classes = [], isLoading } = useClasses();
 
   const [selectedClassId, setSelectedClassId] = useState<string>("");
 
@@ -49,11 +49,11 @@ export function StudentClass({ studentId, navigate, goBack }: Props) {
 
         {/* Lista de turmas */}
         <div className="flex-1 overflow-auto px-6 py-2 space-y-2">
-          {loading && (
+          {isLoading && (
             <p className="text-sm text-gray-400">Carregando turmas...</p>
           )}
 
-          {!loading && classes.map((cls) => (
+          {!isLoading && classes.map((cls) => (
             <div
               key={cls.id}
               onClick={() => setSelectedClassId(cls.id)}

@@ -189,7 +189,7 @@ export function ClassesDesktop() {
                   <div className="flex flex-row gap-2 mt-12 text-gray-400 text-[10px]">
                     <div className="flex items-center gap-2">
                       <PiStudentBold size={14} />
-                      <p>{classe.classMates || "0"}</p>
+                      <p>{classe._count?.students ?? 0}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <FaCalendarAlt size={14} />

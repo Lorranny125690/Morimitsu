@@ -20,4 +20,5 @@ export type Class = {
   updatedAt: string;
   classMates: number;
   students: ClassStudent[];
+  _count: {students: number};
 };
