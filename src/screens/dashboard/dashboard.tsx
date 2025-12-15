@@ -23,46 +23,6 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 
-/* ---------------- Mock Data ---------------- */
-interface AttendanceData {
-  name: string;
-  presences: number;
-}
-const attendanceData: AttendanceData[] = [
-  { name: "Semana 1", presences: 120 },
-  { name: "Semana 2", presences: 140 },
-  { name: "Semana 3", presences: 110 },
-  { name: "Semana 4", presences: 160 },
-];
-
-interface SalesData {
-  name: string;
-  value: number;
-}
-const salesData: SalesData[] = [
-  { name: "Jan", value: 400 },
-  { name: "Fev", value: 300 },
-  { name: "Mar", value: 500 },
-  { name: "Abr", value: 600 },
-];
-
-interface Stats {
-  totalStudents: number;
-  studentsEligible: number;
-  avgAttendancePercent: number;
-  activeClasses: number;
-  totalTeachers: number;
-  futureClasses: number;
-}
-const mockStats: Stats = {
-  totalStudents: 214,
-  studentsEligible: 12,
-  avgAttendancePercent: 86,
-  activeClasses: 8,
-  totalTeachers: 5,
-  futureClasses: 14,
-};
-
 interface Student {
   name: string;
   faixa: string;
@@ -78,7 +38,6 @@ import {
   getSummary,
   getWeekGraphic,
   getMonthGraphic,
-  type SummaryResponse,
   type WeekGraphic,
   type MonthGraphic,
 } from "@/utils/get";
