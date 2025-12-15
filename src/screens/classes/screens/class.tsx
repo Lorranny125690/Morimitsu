@@ -14,21 +14,28 @@ export default function ClassDesktop() {
   const [classData, setClassData] = useState<Class | null>(null);
   const location = useLocation();
 
-  useEffect(() => {
-    if (location.state) {
-      setClassData(location.state as Class);
-    }
-  }, [location.state]);
-
-  const handleDelete = async(class_id: string, student_id: string) => {
-    await api.delete(`/class/remove-student/${class_id}`, {
-      data: {
-        student_id
-      }
-    })
-  }
+  const fetchClass = async (id: string) => {
+    const res = await api.get("/class/filter", {
+      params: { id },
+    });
   
+    setClassData(res.data.classes[0]);
+  };  
 
+  useEffect(() => {
+    if (location.state?.id) {
+      fetchClass(location.state.id);
+    }
+  }, [location.state]);  
+
+  const handleDelete = async (class_id: string, student_id: string) => {
+    await api.delete(`/class/remove-student/${class_id}`, {
+      data: { student_id },
+    });
+  
+    fetchClass(class_id); // 🔥 atualiza na hora
+  };
+  
   // 🔧 mocks mínimos (substitua pelo que você já tem)
   const loading = false;
 
