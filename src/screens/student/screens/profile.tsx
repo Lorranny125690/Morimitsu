@@ -76,11 +76,43 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
 
-  const handleGraduate = async(id: string) => {
-    console.log(id)
-    const res = await onGraduate(id)
-    console.log(res.status)
-  }
+  const handleGraduate = async (id: string) => {
+    const res = await onGraduate(id);
+  
+    if (!res.error) {
+      setModalMsg(res.message || "🥋 Aluno graduado com sucesso!");
+      setModalType("success");
+      setModal(true);
+      return;
+    }
+  
+    // erros
+    switch (res.status) {
+      case 401:
+        setModalMsg("⛔ Acesso negado. Você não tem permissão.");
+        break;
+  
+      case 404:
+        setModalMsg("❌ Aluno não encontrado ou não selecionado.");
+        break;
+  
+      case 405:
+        setModalMsg("⚠️ Aluno não está apto a graduar.");
+        break;
+  
+      default:
+        setModalMsg(res.message || "🚨 Erro inesperado.");
+        break;
+    }
+  
+    setModalType("error");
+    setModal(true);
+  };
+
+  const handleCloseMsgModal = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setModal(false);
+  };  
 
   const handlePromote = async (studentId: string) => {
     try {
@@ -289,7 +321,14 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           </div>
         </motion.div>
       </motion.div>
-      <ModalMsg type={modalType} show={modal} onClose={() => setModal(false)} message={modalMsg}/>
+      <div onClick={(e) => e.stopPropagation()}>
+        <ModalMsg
+          type={modalType}
+          show={modal}
+          onClose={handleCloseMsgModal}
+          message={modalMsg}
+        />
+      </div>
     </div>
   );
 };
