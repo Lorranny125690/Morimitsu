@@ -106,7 +106,7 @@ export default function ClassDesktop() {
   
           <div className="flex gap-3">
             <button className="px-4 h-10 rounded-lg bg-[#1E90FF]">Editar turma</button>
-            <button className="px-4 h-10 rounded-lg bg-[#16A3B8]">Adicionar aluno</button>
+            <button onClick={() => navigate(`/enturmar/${classData?.id}`)} className="px-4 h-10 rounded-lg bg-[#16A3B8]">Adicionar aluno</button>
             <button className="px-4 h-10 rounded-lg bg-[#0D9488]">Fazer frequência</button>
           </div>
         </div>

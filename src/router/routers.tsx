@@ -28,6 +28,7 @@ import {
   StudentClassList,
 } from "./index";
 import ClassDesktop from "@/screens/classes/screens/class";
+import { ClassStudents } from "@/screens/classes/screens/student";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -47,7 +48,8 @@ export function AppContent() {
 
   const noHeaderRoutes = ["/", "/login", "/password", "/code", "/email", "/add_student", "/add_classes", "/profileMobile", "/frequency", "/add_student_adress"];
   const isEditStudent = location.pathname.startsWith("/edit_student/");
-  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent;
+  const isEditStudent2 = location.pathname.startsWith("/enturmar/");
+  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent;
 
   const privateRoutes = [
     "/home",
@@ -60,7 +62,7 @@ export function AppContent() {
     "/add_classes",
     "/profile",
     "/add_student_adress",
-    "/classStudent"
+    "/classStudent",
   ];
 
   if (privateRoutes.includes(location.pathname) && !token) {
@@ -118,6 +120,7 @@ export function AppContent() {
             <Route path="/classStudent" element={<StudentClassList/>}/>
             <Route path="/edit_student/:id" element={<PutStudentScreen />} />
             <Route path="/class" element={<ClassDesktop />} />
+            <Route path="/enturmar/:id" element={<ClassStudents />} />
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}

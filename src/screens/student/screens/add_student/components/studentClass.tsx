@@ -27,7 +27,6 @@ export function StudentClass({ studentId, navigate, goBack }: Props) {
   
     navigate(-1);
   };
-  
 
   return (
     <div className="relative bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100">

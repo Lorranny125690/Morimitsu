@@ -253,10 +253,7 @@ const graduateStudent = async(id: string) => {
   }
 }
 
-const putStudentOnClass = async (
-  studentId: string,
-  classId: string
-): Promise<ApiResponse> => {
+const putStudentOnClass = async (studentId: string, classId: string): Promise<ApiResponse> => {
   try {
     const token = localStorage.getItem("my-jwt");
 
