@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiBookOpen,
   FiEdit3,
@@ -74,6 +74,15 @@ const advancedStudents: Student[] = [
   { name: "Lucas Mendes", faixa: "Preta", presences: 60 },
 ];
 
+import {
+  getSummary,
+  getWeekGraphic,
+  getMonthGraphic,
+  type SummaryResponse,
+  type WeekGraphic,
+  type MonthGraphic,
+} from "@/utils/get";
+
 /* ---------------- Components ---------------- */
 interface StatCardProps {
   title: string;
@@ -81,6 +90,14 @@ interface StatCardProps {
   icon: React.ReactNode;
   accent: string;
 }
+
+const graphicToArray = (graphic: Record<string, number>) =>
+  Object.entries(graphic).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, accent }) => (
   <motion.div
     whileHover={{ y: -6 }}
@@ -103,8 +120,60 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, accent }) => (
   </motion.div>
 );
 
+interface Summary {
+  totalStudents: number;
+  studentsEligible: number;
+  avgAttendancePercent: number;
+  activeClasses: number;
+  totalTeachers: number;
+  futureClasses: number;
+}
+
 /* ---------------- Dashboard Page ---------------- */
 export const Dashboard: React.FC = () => {
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [week, setWeek] = useState<WeekGraphic[]>([]);
+  const [month, setMonth] = useState<MonthGraphic[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const [summaryRes, weekRes, monthRes] = await Promise.all([
+          getSummary(),
+          getWeekGraphic(),
+          getMonthGraphic(),
+        ]);
+  
+        const s = summaryRes.data.statistics;
+  
+        setSummary({
+          totalStudents: s.quant_students,
+          studentsEligible: s.fits_to_graduate,
+          avgAttendancePercent: s.media_frequency,
+          activeClasses: s.quant_classes,
+          totalTeachers: s.quant_teachers,
+          futureClasses: s.future_classrooms,
+        });
+  
+        setWeek(
+          graphicToArray(weekRes.data.graphic).map(item => ({
+            name: item.name,
+            presences: item.value,
+          }))
+        );
+  
+        setMonth(graphicToArray(monthRes.data.graphic));
+      } finally {
+        setLoading(false);
+      }
+    }
+  
+    load();
+  }, []);  
+
+  if (loading || !summary) return null;
+  
   return (
     <div className="overflow-y-auto pb-[100px] bg-gradient-to-br from-[#0D0C15] via-[#161422] to-[#1E1A30]">
     <div className="max-w-6xl mx-auto min-h-screen text-white font-sans px-6 py-10 space-y-12">
@@ -136,37 +205,37 @@ export const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
           <StatCard
             title="Alunos registrados"
-            value={mockStats.totalStudents}
+            value={summary.totalStudents}
             icon={<FiUsers className="text-lg text-white" />}
             accent="bg-[#6B61BD]"
           />
           <StatCard
             title="Aptos à graduação"
-            value={mockStats.studentsEligible}
+            value={summary.studentsEligible}
             icon={<FiBookOpen className="text-lg text-white" />}
             accent="bg-[#6B61BD]"
           />
           <StatCard
             title="Média de frequência"
-            value={`${mockStats.avgAttendancePercent}%`}
+            value={`${summary.avgAttendancePercent}%`}
             icon={<FiEdit3 className="text-lg text-white" />}
             accent="bg-[#6B61BD]"
           />
           <StatCard
             title="Turmas ativas"
-            value={mockStats.activeClasses}
+            value={summary.activeClasses}
             icon={<FiUserCheck className="text-lg text-white" />}
             accent="bg-[#6B61BD]"
           />
           <StatCard
             title="Professores"
-            value={mockStats.totalTeachers}
+            value={summary.totalTeachers} 
             icon={<FiUsers className="text-lg text-white" />}
             accent="bg-[#6B61BD]"
           />
           <StatCard
             title="Aulas futuras"
-            value={mockStats.futureClasses}
+            value={summary.futureClasses}
             icon={<FiClock className="text-lg text-white" />}
             accent="bg-[#6B61BD]"
           />
@@ -186,7 +255,8 @@ export const Dashboard: React.FC = () => {
               <span className="text-sm text-gray-500">Últimas 4 semanas</span>
             </div>
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={attendanceData}>
+            <LineChart data={week}>
+
                 <XAxis dataKey="name" stroke="#888" />
                 <YAxis stroke="#888" />
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
@@ -211,7 +281,8 @@ export const Dashboard: React.FC = () => {
               <span className="text-sm text-gray-500">Ano atual</span>
             </div>
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={salesData}>
+            <BarChart data={month}>
+
                 <XAxis dataKey="name" stroke="#888" />
                 <YAxis stroke="#888" />
                 <Tooltip />

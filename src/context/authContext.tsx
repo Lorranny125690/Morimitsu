@@ -4,8 +4,13 @@ import type { ReactNode } from "react";
 
 export const API_URL = "https://morimitsu-jiu-jitsu.onrender.com";
 
+const token = localStorage.getItem("my-jwt")
+
 export const api = axios.create({
   baseURL: API_URL,
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
 });
 
 interface AuthState {
