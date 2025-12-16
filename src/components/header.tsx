@@ -20,7 +20,8 @@ export function Header() {
   const navigate = useNavigate();
   const { onLogout } = useAuth();
 
-  // Fecha dropdown ao clicar fora
+  const role = localStorage.getItem("role")
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
@@ -37,6 +38,10 @@ export function Header() {
       const hrefs = Array.isArray(link.href) ? link.href : [link.href];
       const isActive = hrefs.includes(location.pathname);
 
+      if (role !== "ADMIN" && link.name === "Estatísticas") {
+        return false;
+      }
+
       return (
         <a
           key={link.name}
@@ -46,13 +51,12 @@ export function Header() {
           {link.name}
         </a>
       );
-    });
+    }
+  );
 
-  // Função para lidar com o clique no botão "Sair"
   const handleLogout = () => {
-    // limpar o estado de autenticação ou fazer o que for necessário
     onLogout();
-    navigate("/"); // Redireciona para a página inicial
+    navigate("/");
   };
 
   return (
@@ -98,9 +102,9 @@ export function Header() {
                   Trocar senha
                 </button>
 
-                <button onClick={() => navigate("/belts")}className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#29235F]">
+                {role !== "TEACHER" && <button onClick={() => navigate("/belts")}className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#29235F]">
                   Configurações
-                </button>
+                </button>}
 
                 <button
                   onClick={handleLogout}
