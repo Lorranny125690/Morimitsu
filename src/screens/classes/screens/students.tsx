@@ -1,38 +1,20 @@
 import { CiSearch } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AiFillEdit } from "react-icons/ai";
-
-const students = [
-  {
-    id: 1,
-    name: "Manoel Gomes",
-    belt: "Faixa azul",
-    age: "16 anos",
-    presences: "15 presenças",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  },
-  {
-    id: 2,
-    name: "Manoel Gomes",
-    belt: "Faixa azul",
-    age: "16 anos",
-    presences: "15 presenças",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  },
-  {
-    id: 3,
-    name: "Manoel Gomes",
-    belt: "Faixa azul",
-    age: "16 anos",
-    presences: "15 presenças",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-  }
-];
+import { useStudent } from "@/context/studentContext";
+import { calculateAge } from "@/utils/calAge";
+import { belts } from "@/screens/student/types/belt";
+import { getInitials } from "@/utils/getInitials";
 
 export const StudentClassList = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { students } = useStudent();
+  if (!id) {
+    return <p>Turma não encontrada</p>;
+  }
   
   return (
     <motion.div
@@ -96,8 +78,6 @@ export const StudentClassList = () => {
         </motion.div>
       </motion.div>
 
-
-
       {/* Cards de alunos */}
       <motion.div
         className="flex flex-col items-center gap-8 px-3"
@@ -123,18 +103,22 @@ export const StudentClassList = () => {
             className="bg-[#052659]/60 rounded-xl p-3 w-full max-w-[346px] h-[110px] flex items-center justify-between shadow-md backdrop-blur-sm"
           >
             <div className="px-4 flex items-center gap-4">
-              <motion.img
-                src={student.photo}
-                alt={student.name}
-                className="w-15 h-15 rounded-full object-cover"
-                whileHover={{ rotate: 3 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              />
+              {student.image_student_url ? (
+                <motion.img
+                  src={student.image_student_url}
+                  alt="Perfil"
+                  className="w-15 h-15 object-cover flex rounded-full transition-all cursor-pointer"
+                />
+              ) : (
+                <div className="w-15 h-15 rounded-full object-cover rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-lg select-none">
+                  {getInitials(student.social_name || student.name)}
+                </div>
+              )}
               <div className="flex flex-col">
                 <h3 className="text-[20px] font-semibold">{student.name}</h3>
-                <p className="text-[16px] text-white/60">{student.belt}</p>
+                <p className="text-[16px] text-white/60">{belts[student.belt]}</p>
                 <p className="text-[12px] text-white/60">
-                  {student.age} | {student.presences}
+                  {calculateAge(student.birth_date)} | {student.current_frequency} presenças
                 </p>
               </div>
             </div>
