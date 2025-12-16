@@ -94,9 +94,9 @@ export function Header() {
                 transition={{ duration: 0.2 }}
                 className="absolute top-12 right-0 w-48 bg-[#1E1E2F] border border-gray-700 rounded-lg shadow-lg flex flex-col overflow-hidden"
               >
-                <button onClick={() => navigate("/profile")} className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#29235F]">
+                {role === "TEACHER" && <button onClick={() => navigate("/profile")} className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#29235F]">
                   Ver perfil
-                </button>
+                </button>}
 
                 <button onClick={() => navigate("/email")}className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#29235F]">
                   Trocar senha
