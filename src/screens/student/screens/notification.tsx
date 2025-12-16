@@ -5,15 +5,13 @@ import { Choice } from "../components/choose";
 import { useEffect, useState } from "react";
 import { StudentProfile } from "./profile";
 import type { Student } from "../types/type";
-import { useStudent } from "@/context/studentContext";
 import { useLocation } from "react-router-dom";
+import { api } from "@/context/authContext";
 
 export function Notification() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
-
   const [students, setStudents] = useState<Student[]>([]);
-  const { onGetStudent } = useStudent();
   const [loading, setLoading] = useState(true);
 
   const location = useLocation();
@@ -36,8 +34,8 @@ export function Notification() {
     const loadStudents = async () => {
       setLoading(true); // começa carregando
   
-      const res = await onGetStudent();
-      if (!res.error) setStudents(res.data.students);
+      const resG = await api.get("/student/fits-graduate")
+      setStudents(resG.data?.students)
   
       setLoading(false); // terminou
     };
