@@ -1,15 +1,10 @@
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 import { FiExternalLink, FiHelpCircle } from "react-icons/fi";
 
 const HELP_LINK =
   "https://docs.google.com/document/d/1se6S_deVAaTcUp1sXCCYInG7xjok4VQhCX80rr1xstY/edit?usp=sharing";
 
 export function Help() {
-  
-  useEffect(() => {
-    window.open(HELP_LINK, "_blank");
-  }, []);
 
   return (
     <div className="min-h-screen bg-[#0D0C15] flex items-center justify-center px-6">
