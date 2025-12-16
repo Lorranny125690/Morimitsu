@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import type { Class } from "../types/type";
 import { api } from "@/context/authContext";
 import { getInitials } from "@/utils/getInitials";
+import { beltClasses } from "@/screens/student/components/beltclasses";
 
 export default function ClassDesktop() {
   const navigate = useNavigate();
@@ -36,16 +37,7 @@ export default function ClassDesktop() {
     fetchClass(class_id); // 🔥 atualiza na hora
   };
   
-  // 🔧 mocks mínimos (substitua pelo que você já tem)
   const loading = false;
-
-  const beltClasses: Record<string, string> = {
-    branca: "bg-white",
-    azul: "bg-blue-500",
-    roxa: "bg-purple-500",
-    marrom: "bg-amber-700",
-    preta: "bg-black",
-  };
 
   function openProfileModal(student: any) {
     console.log(student);

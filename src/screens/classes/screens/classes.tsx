@@ -89,8 +89,7 @@ export function ClassesDesktop() {
             <motion.div key={classe.id} whileHover={{ scale: 1.02 }}>
               {role !== "TEACHER" && (
                 <div className="flex justify-end items-center gap-3 w-full mb-4">
-                  <FaEdit   onClick={() =>
-    navigate(`/putClass/${classe.id}`, { state: classe })} className="cursor-pointer hover:text-blue-500 transition" />
+                  <FaEdit onClick={() => navigate(`/putClass/${classe.id}`, { state: classe })} className="cursor-pointer hover:text-blue-500 transition" />
                   <FaTrash
                   onClick={() => removeClass(classe.id)}
                   className="cursor-pointer hover:text-red-500 transition"
