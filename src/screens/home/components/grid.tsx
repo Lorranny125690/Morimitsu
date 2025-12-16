@@ -145,13 +145,13 @@ function ScreenCard({ id, titulo, tipo }: ListaCarrosselProps) {
 }
 
 export const TurmasRecentes = () => (
-  <ScreenCard titulo="Turmas Recentes" tipo="turmas" />
+  <ScreenCard id="turmas" titulo="Turmas Recentes" tipo="turmas" />
 );
 
 export const AlunosAptosGraduar = () => (
-  <ScreenCard titulo="Alunos Aptos a Graduar" tipo="graduar" />
+  <ScreenCard id="graduacoes" titulo="Alunos Aptos a Graduar" tipo="graduar" />
 );
 
 export const AlunosAniversariando = () => (
-  <ScreenCard titulo="Aniversariantes do Mês" tipo="aniversario" />
+  <ScreenCard id="aniversariantes" titulo="Aniversariantes do Mês" tipo="aniversario" />
 );
