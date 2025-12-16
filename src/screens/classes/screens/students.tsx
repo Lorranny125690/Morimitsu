@@ -118,7 +118,7 @@ export const StudentClassList = () => {
                 <h3 className="text-[20px] font-semibold">{student.name}</h3>
                 <p className="text-[16px] text-white/60">{belts[student.belt]}</p>
                 <p className="text-[12px] text-white/60">
-                  {calculateAge(student.birth_date)} | {student.current_frequency} presenças
+                  {calculateAge(student.birth_date)} anos | {student.current_frequency} presenças
                 </p>
               </div>
             </div>
