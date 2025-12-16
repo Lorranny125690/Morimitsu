@@ -31,6 +31,7 @@ import ClassDesktop from "@/screens/classes/screens/class";
 import { ClassStudents } from "@/screens/classes/screens/student";
 import { BeltConfigDesktop } from "@/screens/user/belts/belts";
 import { Help } from "@/screens/help/help";
+import { PutClass } from "@/screens/classes/screens/putClass";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -53,7 +54,8 @@ export function AppContent() {
   const isEditStudent2 = location.pathname.startsWith("/enturmar/");
   const isEditStudent3 = location.pathname.startsWith("/frequency/");
   const isEditStudent4 = location.pathname.includes("/classStudent/");
-  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent4 && !isEditStudent3 && !isEditStudent;
+  const isEditStudent5= location.pathname.startsWith("/putClass/");
+  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent5 && !isEditStudent4 && !isEditStudent3 && !isEditStudent;
 
   const privateRoutes = [
     "/home",
@@ -127,6 +129,7 @@ export function AppContent() {
             <Route path="/enturmar/:id" element={<ClassStudents />} />
             <Route path="/belts" element={<BeltConfigDesktop/>}/>
             <Route path="/help" element={<Help/>}/>
+            <Route path="/putClass/:id" element={<PutClass/>}/>
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}
