@@ -3,23 +3,34 @@ import type { Class } from "../components/type";
 
 export const getClasses = async (): Promise<Class[]> => {
   const token = localStorage.getItem("my-jwt");
-  const id = localStorage.getItem("user_id")
+  const userId = localStorage.getItem("user_id");
+  const role = localStorage.getItem("role")?.toUpperCase();
 
   try {
-    const res = await api.get(`user/classes/${id}`, {
+    let url = "";
+
+    if (role === "ADMIN") {
+      url = "/class";
+    } else if (role === "TEACHER" && userId) {
+      url = `/user/classes/${userId}`;
+    } else {
+      return [];
+    }
+
+    const res = await api.get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    return res.data.classes ?? [];
+    // 🔥 Normaliza retorno
+    return res.data?.classes ?? res.data ?? [];
   } catch (error: any) {
-    // 👇 Se não tem turmas, NÃO é erro de UI
     if (error.response?.status === 404) {
       return [];
     }
 
-    throw error; // outros erros continuam sendo erro
+    throw error;
   }
 };
 
@@ -28,6 +39,7 @@ export const deleteClass = async (id: string): Promise<void> => {
 
   await api.delete(`/class/${id}`, {
     headers: {
-      Authorization: `Bearer ${token}` },
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
