@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MdAddBox } from "react-icons/md";
 import { useStudent } from "@/context/studentContext";
-import { getInitials } from "@/screens/student/utils/getInitials";
+import { getInitials } from "@/utils/getInitials";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePutStudentOnClassRQ } from "../hooks/classes";
 

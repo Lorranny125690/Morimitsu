@@ -2,12 +2,12 @@ import { FaSearch, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { itemVariants, listVariants } from "@/utils/variants";
-import { studentName } from "@/screens/student/utils/formatName";
-import { formatPhone } from "@/screens/student/utils/formatPhone";
+import { studentName } from "@/utils/formatName";
+import { formatPhone } from "@/utils/formatPhone";
 import { useEffect, useState } from "react";
 import type { Class } from "../components/type";
 import { api } from "@/context/authContext";
-import { getInitials } from "@/screens/student/utils/getInitials";
+import { getInitials } from "@/utils/getInitials";
 
 export default function ClassDesktop() {
   const navigate = useNavigate();

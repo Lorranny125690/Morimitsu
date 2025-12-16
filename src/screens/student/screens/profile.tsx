@@ -6,9 +6,14 @@ import { belts } from "../types/belt";
 import { role, gender } from "../types/role";
 import { useStudent } from "@/context/studentContext";
 import { api } from "@/context/authContext";
-import { getInitials } from "../utils/getInitials";
+import { getInitials } from "../../../utils/getInitials";
 import { useState } from "react";
 import { ModalMsg } from "@/components/modal";
+import { studentName } from "@/utils/formatName";
+import { formatBirth } from "@/utils/formatDate";
+import { calculateAge } from "@/utils/calAge";
+import { formatPhone } from "@/utils/formatPhone";
+import { formatCPF } from "@/utils/formatCPF";
 
 interface StudentProfileProps {
   closeModal: () => void;
@@ -19,58 +24,6 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
   const { onGraduate } = useStudent();
 
   const userRole = localStorage.getItem("role");
-
-  const formatPhone = (phone: string) => {
-    const digits = phone.replace(/\D/g, "");
-  
-    const ddd = digits.slice(0, 2);
-    const nine = digits.slice(2, 3);
-    const number1 = digits.slice(3, 7);
-    const number2 = digits.slice(7, 11);
-  
-    return `(${ddd}) ${nine} ${number1}-${number2}`;
-  };
-
-  const studentName = (student: string) => {
-    const firstName = student.split(" ")[0];
-    const secondName = student.split(" ")[1];
-    if (secondName === "de" || secondName === "do" || secondName === "da") {
-      const thirdName = student.split(" ")[2];
-      return (`${firstName} ${secondName} ${thirdName}`)
-    }
-
-    return (`${firstName} ${secondName}`)
-  }
-
-  const calculateAge = (birthDate: string | Date) => {
-    if (!birthDate) return 0;
-  
-    const today = new Date();
-    const birth = new Date(birthDate);
-  
-    let age = today.getFullYear() - birth.getFullYear();
-  
-    const monthDiff = today.getMonth() - birth.getMonth();
-  
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
-    }
-  
-    return age;
-  };
-  
-  const formatBirth = (birthDate: string | Date) => {
-    const birth = new Date(birthDate);
-  
-    const day = String(birth.getDate() + 1).padStart(2, "0");
-    const month = String(birth.getMonth() + 1).padStart(2, "0");
-    const year = birth.getFullYear();
-  
-    return `${day}/${month}/${year}`;
-  };
 
   const [modal, setModal] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
@@ -155,15 +108,6 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
       setModal(true);
     }
   };   
-  
-  const formatCPF = (cpf_number: string) => {
-    const first = cpf_number.slice(0, 3);
-    const second = cpf_number.slice(3, 6);
-    const third = cpf_number.slice(6, 9);
-    const fourth = cpf_number.slice(9, 12);
-
-    return (`${first}.${second}.${third}-${fourth}`)
-  }
   
   return (
     <div

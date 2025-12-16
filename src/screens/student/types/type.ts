@@ -30,6 +30,7 @@ interface StudentClass {
 
 export type Student = {
   id: any;
+  username: string;
   name: string;
   number: string;
   belt: string;

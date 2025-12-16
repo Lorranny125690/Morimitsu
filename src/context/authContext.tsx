@@ -34,7 +34,8 @@ interface AuthProps {
   onVerify: (email: string) => Promise<ApiResponse>;
   onCode: (code: number) => Promise<ApiResponse>;
   onPassword: (password: string) => Promise<ApiResponse>;
-  onAskRequest: (email: string) => Promise<ApiResponse>
+  onAskRequest: (email: string) => Promise<ApiResponse>;
+  onGet: (id: string | null) => Promise<ApiResponse>;
 }
 
 interface AuthProviderProps {
@@ -114,6 +115,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return { error: true, status, msg };
     }
   };
+
+  const getUser = async (id: string | null): Promise<ApiResponse> => {
+    try {
+      const res = await api.get(`user/filter/`, {
+          params: {
+            id: id
+          }
+      });
+      console.log(res.data);
+
+      return {error: false, data: res.data}
+    } catch (e: any) {
+      const status = e.response?.status;
+
+      return {error: true, status}
+    }
+  };  
 
   const verify = async (email: string): Promise<ApiResponse> => {
     try {
@@ -220,7 +238,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     onVerify: verify,
     onCode: codeVerify,
     onPassword: changePassword,
-    onAskRequest: askforRegister
+    onAskRequest: askforRegister,
+    onGet: getUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

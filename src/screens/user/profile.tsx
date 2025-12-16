@@ -2,10 +2,27 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { motion } from "framer-motion";
 import { AiOutlineTeam } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/router";
+import type { User } from "@/types/user";
+import { belts } from "../student/types/belt";
+import { getInitials } from "@/utils/getInitials";
 
 export const UserProfile = () => {
-
+  const [user, setUser] = useState<User>();
+  const { onGet } = useAuth();
+  const id = localStorage.getItem("user_id")
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      if (id && !user) {
+        const fetchedUser = await onGet(id);
+        setUser(fetchedUser.data.users[0]);
+      }
+    };
+    loadUser();
+  }, [id, user]);
   
   return (
     <div
@@ -31,10 +48,6 @@ export const UserProfile = () => {
               onClick={() => navigate(-1)}
               size={30}
             />
-
-            <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full">
-              Promover a professor
-            </button>
           </div>
 
           <div className="flex flex-col items-center">
@@ -44,15 +57,21 @@ export const UserProfile = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
-              <img
-                src="https://i.pinimg.com/736x/a5/cb/1a/a5cb1a5651d178a1bde6c41e391dacd2.jpg"
-                alt="Perfil"
-                className="h-auto w-[21vh] max-h-[21vh] flex rounded-full hover:scale-110 transition-all cursor-pointer"
-              />
+              {user?.image_user_url ? (
+                <img
+                  src={String(user?.image_user_url)}
+                  alt="Perfil"
+                  className="h-auto w-[21vh] max-h-[21vh] object-cover flex rounded-full transition-all cursor-pointer"
+                />
+              ) : (
+                <div className="w-[21vh] h-[21vh] max-h-[21vh] rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-[64px] select-none">
+                  {getInitials(String(user?.username))}
+                </div>
+              )}
 
               <div className="flex items-center flex-col">
-                <h1 className="text-[50px] h-12 font-bold text-white">Garu</h1>
-                <p className="text-[40px] font-medium text-white/60">Faixa preta</p>
+                <h1 className="text-[50px] h-12 font-bold text-white">{user?.username}</h1>
+                <p className="text-[40px] font-medium text-white/60">{belts[String(user?.belt)]}</p>
                 <p className="text-[20px] text-white">15 anos</p>
               </div>
             </motion.div>
@@ -119,7 +138,7 @@ export const UserProfile = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="space-y-2">
-            <p>Nome: Lorranny</p>
+            <p>Nome: {user?.username}</p>
             <p>Idade: 16</p>
             <p>Faixa: Preta</p>
             <p>Contato: 00 0000-0000</p>
@@ -129,7 +148,7 @@ export const UserProfile = () => {
             <p>Matrícula: 20231031020358</p>
             <p>Cargo: rapaz</p>
             <p>Data de nasc.: 12/12/12</p>
-            <p>Email: socorro@gmail.com</p>
+            <p>Email: {user?.email}</p>
           </div>
 
           <div className="space-y-2">

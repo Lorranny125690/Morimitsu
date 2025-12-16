@@ -9,11 +9,11 @@ import type { Student } from "../types/type";
 import { useStudent } from "@/context/studentContext";
 import { useNavigate } from "react-router-dom";
 import { ModalMsg } from "@/components/modal";
-import { formatPhone } from "../utils/formatPhone";
+import { formatPhone } from "../../../utils/formatPhone";
 import { useDisplayStudents } from "../hooks/hooks";
 import { itemVariants, listVariants } from "@/utils/variants";
-import { studentName } from "../utils/formatName";
-import { getInitials } from "../utils/getInitials";
+import { studentName } from "../../../utils/formatName";
+import { getInitials } from "../../../utils/getInitials";
 
 export function StudentDesktop() {
   const {
