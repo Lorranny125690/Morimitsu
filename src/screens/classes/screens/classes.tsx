@@ -10,15 +10,34 @@ import { useClasses, useDeleteClass } from "../hooks/classes";
 import { formatBirth } from "@/utils/formatDate";
 import { LoadingScreen } from "@/utils/loading";
 import { useFetchProfessores } from "../hooks/getTeacher";
+import { ModalMsg } from "@/components/modal";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { data: classes = [], isLoading} = useClasses();
-  const { mutate: removeClass } = useDeleteClass();
+  const { mutateAsync: removeClass } = useDeleteClass();
   const role = localStorage.getItem("role");
   const professores = useFetchProfessores(classes);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<String| null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
+  const [modalType, setModalType] = useState<"error" | "success">("error"); 
+
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    await removeClass(String(studentToDelete));
+
+    setModalMsg("Turma excluída com sucesso!");
+    setModalType("success");
+    setModalVisible(true);
+
+    setConfirmDeleteOpen(false);
+    setStudentToDelete(null);
+  };
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -91,7 +110,10 @@ export function ClassesDesktop() {
                 <div className="flex justify-end items-center gap-3 w-full mb-4">
                   <FaEdit onClick={() => navigate(`/putClass/${classe.id}`, { state: classe })} className="cursor-pointer hover:text-blue-500 transition" />
                   <FaTrash
-                  onClick={() => removeClass(classe.id)}
+                  onClick={() => {
+                    setStudentToDelete(classe.id);
+                    setConfirmDeleteOpen(true);
+                  }}
                   className="cursor-pointer hover:text-red-500 transition"
                 />
                 </div>
@@ -164,6 +186,38 @@ export function ClassesDesktop() {
           )}
         </div>
       </motion.div>
+      {confirmDeleteOpen && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#1E1E2F] p-6 rounded-lg shadow-xl w-80 text-center">
+            <h2 className="text-lg font-semibold mb-4">Confirmar exclusão</h2>
+            <p className="text-gray-300 mb-6">
+              Tem certeza que deseja excluir esta turma?
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setConfirmDeleteOpen(false)}
+                className="cursor-pointer px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={confirmDelete}
+                className="cursor-pointer px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <ModalMsg
+      show={modalVisible}
+      onClose={() => setModalVisible(false)}
+      message={modalMsg}
+      type={modalType}
+      />
     </div>
   );
 }

@@ -32,6 +32,7 @@ import { ClassStudents } from "@/screens/classes/screens/student";
 import { BeltConfigDesktop } from "@/screens/user/belts/belts";
 import { Help } from "@/screens/help/help";
 import { PutClass } from "@/screens/classes/screens/putClass";
+import { ClassPut } from "@/screens/classes/screens/putStudents";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -130,6 +131,7 @@ export function AppContent() {
             <Route path="/belts" element={<BeltConfigDesktop/>}/>
             <Route path="/help" element={<Help/>}/>
             <Route path="/putClass/:id" element={<PutClass/>}/>
+            <Route path="/putInClass/:id" element={<ClassPut/>}/>
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}

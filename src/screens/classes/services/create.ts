@@ -1,12 +1,14 @@
 import { api } from "@/context/authContext";
 import type { FormDataType } from "../types/type";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useCreateClass = (formData: FormDataType) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
   const [onConfirm, setOnConfirm] = useState(false)
+  const navigate = useNavigate();
 
   const handleCreate = async () => {
     // Verificação de campos vazios
@@ -23,12 +25,14 @@ export const useCreateClass = (formData: FormDataType) => {
         image_class_url: formData.image_class_url,
       });
 
+      const { id } = response.data.class;
       // Verifique o status de sucesso
       if (response.status === 201) {
         setModalMsg("Turma criada com sucesso!");
         setModalType("success")
         setModalVisible(true)
         setOnConfirm(true)
+        navigate(`/putInClass/${id}`)
       }
     } catch (error: any) {
       if (error.response) {
