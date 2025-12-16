@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../../../assets/image4.png";
@@ -11,6 +11,12 @@ type FormDataType = {
   teacher_id: string;
   local: string;
   image_class_url: string;
+};
+
+type User = {
+  id: string;
+  name: string;
+  role: "ADMIN" | "TEACHER" | string;
 };
 
 export function AddClass() {
@@ -44,6 +50,23 @@ export function AddClass() {
   
     navigate(-1);
   };  
+
+  const [teachers, setTeachers] = useState<User[]>([]);
+
+  useEffect(() => {
+    async function loadTeachers() {
+      const res = await api.get<User[]>("/user");
+
+      // 🔹 filtra só professores
+      const onlyTeachers = res.data.filter(
+        (u) => u.role === "TEACHER"
+      );
+
+      setTeachers(onlyTeachers);
+    }
+
+    loadTeachers();
+  }, []);
 
   // ============================================
 
@@ -105,15 +128,22 @@ export function AddClass() {
 
                 <div>
                   <label className="block text-[10px] text-black mb-1">
-                    Professor (ID)
+                    Professor
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="teacher_id"
                     value={formData.teacher_id}
                     onChange={handleChange}
                     className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
-                  />
+                  >
+                    <option value="">Selecione um professor</option>
+
+                    {teachers.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
