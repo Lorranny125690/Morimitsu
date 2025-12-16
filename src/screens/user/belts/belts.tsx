@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { api } from "@/context/authContext";
+import { belts } from "@/screens/student/types/belt";
 
 type BeltConfig = {
   belt: string;
@@ -19,17 +20,20 @@ export function BeltConfigDesktop() {
   useEffect(() => {
     fetchConfigs();
   }, []);
-
   const fetchConfigs = async () => {
     setLoading(true);
     try {
       const res = await api.get("/belt-config");
-
+  
+      // Logando a resposta para inspecionar a estrutura
+      console.log("Resposta do backend:", res.data);
+  
       // Certificando que o retorno de dados seja um array
-      const data = Array.isArray(res.data.belts)
-        ? res.data.belts
-        : []; // Fallback para array vazio
-
+      const data =
+        Array.isArray(res.data.belts)
+          ? res.data.belts
+          : []; // Fallback para array vazio
+  
       setConfigs(data);
     } catch (err) {
       console.error("Erro ao buscar faixas", err);
@@ -38,6 +42,7 @@ export function BeltConfigDesktop() {
       setLoading(false);
     }
   };
+  
 
   const handleChange = (
     belt: string,
@@ -85,7 +90,7 @@ export function BeltConfigDesktop() {
               className="bg-[#162026] rounded-lg p-6 shadow-md"
             >
               <h3 className="text-lg font-semibold mb-4">
-                Faixa {cfg.belt.replace("_", " ")}
+                {belts[cfg.belt] ?? cfg.belt}
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
