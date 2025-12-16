@@ -2,7 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { beltClasses } from "../components/beltclasses";
 import { Choice } from "../components/choose";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StudentProfile } from "./profile";
 import { FiltroDropdown } from "../components/dropdown";
 import type { Student } from "../types/type";
@@ -10,7 +10,6 @@ import { useStudent } from "@/context/studentContext";
 import { useNavigate } from "react-router-dom";
 import { ModalMsg } from "@/components/modal";
 import { formatPhone } from "../utils/formatPhone";
-import type { FilterKey } from "../types/filterKey";
 import { useDisplayStudents } from "../hooks/hooks";
 import { itemVariants, listVariants } from "@/utils/variants";
 import { studentName } from "../utils/formatName";
@@ -19,6 +18,7 @@ import { getInitials } from "../utils/getInitials";
 export function StudentDesktop() {
   const {
     loading,
+    students,
     triggerReload,
     onDeleteStudent,
   } = useStudent();
@@ -36,21 +36,35 @@ export function StudentDesktop() {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
 
-  const [filters, setFilters] = useState({
-    presencas: false,
-    mista: false,
-    feminina: false,
-    masculina: false,
-    baby: false,
-    kids: false,
-  });
+
+  // 🔹 filtros DINÂMICOS por nome da turma
+  const [filters, setFilters] = useState<Record<string, boolean>>({});
 
   const [alphabetical, setAlphabetical] = useState(false);
 
+  // 🔹 pega TODAS as turmas existentes a partir dos alunos
+  const classes = useMemo(() => {
+    const map = new Map<string, { id: string; name: string }>();
+
+    students.forEach(student => {
+      student.classes?.forEach(c => {
+        map.set(c.class.id, {
+          id: c.class.id,
+          name: c.class.name,
+        });
+      });
+    });
+
+    return Array.from(map.values());
+  }, [students]);
+
   const displayStudents = useDisplayStudents(filters, alphabetical);
 
-  const toggleFilter = (key: FilterKey) => {
-    setFilters(prev => ({ ...prev, [key]: !prev[key] }));
+  const toggleFilter = (name: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
   };
 
   const confirmDelete = async () => {
@@ -100,11 +114,11 @@ export function StudentDesktop() {
               </motion.button>
             </a>
             <FiltroDropdown
+              classes={classes}
               filters={filters}
-              alphabetical={alphabetical}
               onToggleFilter={toggleFilter}
+              alphabetical={alphabetical}
               onSort={() => setAlphabetical(prev => !prev)}
-              onApply={() => {}}
             />
           </div>
         </div>

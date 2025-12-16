@@ -1,19 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-type FilterKey = "presencas" | "mista" | "feminina" | "masculina" | "baby" | "kids";
-
 export function FiltroDropdown({
+  classes,
   filters,
   onToggleFilter,
   alphabetical,
   onSort,
 }: {
-  filters: Record<FilterKey, boolean>;
-  onToggleFilter: (key: FilterKey) => void;
+  classes: { id: string; name: string }[];
+  filters: Record<string, boolean>;
+  onToggleFilter: (name: string) => void;
   alphabetical: boolean;
   onSort: () => void;
-  onApply: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -26,16 +25,17 @@ export function FiltroDropdown({
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="cursor-pointer relative" ref={ref}>
       {/* BOTÃO */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="hover:cursor-pointer px-5 py-2 bg-[#0070F3] hover:bg-blue-700 rounded-md font-medium transition"
+        className="px-5 py-2 bg-[#0070F3] hover:bg-blue-700 rounded-md font-medium transition"
         onClick={() => setOpen(!open)}
       >
         Filtrar por ▾
@@ -49,44 +49,39 @@ export function FiltroDropdown({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 mt-2 w-44 bg-[#273240] rounded-md shadow-lg p-3 z-50"
+            className="absolute left-0 mt-2 w-52 bg-[#273240] rounded-md shadow-lg p-3 z-50"
           >
-            <div className="flex justify-start items-start text-start flex-col gap-4 text-white text-sm">
+            <div className="flex flex-col gap-3 text-white text-sm">
+              {/* 🔹 filtros dinâmicos por turma */}
+              {classes.map((cls) => (
+                <button
+                  key={cls.id}
+                  className="flex gap-2 items-center hover:text-blue-400 transition"
+                  onClick={() => onToggleFilter(cls.name)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={!!filters[cls.name]}
+                    readOnly
+                  />
+                  {cls.name}
+                </button>
+              ))}
 
-            <button className="flex gap-2" onClick={() => onToggleFilter("presencas")}>
-              <input type="checkbox" checked={filters.presencas} />
-              Presenças
-            </button>
+              <hr className="border-white/10 my-2" />
 
-            <button className="flex gap-2" onClick={() => onToggleFilter("mista")}>
-              <input type="checkbox" checked={filters.mista} />
-              Turma mista
-            </button>
-
-            <button className="flex gap-2" onClick={() => onToggleFilter("feminina")}>
-              <input type="checkbox" checked={filters.feminina} />
-              Turma feminina
-            </button>
-
-            <button className="flex gap-2" onClick={() => onToggleFilter("masculina")}>
-              <input type="checkbox" checked={filters.masculina} />
-              Turma masculina
-            </button>
-
-            <button className="flex gap-2" onClick={() => onToggleFilter("baby")}>
-              <input type="checkbox" checked={filters.baby} />
-              Turma baby
-            </button>
-
-            <button className="flex gap-2" onClick={() => onToggleFilter("kids")}>
-              <input type="checkbox" checked={filters.kids} />
-              Turma kids
-            </button>
-
-            <button className="flex gap-2">
-              <input type="checkbox" onChange={onSort} checked={alphabetical}  readOnly/>
-              Ordem Alfabética
-            </button>
+              {/* 🔹 ordenação */}
+              <button
+                className="flex gap-2 items-center hover:text-blue-400 transition"
+                onClick={onSort}
+              >
+                <input
+                  type="checkbox"
+                  checked={alphabetical}
+                  readOnly
+                />
+                Ordem alfabética
+              </button>
             </div>
           </motion.div>
         )}
