@@ -6,12 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { LoadingScreen } from "@/utils/loading";
 import { useClasses } from "../hooks/classes";
 import { useFetchProfessores } from "../hooks/getTeacher";
+import { ModalAdicionarAluno } from "../components/add_mobile";
+import { useState } from "react";
 
 export const ClassesMobile = () => {
   const navigate =  useNavigate();
   const { data: classes = [], isLoading} = useClasses();
   const role = localStorage.getItem("role");
   const professores = useFetchProfessores(classes);
+  const [open, setOpen] = useState(false);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -48,7 +51,7 @@ export const ClassesMobile = () => {
           whileTap={{ scale: 0.9 }}
           className="flex justify-center text-[#02304F] items-center bg-blue-500 h-6 w-6 rounded-sm p-[2px]"
         >
-          <IoMdAdd size={16} />
+          <IoMdAdd onClick={() => setOpen(true)} size={16} />
         </motion.button>}
       </motion.header>
 
@@ -108,6 +111,11 @@ export const ClassesMobile = () => {
           </motion.div>
         ))}
       </motion.div>
+
+      <ModalAdicionarAluno
+        open={open}
+        onClose={() => setOpen(false)}
+      />
     </motion.div>
   );
 };

@@ -7,6 +7,7 @@ import bgImage from "../../../assets/image4.png";
 import { useTeachers } from "../hooks/loadStudents";
 import { useCreateClass } from "../services/create";
 import type { FormDataType } from "../types/type";
+import { ModalMsg } from "@/components/modal";
 
 const initialFormData: FormDataType = {
   name: "",
@@ -17,15 +18,9 @@ const initialFormData: FormDataType = {
 
 export function AddClass() {
   const navigate = useNavigate();
-
-  // Utilizando o hook para manipulação de formulário
   const { formData, handleChange, setFormData } = useForm(initialFormData);
-
-  // Utilizando o hook para carregar professores
   const teachers = useTeachers();
-
-  // Passando formData para o hook de criação de turma
-  const { handleCreate } = useCreateClass(formData);
+  const { handleCreate, setModalVisible, onConfirm, modalMsg, modalType, modalVisible } = useCreateClass(formData);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#41414B] flex-col">
@@ -172,6 +167,13 @@ export function AddClass() {
           </div>
         </motion.div>
       </div>
+      <ModalMsg
+      show={modalVisible}
+      onClose={() => setModalVisible(false)}
+      message={modalMsg}
+      onConfirm={() => onConfirm}
+      type={modalType}
+      />
     </div>
   );
 }
