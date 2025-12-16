@@ -29,6 +29,7 @@ import {
 } from "./index";
 import ClassDesktop from "@/screens/classes/screens/class";
 import { ClassStudents } from "@/screens/classes/screens/student";
+import { BeltConfigDesktop } from "@/screens/user/belts/belts";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -122,6 +123,7 @@ export function AppContent() {
             <Route path="/edit_student/:id" element={<PutStudentScreen />} />
             <Route path="/class" element={<ClassDesktop />} />
             <Route path="/enturmar/:id" element={<ClassStudents />} />
+            <Route path="/belts" element={<BeltConfigDesktop/>}/>
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}

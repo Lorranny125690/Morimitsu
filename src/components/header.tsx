@@ -98,7 +98,10 @@ export function Header() {
                   Trocar senha
                 </button>
 
-                {/* Botão "Sair" */}
+                <button onClick={() => navigate("/belts")}className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#29235F]">
+                  Configurações
+                </button>
+
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 text-left transition hover:cursor-pointer hover:bg-[#C54848]"
