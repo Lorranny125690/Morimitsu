@@ -24,7 +24,7 @@ export function StudentDesktop() {
   } = useStudent();
 
   const navigate = useNavigate();
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")?.toUpperCase();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -35,8 +35,6 @@ export function StudentDesktop() {
   
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
-
-
   // 🔹 filtros DINÂMICOS por nome da turma
   const [filters, setFilters] = useState<Record<string, boolean>>({});
 
@@ -58,7 +56,11 @@ export function StudentDesktop() {
     return Array.from(map.values());
   }, [students]);
 
-  const displayStudents = useDisplayStudents(filters, alphabetical);
+  const displayStudents = useDisplayStudents(
+    students,
+    filters,
+    alphabetical
+  );
 
   const toggleFilter = (name: string) => {
     setFilters(prev => ({
@@ -189,8 +191,10 @@ export function StudentDesktop() {
                   <td className="py-3 px-4 text-center text-green-500 font-medium">
                     {s.status}
                   </td>
-                  <td className="py-3 px-4 text-center">
-                    {role !== "TEACHER" && <div className="flex items-center justify-center gap-3">
+                  {role === "TEACHER" ? (
+                    null
+                  ) : <td className="py-3 px-4 text-center">
+                   <div className="flex items-center justify-center gap-3">
                       <FaEdit  onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/edit_student/${s.id}`, { state: s });
@@ -204,8 +208,8 @@ export function StudentDesktop() {
                         setConfirmDeleteOpen(true);
                       }}
                     />
-                  </div>}
-                  </td>
+                  </div>
+                  </td>}
                   <td className="py-3 px-4 text-center">
                     <motion.button
                       whileHover={{ scale: 1.05 }}

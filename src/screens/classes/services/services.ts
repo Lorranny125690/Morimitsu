@@ -3,9 +3,10 @@ import type { Class } from "../components/type";
 
 export const getClasses = async (): Promise<Class[]> => {
   const token = localStorage.getItem("my-jwt");
+  const id = localStorage.getItem("user_id")
 
   try {
-    const res = await api.get("/class", {
+    const res = await api.get(`user/classes/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

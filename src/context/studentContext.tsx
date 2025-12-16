@@ -23,6 +23,7 @@ interface studentProps {
   onGetStudent: () => Promise<ApiResponse>;
   onGraduate: (id: string) => Promise<ApiResponse>;
   onGetSTudentBirthday: () => Promise<ApiResponse>;
+  onGetStudentByTeacher: (teacherId: string) => Promise<ApiResponse>;
   onPutStudentOnClass: (studentId: string, classId: string) => Promise<ApiResponse>;
   reloadFlag: boolean;
   triggerReload: () => void;
@@ -85,6 +86,30 @@ const registerStudent = async (studentData: any): Promise<ApiResponse> => {
   }
 };
 
+const getStudentsByTeacher = async (teacherId: string): Promise<ApiResponse> => {
+  try {
+    const res = await api.get(`/user/students/${teacherId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      error: false,
+      data: res.data,
+    };
+  } catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    return {
+      error: true,
+      status,
+      message: data?.message || "Erro ao buscar alunos do professor.",
+    };
+  }
+};
+
 // DELETE — deletar aluno
 const deleteStudent = async (id: number): Promise<ApiResponse> => {
   try {
@@ -121,7 +146,7 @@ const deleteStudent = async (id: number): Promise<ApiResponse> => {
 // PUT — atualizar aluno
 const putStudent = async (id: string, studentData: any): Promise<ApiResponse> => {
   try {
-    if (localStorage.getItem("role") === "teacher") {
+    if (localStorage.getItem("role") === "TEACHER") {
       return denyIfTeacher();
     }
 
@@ -213,7 +238,7 @@ const getStudentBirthDay = async (): Promise<ApiResponse> => {
 
 const graduateStudent = async(id: string) => {
   try{
-    if (localStorage.getItem("role") === "teacher") {
+    if (localStorage.getItem("role") === "TEACHER") {
       return denyIfTeacher();
     }
 
@@ -286,8 +311,6 @@ const putStudentOnClass = async (studentId: string, classId: string): Promise<Ap
   }
 };
 
-
-
 export const StudentProvider = ({ children }: StudentProviderProps) => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
@@ -299,15 +322,40 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
 
   const fetchStudents = useCallback(async () => {
     setLoading(true);
-
-    const res = await getStudent();
-    if (!res.error) {
-      setStudents(res.data.students);
+  
+    const role = localStorage.getItem("role")?.toUpperCase();
+    const userId = localStorage.getItem("user_id");
+  
+    let res: ApiResponse;
+  
+    if (role === "TEACHER" && userId) {
+      // 🔹 professor vê apenas seus alunos
+      res = await getStudentsByTeacher(userId);
+    } else {
+      // 🔹 admin vê todos
+      res = await getStudent();
     }
-
+  
+    if (!res.error && res.data) {
+      let studentsData: Student[] = [];
+    
+      if (Array.isArray(res.data.students)) {
+        studentsData = res.data.students;
+      } 
+      else if (Array.isArray(res.data)) {
+        studentsData = res.data;
+      }
+      else if (Array.isArray(res.data.users)) {
+        // 🔥 caso o backend esteja retornando users com classes
+        studentsData = res.data.users.flatMap((u: any) => u.students ?? []);
+      }
+    
+      setStudents(studentsData);
+    }       
+  
     setLoading(false);
-  }, []);
-
+  }, []);   
+  
   useEffect(() => {
     fetchStudents();
   }, [fetchStudents, reloadFlag]);
@@ -320,6 +368,7 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onGraduate: graduateStudent,
     onGetSTudentBirthday: getStudentBirthDay,
     onPutStudentOnClass: putStudentOnClass,
+    onGetStudentByTeacher: getStudentsByTeacher,
 
     students,   // 👈 EXPÕE OS DADOS
     loading,    // 👈 EXPÕE O LOADING

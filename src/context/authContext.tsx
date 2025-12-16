@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string, role: string): Promise<ApiResponse> => {
     try {
       const result = await api.post(`/auth/login`, { email, password, role });
-      const { token, user, status, id } = result.data;
+      const { token, user, status } = result.data;
 
       if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.setItem("username", user.username);
         localStorage.setItem("role", user.role);
         localStorage.setItem("status", status);
-        localStorage.setItem("id", id);
+        localStorage.setItem("user_id", user.id);      
         localStorage.setItem("email", user.email);
         console.log("email", localStorage.getItem("email"))
 

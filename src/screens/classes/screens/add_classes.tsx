@@ -15,8 +15,8 @@ type FormDataType = {
 
 type User = {
   id: string;
-  name: string;
-  role: "ADMIN" | "TEACHER" | string;
+  username: string;
+  role: "ADMIN" | "TEACHER";
 };
 
 export function AddClass() {
@@ -55,18 +55,18 @@ export function AddClass() {
 
   useEffect(() => {
     async function loadTeachers() {
-      const res = await api.get<User[]>("/user");
-
-      // 🔹 filtra só professores
-      const onlyTeachers = res.data.filter(
+      const res = await api.get<{ users: User[] }>("/user");
+  
+      const onlyTeachers = res.data.users.filter(
         (u) => u.role === "TEACHER"
       );
-
+  
       setTeachers(onlyTeachers);
     }
-
+  
     loadTeachers();
   }, []);
+  
 
   // ============================================
 
@@ -140,7 +140,7 @@ export function AddClass() {
 
                     {teachers.map((t) => (
                       <option key={t.id} value={t.id}>
-                        {t.name}
+                        {t.username}
                       </option>
                     ))}
                   </select>
