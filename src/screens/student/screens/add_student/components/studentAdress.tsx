@@ -1,10 +1,9 @@
 import { ModalMsg } from "@/components/modal";
-import type { ChangeEvent } from "react";
 import { useStudentForm, type FormDataType } from "../hooks/studentProps";
 
 interface Props {
   formData: FormDataType;
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: any) => void;
   handleSubmit: () => void; 
   goBack: () => void;
   goNext: () => void;
@@ -98,7 +97,21 @@ export function StudentAdress({ formData, handleChange, handleSubmit, goBack, go
             />
           </div>
 
-          <div />
+          <div>
+            <label className="block text-[10px] text-black">Apelido (nome social)</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
+            >
+
+              <option>Selecione um status</option>
+              <option value="ATIVO">ATIVO</option>
+              <option value="INATIVO">INATIVO</option>
+            </select>
+
+          </div>
 
           <div>
             <label className="block text-[10px] text-black">Bairro</label>

@@ -154,6 +154,7 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
               className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
             >
             {/* INFANTIL */}
+            <option>Escolha uma cor</option>
             <option value="WHITE">Faixa branca</option>
 
             <option value="GRAY_WHITE">Faixa cinza e branca</option>

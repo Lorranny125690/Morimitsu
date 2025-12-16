@@ -188,7 +188,13 @@ export function StudentDesktop() {
                   </td>
                   <td className="py-3 px-4 text-center">{s.grade}</td>
                   <td className="py-3 px-4 text-center">{s.current_frequency}</td>
-                  <td className="py-3 px-4 text-center text-green-500 font-medium">
+                  <td
+                    className={`py-3 px-4 text-center font-medium ${
+                      s.status === "ATIVO"
+                        ? "text-green-500"
+                        : "text-gray-400"
+                    }`}
+                  >
                     {s.status}
                   </td>
                   {role === "TEACHER" ? (

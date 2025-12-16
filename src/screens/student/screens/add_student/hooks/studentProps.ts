@@ -30,6 +30,7 @@ export interface FormDataType {
   idade: number;
   social_name: string;
   file_image: File | null;
+  status: string;
 }
 
 export function useStudentForm(goNext?: () => void) {
@@ -66,6 +67,7 @@ export function useStudentForm(goNext?: () => void) {
     idade: 0,
     social_name: "",
     file_image: null,
+    status: "",
   });
 
   // ----------------------------------------------------------
