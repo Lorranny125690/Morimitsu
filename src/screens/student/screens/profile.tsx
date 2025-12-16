@@ -184,19 +184,33 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex h-0.5 justify-between items-center">
-            <IoMdArrowRoundBack
-              className="hover:scale-110 cursor-pointer transition-all"
-              onClick={closeModal}
-              size={30}
-            />
 
-            {userRole !== "TEACHER" && (
-              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium py-3 flex text-[12px] w-[153px] h-9 justify-center items-center rounded-full " onClick={() => handlePromote(student.id)}>
+        <div className="flex h-0.5 justify-between items-center">
+          <IoMdArrowRoundBack
+            className="hover:scale-110 cursor-pointer transition-all"
+            onClick={closeModal}
+            size={30}
+          />
+
+          {userRole !== "TEACHER" && (
+            student.role !== "TEACHER" ? (
+              <button
+                disabled
+                className="cursor-pointer gap-2 hover:scale-110 transition-all text-white font-medium text-lg flex justify-center items-center"
+              >
+                <p className="text-white/80">ID de professor:</p> {student.id}
+              </button>
+            ) : (
+              <button
+                onClick={() => handlePromote(student.id)}
+                className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] font-medium text-[12px] w-[153px] h-9 flex justify-center items-center rounded-full"
+              >
                 Promover a professor
               </button>
-            )}
-          </div>
+            )
+          )}
+        </div>
+
 
           <div className="flex flex-col items-center">
             <motion.div
