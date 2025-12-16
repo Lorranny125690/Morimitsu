@@ -193,13 +193,11 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
           />
 
           {userRole !== "TEACHER" && (
-            student.role !== "TEACHER" ? (
-              <button
-                disabled
-                className="cursor-pointer gap-2 hover:scale-110 transition-all text-white font-medium text-lg flex justify-center items-center"
-              >
-                <p className="text-white/80">ID de professor:</p> {student.id}
-              </button>
+            student.role === "TEACHER" ? (
+              <div className="flex items-center gap-2 text-white text-sm">
+                <span className="text-white/80">ID de professor:</span>
+                <span className="font-mono select-all">{student.id}</span>
+              </div>
             ) : (
               <button
                 onClick={() => handlePromote(student.id)}
