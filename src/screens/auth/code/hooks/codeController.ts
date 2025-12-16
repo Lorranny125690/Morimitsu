@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export function codeController() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [code, setCode] = useState<number | "">("");
+  const [code, setCode] = useState<string | "">("");
   const { onCode } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");

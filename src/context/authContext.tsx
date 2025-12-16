@@ -32,7 +32,7 @@ interface AuthProps {
   onLogin: (email: string, password: string, role: string) => Promise<ApiResponse>;
   onLogout: () => Promise<void>;
   onVerify: (email: string) => Promise<ApiResponse>;
-  onCode: (code: number) => Promise<ApiResponse>;
+  onCode: (code: string) => Promise<ApiResponse>;
   onPassword: (password: string) => Promise<ApiResponse>;
   onAskRequest: (email: string) => Promise<ApiResponse>;
   onGet: (id: string | null) => Promise<ApiResponse>;
@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const codeVerify = async (code: number): Promise<ApiResponse> => {
+  const codeVerify = async (code: string): Promise<ApiResponse> => {
     try {
       const result = await api.post(`/auth/verify-code`, { code });
       return {

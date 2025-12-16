@@ -50,7 +50,7 @@ export function Code() {
           <div className="mb-8 mt-4 w-full flex items-center justify-center flex-col space-y-6">
             <Field
               value={code}
-              onChange={(e) => setCode(e.target.valueAsNumber || "")}
+              onChange={(e) => setCode(e.target.value)}
               icon={<FaLock className="text-white" />}
               label="Código"
               type="number"
