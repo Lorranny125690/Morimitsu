@@ -9,11 +9,25 @@ import type { Class } from "../types/type";
 import { api } from "@/context/authContext";
 import { getInitials } from "@/utils/getInitials";
 import { beltClasses } from "@/screens/student/components/beltclasses";
+import { StudentProfile } from "@/screens/student/screens/profile";
+import type { Student } from "@/screens/student/types/type";
 
 export default function ClassDesktop() {
   const navigate = useNavigate();
   const [classData, setClassData] = useState<Class | null>(null);
   const location = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+
+  const openProfileModal = (student: Student) => {
+    setSelectedStudent(student);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedStudent(null);
+  };
 
   const fetchClass = async (id: string) => {
     const res = await api.get("/class/filter", {
@@ -38,10 +52,6 @@ export default function ClassDesktop() {
   };
   
   const loading = false;
-
-  function openProfileModal(student: any) {
-    console.log(student);
-  }
 
   const [professores, setProfessores] = useState<Record<string, string>>({});
 
@@ -222,6 +232,13 @@ export default function ClassDesktop() {
            </table>
          </motion.div>
       </div>
+
+      {isModalOpen && selectedStudent && (
+        <StudentProfile
+          closeModal={closeModal}
+          student={selectedStudent}
+        />
+      )}
     </div>
   );
 }  
