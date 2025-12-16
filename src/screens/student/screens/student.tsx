@@ -27,7 +27,7 @@ export function StudentDesktop() {
   const role = localStorage.getItem("role")?.toUpperCase();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
