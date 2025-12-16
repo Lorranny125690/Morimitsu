@@ -363,24 +363,15 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
   
       if (!res.error && res.data) {
         let studentsData: Student[] = [];
-      
+  
         if (Array.isArray(res.data.students)) {
           studentsData = res.data.students;
         } else if (Array.isArray(res.data)) {
           studentsData = res.data;
         }
-      
-        // 🔥 FILTRO STARTS WITH NO FRONT
-        if (search) {
-          const term = search.toLowerCase();
-          studentsData = studentsData.filter(s =>
-            (s.name || "").toLowerCase().startsWith(term) ||
-            (s.social_name || "").toLowerCase().startsWith(term)
-          );
-        }
-      
+  
         setStudents(studentsData);
-      }      
+      }
   
       setLoading(false);
     },
@@ -395,14 +386,14 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onRegisterStudent: registerStudent,
     onDeleteStudent: deleteStudent,
     onPutStudent: putStudent,
-    onGetStudent: getStudent, // opcional
+    onGetStudent: getStudent,
     onGraduate: graduateStudent,
     onGetSTudentBirthday: getStudentBirthDay,
     onPutStudentOnClass: putStudentOnClass,
     onGetStudentByTeacher: getStudentsByTeacher,
     fetchStudents,
-    students,   // 👈 EXPÕE OS DADOS
-    loading,    // 👈 EXPÕE O LOADING
+    students, 
+    loading,
     reloadFlag,
     triggerReload,
   };
