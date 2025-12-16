@@ -3,7 +3,6 @@ import {
   FiBookOpen,
   FiEdit3,
   FiUsers,
-  FiCalendar,
   FiDownload,
   FiPieChart,
   FiUserCheck,
@@ -42,6 +41,12 @@ import {
   type MonthGraphic,
 } from "@/utils/get";
 import { LoadingScreen } from "@/utils/loading";
+import { Student } from "../student";
+import { useStudent } from "@/context/studentContext";
+import { studentName } from "../student/utils/formatName";
+import { useNavigate } from "react-router-dom";
+import { api } from "@/context/authContext";
+import { belts } from "../student/types/belt";
 
 /* ---------------- Components ---------------- */
 interface StatCardProps {
@@ -80,6 +85,12 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, accent }) => (
   </motion.div>
 );
 
+interface BirthdayStudent {
+  id: string;
+  name: string;
+  birth_date: Date | string;
+}
+
 interface Summary {
   totalStudents: number;
   studentsEligible: number;
@@ -95,6 +106,10 @@ export const Dashboard: React.FC = () => {
   const [week, setWeek] = useState<WeekGraphic[]>([]);
   const [month, setMonth] = useState<MonthGraphic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [studentBirth, setStudentBirth] = useState<BirthdayStudent[]>([])
+  const [studentG, setStudentG] = useState<BirthdayStudent[]>([])
+  const { onGetSTudentBirthday } = useStudent();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function load() {
@@ -106,6 +121,13 @@ export const Dashboard: React.FC = () => {
         ]);
   
         const s = summaryRes.data.statistics;
+
+        const res = await onGetSTudentBirthday();
+        console.log(res.data)
+        setStudentBirth(res.data?.celebrants)
+
+        const resG = await api.get("/student/fits-graduate")
+        setStudentG(resG.data?.students)
   
         setSummary({
           totalStudents: s.quant_students,
@@ -144,16 +166,6 @@ export const Dashboard: React.FC = () => {
             <FiPieChart className="text-[#6B61BD] text-xl" />
           </div>
           <h2 className="text-2xl font-bold text-white">Painel de Controle</h2>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="bg-white/90 rounded-xl px-3 py-2 flex items-center gap-2 shadow-md">
-            <FiCalendar className="text-[#6B61BD]" />
-            <input
-              className="bg-transparent outline-none w-40 text-sm text-black placeholder-gray-500"
-              placeholder="Buscar..."
-            />
-          </div>
         </div>
       </header>
 
@@ -215,8 +227,7 @@ export const Dashboard: React.FC = () => {
               <span className="text-sm text-gray-500">Últimas 4 semanas</span>
             </div>
             <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={week}>
-
+              <LineChart data={week}>
                 <XAxis dataKey="name" stroke="#888" />
                 <YAxis stroke="#888" />
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
@@ -241,8 +252,7 @@ export const Dashboard: React.FC = () => {
               <span className="text-sm text-gray-500">Ano atual</span>
             </div>
             <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={month}>
-
+              <BarChart data={month}>
                 <XAxis dataKey="name" stroke="#888" />
                 <YAxis stroke="#888" />
                 <Tooltip />
@@ -265,18 +275,12 @@ export const Dashboard: React.FC = () => {
               Aptos à graduação
             </h4>
             <ul className="space-y-3 text-sm text-gray-700">
-              <li className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg transition">
-                <span>Ana Silva — Faixa Azul</span>
+              {studentG.map((s: any) => <li className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg transition">
+                <span>{s.name} — {belts[s.belt]}</span>
                 <button className="text-sm text-[#6B61BD] hover:underline">
                   Conferir
                 </button>
-              </li>
-              <li className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg transition">
-                <span>Bruno Costa — Faixa Cinza</span>
-                <button className="text-sm text-[#6B61BD] hover:underline">
-                  Conferir
-                </button>
-              </li>
+              </li>)}
             </ul>
           </div>
 
@@ -289,9 +293,11 @@ export const Dashboard: React.FC = () => {
               <FaBirthdayCake className="text-[#6B61BD]" />
             </div>
             <ul className="space-y-2 text-sm text-gray-700">
-              <li>🎂 João Pedro — 03 Mai</li>
-              <li>🎂 Marina — 09 Mai</li>
-              <li>🎂 Carla Mendes — 12 Mai</li>
+              {studentBirth.map((s: any) => (
+                <li key={s.id}>
+                  🎂 {studentName(s.name)} — {s.birth_date}
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -304,10 +310,10 @@ export const Dashboard: React.FC = () => {
               <FiDownload className="text-gray-500" />
             </div>
             <div className="grid text-slate-500 gap-3">
-              <button className="w-full text-left px-4 py-2 rounded-md bg-[#F5F7FF] hover:bg-[#E9ECFF] transition">
+              <button onClick={() => navigate("/add_student")} className="w-full text-left px-4 py-2 rounded-md bg-[#F5F7FF] hover:bg-[#E9ECFF] transition">
                 ➕ Cadastrar aluno
               </button>
-              <button className="w-full text-left px-4 py-2 rounded-md bg-[#F5F7FF] hover:bg-[#E9ECFF] transition">
+              <button onClick={() => navigate("/classes")} className="w-full text-left px-4 py-2 rounded-md bg-[#F5F7FF] hover:bg-[#E9ECFF] transition">
                 📝 Registrar presença
               </button>
               <button className="w-full text-left px-4 py-2 rounded-md bg-[#F5F7FF] hover:bg-[#E9ECFF] transition">

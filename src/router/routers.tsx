@@ -30,6 +30,7 @@ import {
 import ClassDesktop from "@/screens/classes/screens/class";
 import { ClassStudents } from "@/screens/classes/screens/student";
 import { BeltConfigDesktop } from "@/screens/user/belts/belts";
+import { Help } from "@/screens/help/help";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -124,6 +125,7 @@ export function AppContent() {
             <Route path="/class" element={<ClassDesktop />} />
             <Route path="/enturmar/:id" element={<ClassStudents />} />
             <Route path="/belts" element={<BeltConfigDesktop/>}/>
+            <Route path="/help" element={<Help/>}/>
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}
