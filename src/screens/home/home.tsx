@@ -9,10 +9,66 @@ import { TurmasRecentes, AlunosAptosGraduar, AlunosAniversariando } from "./comp
 import { SiGoogleclassroom } from "react-icons/si";
 import { LuUsersRound } from "react-icons/lu";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import { useStudent } from "@/context/studentContext.tsx";
+import { getSummary, getWeekGraphic, getMonthGraphic } from "@/utils/get.ts";
+import { LoadingScreen } from "@/utils/loading.tsx";
+import { useState, useEffect } from "react";
+
+interface BirthdayStudent {
+  id: string;
+  name: string;
+  birth_date: Date | string;
+}
+
+interface Summary {
+  totalStudents: number;
+  studentsEligible: number;
+  avgAttendancePercent: number;
+  activeClasses: number;
+  totalTeachers: number;
+  futureClasses: number;
+}
 
 export function HomeMobile() {
   const { authState, onLogout } = useAuth();
   const username = authState?.username || "Usuário";
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [studentBirth, setStudentBirth] = useState<BirthdayStudent[]>([])
+  const { onGetSTudentBirthday } = useStudent();
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const [summaryRes] = await Promise.all([
+          getSummary(),
+          getWeekGraphic(),
+          getMonthGraphic(),
+        ]);
+  
+        const s = summaryRes.data.statistics;
+
+        const res = await onGetSTudentBirthday();
+        console.log(res.data)
+        setStudentBirth(res.data?.celebrants)
+  
+        setSummary({
+          totalStudents: s.quant_students,
+          studentsEligible: s.fits_to_graduate,
+          avgAttendancePercent: s.media_frequency,
+          activeClasses: s.quant_classes,
+          totalTeachers: s.quant_teachers,
+          futureClasses: s.future_classrooms,
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  
+    load();
+  }, []);  
+
+  if (loading || !summary) return <LoadingScreen />;
 
   return (
     <div
@@ -78,10 +134,10 @@ export function HomeMobile() {
       {/* Cards numéricos */}
       <div className="flex items-center grid grid-cols-2 gap-2 mt-10 mx-auto">
         {[
-          { title: "Número de alunos", value: 72, icon: <PiStudentFill className="text-[#322F50]" size={20} /> },
-          { title: "Número de equipes", value: 18, icon: <LuUsersRound className="text-[#322F50]" size={20} /> },
-          { title: "Número de turmas", value: 12, icon: <SiGoogleclassroom className="text-[#322F50]" size={20} /> },
-          { title: "Número de professores", value: 6, icon: <FaChalkboardTeacher className="text-[#322F50]" size={20} /> },
+          { title: "Número de alunos", value: summary.totalStudents, icon: <PiStudentFill className="text-[#322F50]" size={20} /> },
+          { title: "Número de aptos a graduar", value: summary.studentsEligible, icon: <LuUsersRound className="text-[#322F50]" size={20} /> },
+          { title: "Número de turmas", value: studentBirth.length, icon: <SiGoogleclassroom className="text-[#322F50]" size={20} /> },
+          { title: "Número de professores", value: summary.totalTeachers, icon: <FaChalkboardTeacher className="text-[#322F50]" size={20} /> },
         ].map((card, i) => (
           <motion.div
             key={i}

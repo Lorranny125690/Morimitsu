@@ -104,7 +104,7 @@ export const ClassesMobile = () => {
               whileTap={{ scale: 0.8 }}
               whileHover={{ scale: 1.1 }}
               className="pr-5 flex items-center justify-center text-white rounded-full"
-              onClick={() => navigate(`/classStudent/${student.id}`)}
+              onClick={() => navigate(`/classStudent/${student.id}`, {state: student})}
             >
               <FaEye size={25} />
             </motion.button>

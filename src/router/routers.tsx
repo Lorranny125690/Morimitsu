@@ -33,6 +33,7 @@ import { BeltConfigDesktop } from "@/screens/user/belts/belts";
 import { Help } from "@/screens/help/help";
 import { PutClass } from "@/screens/classes/screens/putClass";
 import { ClassPut } from "@/screens/classes/screens/putStudents";
+import { FrequencyMobile } from "@/screens/frequency/frequencyMobile";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -124,6 +125,7 @@ export function AppContent() {
             <Route path="/profile" element={<Profile/>} />
             <Route path="/profileMobile" element={<ProfileMobile/>} />
             <Route path="/frequency/:id" element={<Frequency/>} />
+            <Route path="/frequency2/:id" element={<FrequencyMobile/>} />
             <Route path="/classStudent/:id" element={<StudentClassList/>}/>
             <Route path="/edit_student/:id" element={<PutStudentScreen />} />
             <Route path="/class" element={<ClassDesktop />} />

@@ -1,21 +1,26 @@
 import { CiSearch } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AiFillEdit } from "react-icons/ai";
-import { useStudent } from "@/context/studentContext";
 import { calculateAge } from "@/utils/calAge";
 import { belts } from "@/screens/student/types/belt";
 import { getInitials } from "@/utils/getInitials";
 
 export const StudentClassList = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const { students } = useStudent();
-  if (!id) {
+  const location = useLocation();
+
+  const classData = location.state;
+
+  if (!classData) {
     return <p>Turma não encontrada</p>;
   }
-  
+
+  const alunos = classData.students.map(
+    (item: any) => item.student
+  );  
+
   return (
     <motion.div
       id="poppins"
@@ -49,7 +54,14 @@ export const StudentClassList = () => {
           transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
         >
           <div 
-          onClick={() => navigate("/frequency")}
+          onClick={() => navigate(`/frequency2/${classData.id}`, {
+            state: {
+              classId: classData.id,
+              teacherId: classData.teacher_id,
+              students: alunos, // 👈 já limpo
+            },
+          })
+          }
           className="flex flex-row gap-2 items-center text-md px-22 py-[2px] font-semibold rounded-xl cursor-pointer hover:text-[#00AAFF] transition-colors">
             <AiFillEdit /> Frequência
           </div>
@@ -63,7 +75,7 @@ export const StudentClassList = () => {
         transition={{ type: "spring", stiffness: 120, delay: 0.1 }}
       >
         <div className="flex items-center w-full justify-start relative">
-          Nome da turma
+          {}
         </div>
 
         <motion.div
@@ -90,7 +102,7 @@ export const StudentClassList = () => {
           },
         }}
       >
-        {students.map((student) => (
+        {alunos.map((student: any) => (
           <motion.div
             key={student.id}
             variants={{

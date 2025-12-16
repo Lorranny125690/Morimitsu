@@ -1,8 +1,109 @@
 import { motion } from "framer-motion";
 import { FaDownload } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { api } from "@/context/authContext";
+
+/* ================= TIPOS ================= */
+
+interface FrequencyStudent {
+  id: string;
+  nome: string;
+  presencaHoje: boolean;
+  total: number;
+}
+
+/* ================= COMPONENT ================= */
 
 export function FrequencyMobile() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { classId, teacherId } = location.state || {};
+  const students = location.state?.students ?? [];
+
+  const [alunos, setAlunos] = useState<FrequencyStudent[]>([]);
+  const [dataAula, setDataAula] = useState("");
+  const [classroomId, setClassroomId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  /* ================= CRIAR AULA ================= */
+
+  async function criarAulaSeNecessario(): Promise<string> {
+    if (classroomId) return classroomId;
+
+    if (!dataAula) {
+      alert("Selecione a data da aula");
+      throw new Error("Data não definida");
+    }
+
+    const res = await api.post(`/classroom/${classId}`, {
+      teacher_id: teacherId,
+      classroom_date: dataAula,
+    });
+
+    const id = res.data.clasroom.id;
+    setClassroomId(id);
+    return id;
+  }
+
+  /* ================= CONFIRMAR PRESENÇA ================= */
+
+  async function confirmarPresenca() {
+    try {
+      setSaving(true);
+
+      const classroom_id = await criarAulaSeNecessario();
+
+      await Promise.all(
+        alunos.map(aluno =>
+          api.post(`/presence/add/${classroom_id}`, {
+            student_id: aluno.id,
+            presence: aluno.presencaHoje,
+          })
+        )
+      );
+
+      setAlunos(prev =>
+        prev.map(a => ({
+          ...a,
+          total: a.presencaHoje ? a.total + 1 : a.total,
+          presencaHoje: false,
+        }))
+      );
+
+      alert("Frequência registrada com sucesso!");
+      navigate(-1);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao registrar frequência");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  /* ================= CARREGAR ALUNOS ================= */
+
+  useEffect(() => {
+    if (!Array.isArray(students)) return;
+
+    const formatados: FrequencyStudent[] = students.map((item: any) => {
+      const s = item.student ?? item;
+
+      return {
+        id: s.id,
+        nome: s.social_name || s.name,
+        presencaHoje: false,
+        total: s.current_frequency ?? 0,
+      };
+    });
+
+    setAlunos(formatados);
+  }, [students]);
+
+  /* ================= UI ================= */
+
   return (
     <div className="bg-[#011023] text-white min-h-screen flex flex-col items-center font-sans overflow-y-auto pb-10">
 
@@ -15,6 +116,8 @@ export function FrequencyMobile() {
         <div className="flex items-center">
           <input
             type="date"
+            value={dataAula}
+            onChange={(e) => setDataAula(e.target.value)}
             className="border-1 text-sm px-2 py-1 rounded-lg outline-none"
           />
         </div>
@@ -48,38 +151,53 @@ export function FrequencyMobile() {
             </tr>
           </thead>
 
-          <tbody className="bg-white">
-            <tr className="border-t">
-              <td className="py-3 px-2 text-sm font-medium">1</td>
+          <tbody>
+            {alunos.map((aluno, index) => (
+              <tr key={aluno.id} className="border-t">
+                <td className="py-3 px-2 text-sm">{index + 1}</td>
 
-              <td className="py-3 px-2 text-sm font-medium truncate max-w-[1px]">
-                Cebolinha com nome super comprido que deveria truncar
-              </td>
+                <td className="py-3 px-2 text-sm truncate">
+                  {aluno.nome}
+                </td>
 
-              <td className="py-3 px-2">
-                <button
-                  className="border border-gray-400 rounded-lg text-xs px-3 py-1 min-w-[64px] whitespace-nowrap"
-                >
-                  Presente
-                </button>
-              </td>
+                <td className="py-3 px-2">
+                  <button
+                    onClick={() =>
+                      setAlunos(prev =>
+                        prev.map(a =>
+                          a.id === aluno.id
+                            ? { ...a, presencaHoje: !a.presencaHoje }
+                            : a
+                        )
+                      )
+                    }
+                    className={`text-xs px-3 py-1 rounded-lg border
+                      ${
+                        aluno.presencaHoje
+                          ? "bg-green-500 text-white border-green-500"
+                          : "border-gray-400"
+                      }`}
+                  >
+                    {aluno.presencaHoje ? "Presente" : "Ausente"}
+                  </button>
+                </td>
 
-              <td className="py-3 px-2 text-center text-sm font-semibold">18</td>
-            </tr>
-
-            <tr className="border-t">
-              <td className="py-3 px-2 text-sm font-medium">2</td>
-              <td className="py-3 px-2 text-sm font-medium">Maria</td>
-              <td className="py-3 px-2">
-                <button className="border border-gray-400 rounded-lg text-xs px-3 py-1 min-w-[64px] whitespace-nowrap">
-                  Ausente
-                </button>
-              </td>
-              <td className="py-3 px-2 text-center text-sm font-semibold">12</td>
-            </tr>
+                <td className="py-3 px-2 text-center font-semibold">
+                  {aluno.total}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </motion.div>
+      <button
+        disabled={saving}
+        onClick={confirmarPresenca}
+        className={`mt-6 w-[200px] h-[42px] rounded-full text-white
+          ${saving ? "bg-gray-400" : "bg-sky-700"}`}
+      >
+        {saving ? "Salvando..." : "Confirmar"}
+      </button>
     </div>
   );
 }
