@@ -26,7 +26,7 @@ export function StudentScreen() {
       target: { 
         name: "image_student_url",
         value: preview,
-        files: [file]   // <--- ESSENCIAL!!!
+        files: [file]
       }
     });
   };  
@@ -77,7 +77,6 @@ export function StudentScreen() {
             />
           )}
 
-          
           {currentStep === "PUT" && (
             <StudentClass
               studentId={createdStudentId}

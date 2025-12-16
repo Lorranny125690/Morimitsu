@@ -72,19 +72,12 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
           {/* Grau */}
           <div>
             <label className="block text-[10px] text-black">Grau</label>
-            <select
+            <input
               name="grade"
               value={formData.grade}
               onChange={handleChange}
               className="w-16 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
-            >
-              <option value=""> </option>
-              <option value="1">1º</option>
-              <option value="2">2º</option>
-              <option value="3">3º</option>
-              <option value="4">4º</option>
-              <option value="5">5º</option>
-            </select>
+            />
           </div>
 
           {/* Contato */}
@@ -160,16 +153,35 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
               onChange={handleChange}
               className="w-50 h-6 text-[12px] text-black border-gray-300 border rounded-[2px] px-2 mt-[6px] bg-white focus:ring-2 focus:ring-blue-400 shadow-sm"
             >
-              <option value="">Escolher faixa</option>
-              <option value="WHITE">Faixa branca</option>
-              <option value="GRAY">Faixa cinza</option>
-              <option value="YELLOW">Faixa amarela</option>
-              <option value="ORANGE">Faixa laranja</option>
-              <option value="GREEN">Faixa verde</option>
-              <option value="BLUE">Faixa azul</option>
-              <option value="PURPLE">Faixa roxa</option>
-              <option value="BROWN">Faixa marrom</option>
-              <option value="BLACK">Faixa preta</option>
+            {/* INFANTIL */}
+            <option value="WHITE">Faixa branca</option>
+
+            <option value="GRAY_WHITE">Faixa cinza e branca</option>
+            <option value="GRAY">Faixa cinza</option>
+            <option value="GRAY_BLACK">Faixa cinza e preta</option>
+
+            <option value="YELLOW_WHITE">Faixa amarela e branca</option>
+            <option value="YELLOW">Faixa amarela</option>
+            <option value="YELLOW_BLACK">Faixa amarela e preta</option>
+
+            <option value="ORANGE_WHITE">Faixa laranja e branca</option>
+            <option value="ORANGE">Faixa laranja</option>
+            <option value="ORANGE_BLACK">Faixa laranja e preta</option>
+
+            <option value="GREEN_WHITE">Faixa verde e branca</option>
+            <option value="GREEN">Faixa verde</option>
+            <option value="GREEN_BLACK">Faixa verde e preta</option>
+
+            {/* ADULTO */}
+            <option value="BLUE">Faixa azul</option>
+            <option value="PURPLE">Faixa roxa</option>
+            <option value="BROWN">Faixa marrom</option>
+            <option value="BLACK">Faixa preta</option>
+
+            {/* MESTRIA */}
+            <option value="RED_BLACK">Faixa vermelha e preta</option>
+            <option value="RED_WHITE">Faixa vermelha e branca</option>
+            <option value="RED">Faixa vermelha</option>
             </select>
           </div>
 
