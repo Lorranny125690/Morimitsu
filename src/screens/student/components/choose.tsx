@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { useLocation } from "react-router-dom";
+import { useStudent } from "@/context/studentContext";
 
 const navLinks = [
   { name: "Graduando", href: "/student" },
@@ -8,6 +10,17 @@ const navLinks = [
 
 export function Choice() {
   const location = useLocation();
+  const { fetchStudents } = useStudent();
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchStudents(search);
+    }, 400);
+
+    return () => clearTimeout(delay);
+  }, [search]);
+
 
   return (
     <div className="lg:border-b lg:border-gray-700">
@@ -29,11 +42,14 @@ export function Choice() {
         
         {/* Campo de pesquisa visível apenas em telas lg */}
         <div className="lg:ml-auto relative hidden lg:block">
-          <CiSearch className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <CiSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
+
           <input
             type="text"
             placeholder="Pesquisar aluno"
-            className="w-[395px] h-10 pl-11 pr-3 rounded-[20px] bg-[#313538] text-[#B0A8EE] text-[16px] flex flex-row placeholder-gray-400 focus:outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-[395px] h-10 pl-11 pr-3 rounded-[20px] bg-[#313538] text-[#B0A8EE]"
           />
         </div>
       </div>

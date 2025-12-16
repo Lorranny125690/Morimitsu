@@ -25,6 +25,7 @@ interface studentProps {
   onGetSTudentBirthday: () => Promise<ApiResponse>;
   onGetStudentByTeacher: (teacherId: string) => Promise<ApiResponse>;
   onPutStudentOnClass: (studentId: string, classId: string) => Promise<ApiResponse>;
+  fetchStudents: (search?: string) => Promise<void>;
   reloadFlag: boolean;
   triggerReload: () => void;
   students: Student[];
@@ -311,6 +312,28 @@ const putStudentOnClass = async (studentId: string, classId: string): Promise<Ap
   }
 };
 
+const searchStudentsByName = async (name: string): Promise<ApiResponse> => {
+  try {
+    const res = await api.get("/student/filter", {
+      params: { name },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      error: false,
+      data: res.data,
+    };
+  } catch (e: any) {
+    return {
+      error: true,
+      status: e.response?.status,
+      message: e.response?.data?.message || "Erro ao buscar alunos.",
+    };
+  }
+};
+
 export const StudentProvider = ({ children }: StudentProviderProps) => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
@@ -320,41 +343,49 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     setReloadFlag(prev => !prev);
   }, []);
 
-  const fetchStudents = useCallback(async () => {
-    setLoading(true);
+  const fetchStudents = useCallback(
+    async (search?: string) => {
+      setLoading(true);
   
-    const role = localStorage.getItem("role")?.toUpperCase();
-    const userId = localStorage.getItem("user_id");
+      const role = localStorage.getItem("role")?.toUpperCase();
+      const userId = localStorage.getItem("user_id");
   
-    let res: ApiResponse;
+      let res: ApiResponse;
   
-    if (role === "TEACHER" && userId) {
-      // 🔹 professor vê apenas seus alunos
-      res = await getStudentsByTeacher(userId);
-    } else {
-      // 🔹 admin vê todos
-      res = await getStudent();
-    }
-  
-    if (!res.error && res.data) {
-      let studentsData: Student[] = [];
-    
-      if (Array.isArray(res.data.students)) {
-        studentsData = res.data.students;
-      } 
-      else if (Array.isArray(res.data)) {
-        studentsData = res.data;
+      if (search && search.trim().length > 0) {
+        // 🔍 SEARCH GLOBAL
+        res = await searchStudentsByName(search);
+      } else if (role === "TEACHER" && userId) {
+        res = await getStudentsByTeacher(userId);
+      } else {
+        res = await getStudent();
       }
-      else if (Array.isArray(res.data.users)) {
-        // 🔥 caso o backend esteja retornando users com classes
-        studentsData = res.data.users.flatMap((u: any) => u.students ?? []);
-      }
-    
-      setStudents(studentsData);
-    }       
   
-    setLoading(false);
-  }, []);   
+      if (!res.error && res.data) {
+        let studentsData: Student[] = [];
+      
+        if (Array.isArray(res.data.students)) {
+          studentsData = res.data.students;
+        } else if (Array.isArray(res.data)) {
+          studentsData = res.data;
+        }
+      
+        // 🔥 FILTRO STARTS WITH NO FRONT
+        if (search) {
+          const term = search.toLowerCase();
+          studentsData = studentsData.filter(s =>
+            (s.name || "").toLowerCase().startsWith(term) ||
+            (s.social_name || "").toLowerCase().startsWith(term)
+          );
+        }
+      
+        setStudents(studentsData);
+      }      
+  
+      setLoading(false);
+    },
+    []
+  );    
   
   useEffect(() => {
     fetchStudents();
@@ -369,7 +400,7 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onGetSTudentBirthday: getStudentBirthDay,
     onPutStudentOnClass: putStudentOnClass,
     onGetStudentByTeacher: getStudentsByTeacher,
-
+    fetchStudents,
     students,   // 👈 EXPÕE OS DADOS
     loading,    // 👈 EXPÕE O LOADING
     reloadFlag,
