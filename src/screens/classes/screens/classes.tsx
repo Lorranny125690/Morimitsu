@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 import { IoMdAdd } from "react-icons/io";
 import { PiStudentBold } from "react-icons/pi";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { RiEditLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useClasses, useDeleteClass } from "../hooks/classes";
 import { formatBirth } from "@/utils/formatDate";
-import { api } from "@/context/authContext";
 import { LoadingScreen } from "@/utils/loading";
+import { useFetchProfessores } from "../hooks/getTeacher";
 
 export function ClassesDesktop() {
   const [open, setOpen] = useState(false);
@@ -17,51 +17,8 @@ export function ClassesDesktop() {
   const navigate = useNavigate();
   const { data: classes = [], isLoading} = useClasses();
   const { mutate: removeClass } = useDeleteClass();
-
   const role = localStorage.getItem("role");
-
-  // Mapeia teacher_id para o nome do professor
-  const [professores, setProfessores] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const fetchProfessores = async () => {
-      const token = localStorage.getItem("my-jwt");
-      if (!token || !classes?.length) return;
-
-      try {
-        const results = await Promise.all(
-          classes.map(async (classe) => {
-            if (!classe.teacher_id) return null;
-
-            const res = await api.get("/user/filter", {
-              params: { id: classe.teacher_id },
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-
-            return {
-              teacher_id: classe.teacher_id,
-              name: res.data.users[0].username,
-            };
-          })
-        );
-
-        const map: Record<string, string> = {};
-        results.forEach((item) => {
-          if (item?.teacher_id && item?.name) {
-            map[item.teacher_id] = item.name;
-          }
-        });
-
-        setProfessores(map);
-      } catch (err) {
-        console.error("Erro ao buscar professores:", err);
-      }
-    };
-
-    fetchProfessores();
-  }, [classes]);
+  const professores = useFetchProfessores(classes);
 
   if (isLoading) {
     return <LoadingScreen />;

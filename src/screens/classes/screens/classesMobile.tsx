@@ -1,36 +1,21 @@
-import { HeaderMobile } from "@/components/headerMobile";
 import { CiSearch } from "react-icons/ci";
 import { IoMdAdd } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
-const students = [
-  {
-    id: 1,
-    name: "Turma 01",
-    belt: "Faixa azul",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-    students: 12,
-  },
-  {
-    id: 2,
-    name: "Turma 02",
-    belt: "Faixa azul",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-    students: 12,
-  },
-  {
-    id: 3,
-    name: "Turma 03",
-    belt: "Faixa azul",
-    photo: "https://i.pinimg.com/736x/01/97/64/019764eba3f4699ef0bbc5927b21a178.jpg",
-    students: 12,
-  },
-];
+import { LoadingScreen } from "@/utils/loading";
+import { useClasses } from "../hooks/classes";
+import { useFetchProfessores } from "../hooks/getTeacher";
 
 export const ClassesMobile = () => {
   const navigate =  useNavigate();
+  const { data: classes = [], isLoading} = useClasses();
+  const role = localStorage.getItem("role");
+  const professores = useFetchProfessores(classes);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <motion.div
@@ -58,13 +43,13 @@ export const ClassesMobile = () => {
           />
         </div>
 
-        <motion.button
+        {role !== "TEACHER" && <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="flex justify-center text-[#02304F] items-center bg-blue-500 h-6 w-6 rounded-sm p-[2px]"
         >
           <IoMdAdd size={16} />
-        </motion.button>
+        </motion.button>}
       </motion.header>
 
       {/* Cards de alunos */}
@@ -81,7 +66,7 @@ export const ClassesMobile = () => {
           },
         }}
       >
-        {students.map((student) => (
+        {classes.map((student) => (
           <motion.div
             key={student.id}
             variants={{
@@ -95,17 +80,20 @@ export const ClassesMobile = () => {
           >
             <div className="px-4 flex items-center gap-4">
               <motion.img
-                src={student.photo}
+                src={
+                  student.image_class_url ??
+                  "https://via.placeholder.com/400x200?text=Turma"
+                }
                 alt={student.name}
-                className="w-15 h-15 rounded-full object-cover"
+                className="w-16 h-16 rounded-full object-cover"
                 whileHover={{ rotate: 5 }}
                 transition={{ type: "spring", stiffness: 200 }}
               />
               <div className="flex flex-col">
                 <h3 className="text-[20px] font-semibold">{student.name}</h3>
-                <p className="text-[16px] text-white/60">{student.belt}</p>
+                <p className="text-[16px] text-white/60">{professores[student.teacher_id]}</p>
                 <p className="text-[12px] text-white/60">
-                  {student.students} alunos
+                  {student._count.students} alunos
                 </p>
               </div>
             </div>
@@ -120,8 +108,6 @@ export const ClassesMobile = () => {
           </motion.div>
         ))}
       </motion.div>
-
-      <HeaderMobile />
     </motion.div>
   );
 };

@@ -110,10 +110,6 @@ export const UserProfile = () => {
           >
             <div className="flex flex-row gap-4 items-start justify-start">
               <h2 className="text-[16px] font-semibold text-white">Frequências</h2>
-
-              <button className="cursor-pointer hover:scale-110 transition-all bg-white text-[#7C9FC9] h-6 w-[76px] font-medium flex justify-center items-center py-2 px-4 rounded-lg">
-                Graduar
-              </button>
             </div>
 
             <span className="text-[30px] font-semibold text-white">15</span>

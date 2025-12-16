@@ -9,6 +9,18 @@ export type ClassStudent = {
   student: Student;
 };
 
+export type FormDataType = {
+  name: string;
+  teacher_id: string;
+  local: string;
+  image_class_url: string;
+};
+
+export type User = {
+  id: string;
+  username: string;
+  role: "ADMIN" | "TEACHER";
+};
 
 export type Class = {
   id: string;

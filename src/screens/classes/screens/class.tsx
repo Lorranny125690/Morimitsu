@@ -5,7 +5,7 @@ import { itemVariants, listVariants } from "@/utils/variants";
 import { studentName } from "@/utils/formatName";
 import { formatPhone } from "@/utils/formatPhone";
 import { useEffect, useState } from "react";
-import type { Class } from "../components/type";
+import type { Class } from "../types/type";
 import { api } from "@/context/authContext";
 import { getInitials } from "@/utils/getInitials";
 

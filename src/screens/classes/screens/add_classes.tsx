@@ -1,74 +1,31 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import bgImage from "../../../assets/image4.png";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { api } from "@/context/authContext";
 import { turmasRecentes } from "../components/images";
+import { useForm } from "../hooks/change";
+import bgImage from "../../../assets/image4.png";
+import { useTeachers } from "../hooks/loadStudents";
+import { useCreateClass } from "../services/create";
+import type { FormDataType } from "../types/type";
 
-type FormDataType = {
-  name: string;
-  teacher_id: string;
-  local: string;
-  image_class_url: string;
-};
-
-type User = {
-  id: string;
-  username: string;
-  role: "ADMIN" | "TEACHER";
+const initialFormData: FormDataType = {
+  name: "",
+  teacher_id: "",
+  local: "",
+  image_class_url: "",
 };
 
 export function AddClass() {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<FormDataType>({
-    name: "",
-    teacher_id: "",
-    local: "",
-    image_class_url: "",
-  });
+  // Utilizando o hook para manipulação de formulário
+  const { formData, handleChange, setFormData } = useForm(initialFormData);
 
-  // ================= HANDLERS =================
+  // Utilizando o hook para carregar professores
+  const teachers = useTeachers();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleCreate = async () => {
-    await api.post("/class/create", {
-      name: formData.name,
-      teacher_id: formData.teacher_id,
-      local: formData.local,
-      image_class_url: formData.image_class_url,
-    });
-  
-    navigate(-1);
-  };  
-
-  const [teachers, setTeachers] = useState<User[]>([]);
-
-  useEffect(() => {
-    async function loadTeachers() {
-      const res = await api.get<{ users: User[] }>("/user");
-  
-      const onlyTeachers = res.data.users.filter(
-        (u) => u.role === "TEACHER"
-      );
-  
-      setTeachers(onlyTeachers);
-    }
-  
-    loadTeachers();
-  }, []);
-  
-
-  // ============================================
+  // Passando formData para o hook de criação de turma
+  const { handleCreate } = useCreateClass(formData);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#41414B] flex-col">
@@ -103,9 +60,7 @@ export function AddClass() {
           <div className="bg-white shadow-lg w-[680px] h-[460px] border border-gray-100 flex flex-col">
             {/* HEADER */}
             <div className="border-b border-gray-200 px-6 py-4 flex gap-4">
-              <span className="text-[10px] text-gray-700 font-medium">
-                Dados
-              </span>
+              <span className="text-[10px] text-gray-700 font-medium">Dados</span>
               <span className="text-[10px] text-gray-400">Enturmar</span>
             </div>
 
@@ -114,9 +69,7 @@ export function AddClass() {
               {/* CAMPOS */}
               <div className="flex flex-col gap-5 px-6 py-4">
                 <div>
-                  <label className="block text-[10px] text-black mb-1">
-                    Nome
-                  </label>
+                  <label className="block text-[10px] text-black mb-1">Nome</label>
                   <input
                     type="text"
                     name="name"
@@ -127,9 +80,7 @@ export function AddClass() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-black mb-1">
-                    Professor
-                  </label>
+                  <label className="block text-[10px] text-black mb-1">Professor</label>
                   <select
                     name="teacher_id"
                     value={formData.teacher_id}
@@ -137,19 +88,16 @@ export function AddClass() {
                     className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
                   >
                     <option value="">Selecione um professor</option>
-
-                    {teachers.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.username}
+                    {teachers.map((teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.username}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-black mb-1">
-                    Local
-                  </label>
+                  <label className="block text-[10px] text-black mb-1">Local</label>
                   <input
                     type="text"
                     name="local"

@@ -1,5 +1,5 @@
 import { api } from "@/context/authContext";
-import type { Class } from "../components/type";
+import type { Class } from "../types/type";
 
 export const getClasses = async (): Promise<Class[]> => {
   const token = localStorage.getItem("my-jwt");

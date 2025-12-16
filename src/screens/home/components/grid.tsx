@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useStudent } from "@/context/studentContext";
 import { useClasses } from "@/screens/classes/hooks/classes";
 import type { Student } from "@/screens/student/types/type";
-import type { Class } from "@/screens/classes/components/type";
+import type { Class } from "@/screens/classes/types/type";
 
 interface ListaCarrosselProps {
   id?: string;
