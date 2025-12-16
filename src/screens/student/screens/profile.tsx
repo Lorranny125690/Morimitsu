@@ -196,7 +196,7 @@ export const StudentProfile = ({ closeModal, student }: StudentProfileProps) => 
             student.role !== "TEACHER" ? (
               <button
                 disabled
-                className="gap-2 hover:scale-110 transition-all text-white font-medium text-lg flex justify-center items-center"
+                className="cursor-pointer gap-2 hover:scale-110 transition-all text-white font-medium text-lg flex justify-center items-center"
               >
                 <p className="text-white/80">ID de professor:</p> {student.id}
               </button>
