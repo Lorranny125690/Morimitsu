@@ -1,5 +1,4 @@
 import { CiSearch } from "react-icons/ci";
-import { FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiFillEdit } from "react-icons/ai";
@@ -11,6 +10,8 @@ import { useDeleteClass } from "../hooks/classes";
 import { LoadingScreen } from "@/utils/loading";
 import { ModalMsg } from "@/components/modal";
 import { ModalMudarAluno } from "./putClassMobile";
+import { IoTrashBin } from "react-icons/io5";
+import { api } from "@/context/authContext";
 
 export const StudentClassList = () => {
   const navigate = useNavigate();
@@ -50,6 +51,28 @@ export const StudentClassList = () => {
   if (isLoading) {
     return <LoadingScreen />;
   }
+
+  const fetchClass = async (id: string) => {
+    const res = await api.get("/class/filter", {
+      params: { id },
+    });
+  
+    classData(res.data.classes[0]);
+  };  
+
+  useEffect(() => {
+    if (location.state?.id) {
+      fetchClass(location.state.id);
+    }
+  }, [location.state]);  
+
+  const handleDelete = async (class_id: string, student_id: string) => {
+    await api.delete(`/class/remove-student/${class_id}`, {
+      data: { student_id },
+    });
+  
+    fetchClass(class_id); // 🔥 atualiza na hora
+  };
 
   const classData = location.state;
 
@@ -202,9 +225,15 @@ export const StudentClassList = () => {
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.8 }}
               className="pr-5 flex items-center justify-center text-white rounded-full"
-              onClick={() => navigate("/profileMobile")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(
+                  classData?.id,
+                  student.id
+                )                        
+              }}
             >
-              <FaEye size={25} />
+              <IoTrashBin size={25}/>
             </motion.button>
           </motion.div>
         ))}
