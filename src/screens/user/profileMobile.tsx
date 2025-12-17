@@ -1,15 +1,12 @@
 import { AiFillEdit } from "react-icons/ai";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/router";
 import { api } from "@/context/authContext";
 import type { User } from "@/types/user";
 import { getInitials } from "@/utils/getInitials";
 
 export function ProfileMobile() {
-  const navigate = useNavigate();
   const { onGet } = useAuth();
   const id = localStorage.getItem("user_id");
 
@@ -79,12 +76,6 @@ export function ProfileMobile() {
         animate={{ y: 0, opacity: 1 }}
         className="p-6 flex justify-between items-center"
       >
-        <IoMdArrowRoundBack
-          size={26}
-          className="cursor-pointer"
-          onClick={() => navigate(-1)}
-        />
-
         {!editing && (
           <AiFillEdit
             size={22}
