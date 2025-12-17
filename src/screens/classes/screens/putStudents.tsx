@@ -25,7 +25,7 @@ export function ClassPut() {
   };
 
   return (
-    <div className="relative bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100">
+    <div className="relative w-full min-h-screen bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100">
       <div className="flex flex-col w-full h-full">
 
         {/* Header */}

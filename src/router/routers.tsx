@@ -59,7 +59,8 @@ export function AppContent() {
   const isEditStudent3 = location.pathname.startsWith("/frequency/");
   const isEditStudent4 = location.pathname.includes("/classStudent/");
   const isEditStudent5= location.pathname.startsWith("/putClass/");
-  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent5 && !isEditStudent4 && !isEditStudent3 && !isEditStudent;
+  const isEditStudent6= location.pathname.startsWith("/putInClass/");
+  const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent6 &&!isEditStudent5 && !isEditStudent4 && !isEditStudent3 && !isEditStudent;
 
   const privateRoutesExact = [
     "/home",
