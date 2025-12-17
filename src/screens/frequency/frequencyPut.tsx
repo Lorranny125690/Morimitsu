@@ -9,7 +9,7 @@ interface Aluno {
   total: number;
 }
 
-export function FrequencyDesktop() {
+export function FrequencyDesktopPut() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
