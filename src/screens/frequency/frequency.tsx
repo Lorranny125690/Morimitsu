@@ -144,7 +144,6 @@ export function FrequencyDesktop() {
                   className="text-black outline-none w-45 text-xl"
                 />
               </div>
-              <FaCalendar size={20} className="cursor-pointer text-[#560000]" />
             </div>
 
             <button className="flex cursor-pointer items-center gap-2 text-red-900 text-sm">
