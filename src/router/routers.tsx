@@ -53,7 +53,7 @@ export function AppContent() {
     );
   }
 
-  const noHeaderRoutes = ["/", "/login", "/password", "/code", "/email", "/add_student", "/add_classes", "/profileMobile", "/frequency", "/add_student_adress"];
+  const noHeaderRoutes = ["/", "/login", "/password", "/code", "/frequencyPut", "/email", "/add_student", "/add_classes", "/profileMobile", "/frequency", "/add_student_adress"];
   const isEditStudent = location.pathname.startsWith("/edit_student/");
   const isEditStudent2 = location.pathname.startsWith("/enturmar/");
   const isEditStudent3 = location.pathname.startsWith("/frequency/");
@@ -73,6 +73,7 @@ export function AppContent() {
     "/profile",
     "/add_student_adress",
     "/classStudent",
+    "/frequencyPut"
   ];
 
   if (privateRoutes.includes(location.pathname) && !token) {
