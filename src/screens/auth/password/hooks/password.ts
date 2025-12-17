@@ -26,10 +26,9 @@ export function LoginController() {
       const res = await onPassword(password);
 
       if (!res.error) {
-        setModalMsg("🎉 Login feito com sucesso! Bem-vindo de volta 💖");
         setModalType("success");
         setModalVisible(true);
-        setTimeout(() => navigate("/login"), 500);
+        setTimeout(() => navigate("/"), 500);
       } else {
         if (res.status === 400) {
           setModalMsg("⚠️ " + res.msg);
