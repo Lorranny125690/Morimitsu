@@ -98,7 +98,7 @@ export default function ClassroomHistoryScreen() {
                   </span>
                 </div>
 
-                <div onClick={() => navigate(`/frequencyPut`, { state: { classData, classroomId: lesson.id }})} className="text-white bg-sky-700 py-2 px-5 rounded-full">
+                <div onClick={() => navigate(`/frequencyPut`, { state: { classData, lesson }})} className="text-white bg-sky-700 py-2 px-5 rounded-full">
                   Editar frequência
                 </div>
               </div>
