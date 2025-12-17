@@ -25,10 +25,10 @@ export function codeController() {
       const res = await onCode(code);
 
       if (!res.error) {
-        setModalMsg("🎉 Login feito com sucesso! Bem-vindo de volta 💖");
+        setModalMsg("🎉 Trocar senha! 💖");
         setModalType("success");
         setModalVisible(true);
-        setTimeout(() => navigate("/code"), 500);
+        setTimeout(() => navigate("/password"), 500);
       } else {
         if (res.status === 400) {
           setModalMsg("⚠️ " + res.msg);

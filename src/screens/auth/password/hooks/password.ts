@@ -29,7 +29,7 @@ export function LoginController() {
         setModalMsg("🎉 Login feito com sucesso! Bem-vindo de volta 💖");
         setModalType("success");
         setModalVisible(true);
-        setTimeout(() => navigate("/code"), 500);
+        setTimeout(() => navigate("/login"), 500);
       } else {
         if (res.status === 400) {
           setModalMsg("⚠️ " + res.msg);
