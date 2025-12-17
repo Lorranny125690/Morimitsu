@@ -35,7 +35,7 @@ export function ClassStudents() {
         selectedStudentId.map(id => mutateAsync(id))
       );
   
-      openModal("error", "Alunos enturmados com sucesso!");
+      openModal("success", "Alunos enturmados com sucesso!");
       navigate(-1);
     } catch {
       openModal("error", "Erro ao enturmar alunos");

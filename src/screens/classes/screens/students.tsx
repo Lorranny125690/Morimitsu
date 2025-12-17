@@ -6,7 +6,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { calculateAge } from "@/utils/calAge";
 import { belts } from "@/screens/student/types/belt";
 import { getInitials } from "@/utils/getInitials";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDeleteClass } from "../hooks/classes";
 import { LoadingScreen } from "@/utils/loading";
 import { ModalMsg } from "@/components/modal";
@@ -15,7 +15,7 @@ import { ModalMudarAluno } from "./putClassMobile";
 export const StudentClassList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isLoading = true;
+  const [isLoading, setIsLoading] = useState(true);
   const { mutateAsync: removeClass } = useDeleteClass();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<String| null>(null);
@@ -23,6 +23,16 @@ export const StudentClassList = () => {
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!location.state) {
+      setIsLoading(false);
+      return;
+    }
+  
+    setIsLoading(false);
+  }, [location.state]);
+  
 
   const confirmDelete = async () => {
     if (!studentToDelete) return;
