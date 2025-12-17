@@ -36,7 +36,7 @@ export function ClassPut() {
         }
       }
 
-      navigate(-1);
+      navigate("/classes");
     } catch (err) {
       console.error(err);
       alert("Erro ao enturmar alunos");

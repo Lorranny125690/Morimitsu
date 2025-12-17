@@ -10,7 +10,7 @@ export const useTeachers = () => {
     const loadTeachers = async () => {
       try {
         const res = await api.get<{ users: User[] }>("/user");
-        const onlyTeachers = res.data.users.filter((u) => u.role === "TEACHER");
+        const onlyTeachers = res.data.users.filter((u) => u.role === "TEACHER" || u.role === "ADMIN");
         setTeachers(onlyTeachers);
       } catch (err) {
         console.error("Erro ao carregar professores", err);
