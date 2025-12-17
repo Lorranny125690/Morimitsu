@@ -40,9 +40,6 @@ export function ModalAdicionarAluno({open, onClose}: Props) {
             <p className="text-white text-sm mx-6 border-b-2 border-[#4963F5] pb-1">
               Dados
             </p>
-            <p className="text-gray-400 text-sm mx-6 cursor-pointer">
-              Enturmar
-            </p>
           </div>
         </div>
 
