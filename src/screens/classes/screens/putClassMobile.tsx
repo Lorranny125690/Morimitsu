@@ -93,7 +93,7 @@ export function ModalMudarAluno({open, onClose}: Props) {
                 name="teacher_id"
                 value={formData.teacher_id}
                 onChange={handleChange}
-                className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
+                className="w-full h-8 text-[12px] ext-white border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
               >
                 <option value="">Selecione um professor</option>
                 {teachers.map((teacher) => (
