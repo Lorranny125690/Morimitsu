@@ -56,18 +56,25 @@ export function StudentDesktop() {
     return Array.from(map.values());
   }, [students]);
 
-  const displayStudents = useDisplayStudents(
-    students,
-    filters,
-    alphabetical
-  );
+// 🔹 Quando a opção de "Teachers" for selecionada, mostramos apenas os professores
+const displayStudents = useDisplayStudents(
+  students.filter(student => {
+    if (filters["teachers"]) {
+      return student.role === "TEACHER";  // Filtra para mostrar apenas os professores
+    }
+    return true;  // Caso contrário, mostra todos os alunos
+  }),
+  filters,
+  alphabetical
+);
 
-  const toggleFilter = (name: string) => {
+
+  function onToggleFilter(id: string) {
     setFilters(prev => ({
       ...prev,
-      [name]: !prev[name],
+      [id]: !prev[id],
     }));
-  };
+  }  
 
   const confirmDelete = async () => {
     if (!studentToDelete) return;
@@ -116,9 +123,9 @@ export function StudentDesktop() {
               </motion.button>
             </a>
             <FiltroDropdown
-              classes={classes}
+              classes={[{ id: "teachers", name: "Teachers" }, ...classes]}
               filters={filters}
-              onToggleFilter={toggleFilter}
+              onToggleFilter={onToggleFilter}
               alphabetical={alphabetical}
               onSort={() => setAlphabetical(prev => !prev)}
             />
