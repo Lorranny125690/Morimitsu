@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useStudent } from "@/context/studentContext";
-import { MdAddBox, MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function ClassPut() {
