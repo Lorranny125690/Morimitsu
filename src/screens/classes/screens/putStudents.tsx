@@ -1,90 +1,139 @@
 import { useState } from "react";
 import { useStudent } from "@/context/studentContext";
-import { MdAddBox } from "react-icons/md";
+import { MdAddBox, MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function ClassPut() {
-  const { id } = useParams()
-  const { onPutStudentOnClass } = useStudent();
-  const { students, loading} = useStudent();
-  const navigate = useNavigate()
+  const { id } = useParams(); // id da turma
+  const { students, loading, onPutStudentOnClass } = useStudent();
+  const navigate = useNavigate();
 
-  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const toggleStudent = (studentId: string) => {
+    setSelectedStudents((prev) =>
+      prev.includes(studentId)
+        ? prev.filter((id) => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
 
   const handlePut = async () => {
-    console.log("STUDENT ID:", id);
-    console.log("CLASS ID:", selectedStudent);
-    const res = await onPutStudentOnClass(selectedStudent, String(id));
-  
-    if (res.error) {
-      alert(res.message);
-      return;
+    if (!id || selectedStudents.length === 0) return;
+
+    setSubmitting(true);
+
+    try {
+      // caso backend NÃO aceite array, manda 1 por 1
+      for (const studentId of selectedStudents) {
+        const res = await onPutStudentOnClass(studentId, id);
+
+        if (res?.error) {
+          alert(res.message);
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao enturmar alunos");
+    } finally {
+      setSubmitting(false);
     }
-  
-    navigate(-1);
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-white shadow-lg flex flex-col items-center w-[679px] h-[410px] border border-gray-100">
-      <div className="flex flex-col w-full h-full">
-
-        {/* Header */}
-        <div className="border-b-2 border-gray-200 py-5 mb-2 flex items-center">
-          <h3 className="px-4 text-gray-700 text-[10px]">
-            Enturmar
-          </h3>
-        </div>
-
-        {/* Lista de turmas */}
-        <div className="flex-1 overflow-auto px-6 py-2 space-y-2">
-          {loading && (
-            <p className="text-sm text-gray-400">Carregando turmas...</p>
-          )}
-
-          {!loading && students.map((cls) => (
-            <div
-              key={cls.id}
-              onClick={() => setSelectedStudent(cls.id)}
-              className={`cursor-pointer text-black flex items-center gap-3 border rounded-lg px-4 py-3 text-sm transition-all
-                ${
-                  selectedStudent === cls.id
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-blue-300"
-                }`}
-            >
-              <MdAddBox size={20} />
-              <div>
-                <p className="font-medium">{cls.name}</p>
-                {cls.birth_date && (
-                  <p className="text-xs text-gray-500">{cls.birth_date}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-          <button
-            type="button"
-            onClick={() => navigate(-2)}
-            className="bg-red-400 hover:bg-red-500 text-white text-sm rounded-full px-5 py-2"
-          >
-            Não enturmar
-          </button>
-
-          <button
-            type="button"
-            onClick={handlePut}
-            disabled={!selectedStudent}
-            className={`text-white text-sm rounded-full px-5 py-2 transition
-              ${
-                selectedStudent
-                  ? "bg-[#4963F5] hover:bg-[#345ed3]"
-                  : "bg-gray-300 cursor-not-allowed"
-              }`}
-          >
-            Enturmar
-          </button>
-        </div>
+    <div className="w-full min-h-screen bg-white rounded-xl shadow-lg border border-gray-100 flex flex-col">
+      
+      {/* Header */}
+      <div className="border-b px-6 py-4">
+        <h3 className="text-sm font-semibold text-gray-700">
+          Enturmar alunos
+        </h3>
+        <p className="text-xs text-gray-400">
+          Selecione um ou mais alunos para adicionar à turma
+        </p>
       </div>
+
+      {/* Lista */}
+      <div className="flex-1 overflow-auto px-6 py-4 space-y-2">
+        {loading && (
+          <p className="text-sm text-gray-400">Carregando alunos...</p>
+        )}
+
+        {!loading && students.length === 0 && (
+          <p className="text-sm text-gray-400">
+            Nenhum aluno disponível
+          </p>
+        )}
+
+        {!loading &&
+          students.map((student) => {
+            const isSelected = selectedStudents.includes(student.id);
+
+            return (
+              <div
+                key={student.id}
+                onClick={() => toggleStudent(student.id)}
+                className={`flex items-center gap-3 border rounded-lg px-4 py-3 cursor-pointer transition
+                  ${
+                    isSelected
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-200 hover:border-blue-300"
+                  }
+                `}
+              >
+                {isSelected ? (
+                  <MdCheckBox size={22} className="text-blue-600" />
+                ) : (
+                  <MdCheckBoxOutlineBlank size={22} className="text-gray-400" />
+                )}
+
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">
+                    {student.name}
+                  </p>
+                  {student.birth_date && (
+                    <p className="text-xs text-gray-500">
+                      {student.birth_date}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+      </div>
+
+      {/* Footer */}
+      <div className="border-t px-6 py-4 flex justify-between">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="text-sm text-gray-500 hover:text-gray-700"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          onClick={handlePut}
+          disabled={selectedStudents.length === 0 || submitting}
+          className={`px-6 py-2 rounded-full text-sm font-medium text-white transition
+            ${
+              selectedStudents.length > 0 && !submitting
+                ? "bg-[#4963F5] hover:bg-[#345ed3]"
+                : "bg-gray-300 cursor-not-allowed"
+            }
+          `}
+        >
+          {submitting
+            ? "Enturmando..."
+            : `Enturmar (${selectedStudents.length})`}
+        </button>
+      </div>
+    </div>
   );
 }

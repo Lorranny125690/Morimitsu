@@ -64,9 +64,9 @@ export function ModalAdicionarAluno({open, onClose}: Props) {
                 onChange={handleChange}
                 className="w-full h-8 text-[12px] text-white border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
               >
-                <option value="">Selecione um professor</option>
+                <option className="text-black" value="">Selecione um professor</option>
                 {teachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
+                  <option className="text-black" key={teacher.id} value={teacher.id}>
                     {teacher.username}
                   </option>
                   ))}

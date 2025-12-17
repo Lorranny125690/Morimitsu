@@ -21,6 +21,7 @@ export const StudentClassList = () => {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<String| null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
   const [open, setOpen] = useState(false);
@@ -44,7 +45,7 @@ export const StudentClassList = () => {
     setModalMsg("Turma excluída com sucesso!");
     setModalType("success");
     setModalVisible(true);
-
+    setOnConfirm(() => () => navigate(-1));
     setConfirmDeleteOpen(false);
     setStudentToDelete(null);
   };
@@ -171,7 +172,10 @@ export const StudentClassList = () => {
           transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
         >
           <p onClick={() => setOpen(true)}>Editar</p>
-          <p className="text-red-400">Excluir</p>
+          <p onClick={() => {
+                    setStudentToDelete(classData?.id);
+                    setConfirmDeleteOpen(true);
+                  }}className="text-red-400">Excluir</p>
           <p onClick={() => navigate(`/enturmar/${classData?.id}`)}>Adicionar aluno</p>
         </motion.div>
       </motion.div>
@@ -273,6 +277,7 @@ export const StudentClassList = () => {
       onClose={() => setModalVisible(false)}
       message={modalMsg}
       type={modalType}
+      onConfirm={onConfirm ?? undefined}
       />
     </motion.div>
   );
