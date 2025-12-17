@@ -201,7 +201,7 @@ export function StudentDesktop() {
                     null
                   ) : <td className="py-3 px-4 text-center">
                    <div className="flex items-center justify-center gap-3">
-                      <FaEdit  onClick={(e) => {
+                      <FaEdit onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/edit_student/${s.id}`, { state: s });
                       }}

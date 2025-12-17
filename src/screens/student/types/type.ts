@@ -29,6 +29,8 @@ interface StudentClass {
 }
 
 export type Student = {
+  complement: string;
+  guardian_phone: string;
   id: any;
   username: string;
   name: string;

@@ -19,7 +19,7 @@ export interface FormDataType {
   birth_date: string;
   current_frequency: number;
   belt: string;
-  grade: number;
+  grade: string;
   city: string;
   street: string;
   district: string;
@@ -31,6 +31,7 @@ export interface FormDataType {
   social_name: string;
   file_image: File | null;
   status: string;
+  total_frequency: number;
 }
 
 export function useStudentForm(goNext?: () => void) {
@@ -56,7 +57,7 @@ export function useStudentForm(goNext?: () => void) {
     birth_date: "",
     current_frequency: 0,
     belt: "",
-    grade: 0,
+    grade: "",
     city: "",
     street: "",
     district: "",
@@ -68,6 +69,7 @@ export function useStudentForm(goNext?: () => void) {
     social_name: "",
     file_image: null,
     status: "",
+    total_frequency: 0
   });
 
   // ----------------------------------------------------------

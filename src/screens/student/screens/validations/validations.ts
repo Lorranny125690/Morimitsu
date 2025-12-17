@@ -57,7 +57,7 @@ export const StudentBaseSchema = z.object({
     .min(1, "A graduação (faixa) é obrigatória"),
 
   grade: z
-    .number()
+    .string()
     .min(1, "O grau é obrigatório"),
 
   city: z.string().optional().nullable(),

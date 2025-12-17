@@ -10,12 +10,14 @@ import { useStudent } from "@/context/studentContext";
 import { useState } from "react";
 import type { Student } from "../types/type";
 import { ModalMsg } from "@/components/modal";
+import { ModalMudarAluno } from "./add_student/pages/put_student";
 
 export function ProfileMobile() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const student = state?.student;
-
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
   const studentName = (student: string) => {
     const firstName = student.split(" ")[0];
     const secondName = student.split(" ")[1];
@@ -123,7 +125,11 @@ export function ProfileMobile() {
           Promover a professor
         </button>
         <div className="flex flex-row gap-4 items-center">
-          <AiFillEdit className="active:scale-105 transition-all" size={20} />
+          <AiFillEdit onClick={() => {
+  setSelectedStudent(student);
+  setEditOpen(true);
+}}
+ className="active:scale-105 transition-all" size={20} />
           <FaTrash className="text-red-500 active:scale-105 transition-all"                       onClick={(e) => {
                         e.stopPropagation();
                         setStudentToDelete(student.id);
@@ -255,6 +261,17 @@ export function ProfileMobile() {
             </div>
           </div>
         </div>
+      )}
+      
+      {editOpen && selectedStudent && (
+        <ModalMudarAluno
+          open={editOpen}
+          onClose={() => {
+            setEditOpen(false);
+            setSelectedStudent(null);
+          }}
+          student={selectedStudent}
+        />
       )}
 
       <ModalMsg
