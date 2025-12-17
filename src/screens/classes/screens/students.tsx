@@ -6,10 +6,40 @@ import { AiFillEdit } from "react-icons/ai";
 import { calculateAge } from "@/utils/calAge";
 import { belts } from "@/screens/student/types/belt";
 import { getInitials } from "@/utils/getInitials";
+import { useState } from "react";
+import { useDeleteClass } from "../hooks/classes";
+import { LoadingScreen } from "@/utils/loading";
+import { ModalMsg } from "@/components/modal";
+import { ModalMudarAluno } from "./putClassMobile";
 
 export const StudentClassList = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isLoading = true;
+  const { mutateAsync: removeClass } = useDeleteClass();
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<String| null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMsg, setModalMsg] = useState("");
+  const [modalType, setModalType] = useState<"error" | "success">("error");
+  const [open, setOpen] = useState(false);
+
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    await removeClass(String(studentToDelete));
+
+    setModalMsg("Turma excluída com sucesso!");
+    setModalType("success");
+    setModalVisible(true);
+
+    setConfirmDeleteOpen(false);
+    setStudentToDelete(null);
+  };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   const classData = location.state;
 
@@ -31,40 +61,64 @@ export const StudentClassList = () => {
     >
       {/* Header */}
       <motion.header
-        className="flex items-center p-9 mt-6 mb-6 py-0"
-        initial={{ y: -40, opacity: 0 }}
+        className="flex items-center justify-between px-9 mt-6 mb-6"
+        initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 120, delay: 0.1 }}
+        transition={{ type: "spring", stiffness: 110, damping: 14 }}
       >
-        <div className="flex items-center justify-start relative">
+        {/* SEARCH */}
+        <div className="relative">
           <CiSearch
             size={14}
-            className="absolute left-[9px] top-1/2 transform -translate-y-1/2 text-white"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70"
           />
+
           <input
             type="text"
-            className="w-8 h-8 flex justify-center items-center rounded-full bg-[#02385A]/70 text-white text-[10px] placeholder-[#00AAFF] focus:outline-none"
+            placeholder="Buscar"
+            className="w-32 h-8 pl-8 pr-3 rounded-full 
+              bg-[#02385A]/70 text-white text-[11px]
+              placeholder:text-[#00AAFF]/70
+              focus:outline-none focus:ring-1 focus:ring-[#00AAFF]"
           />
         </div>
 
+        {/* ACTIONS */}
         <motion.div
-          className="flex items-center gap-1"
-          initial={{ scale: 0.9, opacity: 0 }}
+          className="flex items-center gap-6"
+          initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
+          transition={{ delay: 0.15, type: "spring", stiffness: 140 }}
         >
-          <div 
-          onClick={() => navigate(`/frequency2/${classData.id}`, {
-            state: {
-              classId: classData.id,
-              teacherId: classData.teacher_id,
-              students: alunos, // 👈 já limpo
-            },
-          })
-          }
-          className="flex flex-row gap-2 items-center text-md px-22 py-[2px] font-semibold rounded-xl cursor-pointer hover:text-[#00AAFF] transition-colors">
-            <AiFillEdit /> Frequência
-          </div>
+          {/* FREQUÊNCIA */}
+          <button
+            onClick={() =>
+              navigate(`/frequency2/${classData.id}`, {
+                state: {
+                  classId: classData.id,
+                  teacherId: classData.teacher_id,
+                  students: alunos,
+                },
+              })
+            }
+            className="flex items-center gap-2 text-sm font-semibold
+              text-white/80 hover:text-[#00AAFF]
+              transition-colors cursor-pointer"
+          >
+            <AiFillEdit size={16} />
+            Frequência
+          </button>
+
+          {/* HISTÓRICO */}
+          <button
+            onClick={() =>
+              navigate(`/history/${classData?.id}`, { state: classData })
+            }
+            className="text-sm font-semibold text-white/40 
+              hover:text-white transition-colors cursor-pointer"
+          >
+            Histórico
+          </button>
         </motion.div>
       </motion.header>
 
@@ -75,7 +129,7 @@ export const StudentClassList = () => {
         transition={{ type: "spring", stiffness: 120, delay: 0.1 }}
       >
         <div className="flex items-center w-full justify-start relative">
-          {}
+          {classData?.name}
         </div>
 
         <motion.div
@@ -84,9 +138,9 @@ export const StudentClassList = () => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
         >
-          <p>Editar</p>
+          <p onClick={() => setOpen(true)}>Editar</p>
           <p className="text-red-400">Excluir</p>
-          <p>Adicionar aluno</p>
+          <p onClick={() => navigate(`/enturmar/${classData?.id}`)}>Adicionar aluno</p>
         </motion.div>
       </motion.div>
 
@@ -145,6 +199,43 @@ export const StudentClassList = () => {
           </motion.div>
         ))}
       </motion.div>
+      {confirmDeleteOpen && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#1E1E2F] p-6 rounded-lg shadow-xl w-80 text-center">
+            <h2 className="text-lg font-semibold mb-4">Confirmar exclusão</h2>
+            <p className="text-gray-300 mb-6">
+              Tem certeza que deseja excluir esta turma?
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setConfirmDeleteOpen(false)}
+                className="cursor-pointer px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={confirmDelete}
+                className="cursor-pointer px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md transition"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <ModalMudarAluno
+      open={open}
+      onClose={() => setOpen(false)}
+      />
+
+      <ModalMsg
+      show={modalVisible}
+      onClose={() => setModalVisible(false)}
+      message={modalMsg}
+      type={modalType}
+      />
     </motion.div>
   );
 };

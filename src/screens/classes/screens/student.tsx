@@ -4,6 +4,7 @@ import { useStudent } from "@/context/studentContext";
 import { getInitials } from "@/utils/getInitials";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePutStudentOnClassRQ } from "../hooks/classes";
+import { ModalMsg } from "@/components/modal";
 
 export function ClassStudents() {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +13,15 @@ export function ClassStudents() {
   if (!id) {
     return <p>Turma não encontrada</p>;
   }
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("error");
+  const [modalMsg, setModalMsg] = useState("");
+
+  function openModal(type: "success" | "error", msg: string) {
+    setModalType(type);
+    setModalMsg(msg);
+    setModalVisible(true);
+  }  
 
   const classId = id;
 
@@ -25,10 +35,10 @@ export function ClassStudents() {
         selectedStudentId.map(id => mutateAsync(id))
       );
   
-      alert("Alunos enturmados com sucesso!");
+      openModal("error", "Alunos enturmados com sucesso!");
       navigate(-1);
     } catch {
-      alert("Erro ao enturmar alunos");
+      openModal("error", "Erro ao enturmar alunos");
     }
   };  
 
@@ -121,6 +131,12 @@ export function ClassStudents() {
           </button>
         </footer>
       </div>
+        <ModalMsg
+          show={modalVisible}
+          type={modalType}
+          message={modalMsg}
+          onClose={() => setModalVisible(false)}
+        />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { api } from "@/context/authContext";
 import { formatBirth } from "@/utils/formatDate";
+import { ModalMsg } from "@/components/modal";
 
 interface ClassroomLesson {
   id: string;
@@ -14,42 +15,55 @@ export default function ClassroomHistoryScreen() {
   const location = useLocation();
   const navigate = useNavigate();
   const classData = location.state;
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("error");
+  const [modalMsg, setModalMsg] = useState("");
   const [lessons, setLessons] = useState<ClassroomLesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  function openModal(type: "success" | "error", msg: string) {
+    setModalType(type);
+    setModalMsg(msg);
+    setModalVisible(true);
+  }  
+
   useEffect(() => {
+    if (!classData?.id) {
+      openModal("error", "Turma inválida.");
+      return;
+    }
   
     const fetchLessons = async () => {
       try {
         setLoading(true);
         setError(null);
-    
+  
         const res = await api.get(`/classroom/${classData.id}`);
-    
-        // Verificando se res.data.classrooms é um array antes de setar
+  
         if (Array.isArray(res.data.clasrooms)) {
           setLessons(res.data.clasrooms);
         } else {
-          setError("Dados de aulas inválidos.");
-        }        
-    
+          openModal("error", "Dados de aulas inválidos.");
+        }
+  
       } catch (err: any) {
-        if (err.response?.status === 401) {
-          setError("Acesso negado");
-        } else if (err.response?.status === 404) {
-          setError("Turma não encontrada");
+        const status = err.response?.status;
+  
+        if (status === 401) {
+          openModal("error", "Acesso negado. Faça login novamente.");
+        } else if (status === 404) {
+          openModal("error", "Turma não encontrada.");
         } else {
-          setError("Erro ao carregar histórico da turma");
+          openModal("error", "Erro ao carregar histórico da turma.");
         }
       } finally {
         setLoading(false);
       }
-    };    
+    };
   
     fetchLessons();
-  }, [classData.id]);  
+  }, [classData?.id]);   
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4">
@@ -106,6 +120,15 @@ export default function ClassroomHistoryScreen() {
           </div>
         )}
       </motion.div>
+
+      {modalVisible && (
+        <ModalMsg
+          show={modalVisible}
+          type={modalType}
+          message={modalMsg}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
     </div>
   );
 }
