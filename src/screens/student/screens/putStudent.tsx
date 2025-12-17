@@ -5,14 +5,16 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import bgImage from "../../../assets/image4.png";
 import { ModalMsg } from "@/components/modal";
-import { useStudentForm } from "./add_student/hooks/studentProps";
+import { useStudentForm, type FormDataType } from "./add_student/hooks/studentProps";
 import { StudentProfileCard } from "./add_student/components/card";
 import { StudentForm } from "./add_student/components/studentForm";
 import { useStudent } from "@/context/studentContext";
 
 export function PutStudentScreen() {
   const { id } = useParams();
-  const location = useLocation();
+  const location = useLocation() as {
+    state: Partial<FormDataType>;
+  };  
   const studentData = location.state;
   const navigate = useNavigate();
   const { setFormData, formData, handleChange, modalVisible, modalMsg, modalType, setModalVisible, setModalType, setModalMsg, validateStepData, validateStepAddress} = useStudentForm();
@@ -20,16 +22,23 @@ export function PutStudentScreen() {
   const { onPutStudent } = useStudent();
 
   useEffect(() => {
-    if (studentData) {
-      setFormData(prev => ({
-        ...prev,
-        ...studentData,
-        birth_date: studentData.birth_date
-          ? new Date(studentData.birth_date).toISOString().split("T")[0]
+    if (!studentData) return;
+  
+    setFormData(prev => ({
+      ...prev,
+      ...studentData,
+  
+      grade:
+        studentData.grade !== undefined && studentData.grade !== null
+          ? String(studentData.grade)
           : "",
-      }));
-    }
-  }, [studentData]);  
+  
+      birth_date: studentData.birth_date
+        ? new Date(studentData.birth_date).toISOString().split("T")[0]
+        : "",
+    }));
+  }, [studentData]);
+   
   
   const handleSubmit = async (id: string) => {
     let payload: FormData | Record<string, any>;

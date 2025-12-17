@@ -73,6 +73,7 @@ export function StudentForm({ formData, handleChange, navigate, goNext}: Props) 
           <div>
             <label className="block text-[10px] text-black">Grau</label>
             <input
+              type="text"
               name="grade"
               value={formData.grade}
               onChange={handleChange}

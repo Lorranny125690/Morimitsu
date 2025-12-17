@@ -91,7 +91,7 @@ export function useStudentForm(goNext?: () => void) {
       return;
     }
 
-    const numericFields = ["grade", "current_frequency"];
+    const numericFields = ["current_frequency"];
 
     setFormData((prev) => ({
       ...prev,
