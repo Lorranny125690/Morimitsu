@@ -34,6 +34,8 @@ import { Help } from "@/screens/help/help";
 import { PutClass } from "@/screens/classes/screens/putClass";
 import { ClassPut } from "@/screens/classes/screens/putStudents";
 import { FrequencyMobile } from "@/screens/frequency/frequencyMobile";
+import ClassroomHistoryScreen from "@/screens/classes/screens/history";
+import { FrequencyDesktopPut } from "@/screens/frequency/frequencyPut";
 
 /* -----------------------------------------------------------
    AppContent — controla layout e regras de acesso
@@ -134,6 +136,8 @@ export function AppContent() {
             <Route path="/help" element={<Help/>}/>
             <Route path="/putClass/:id" element={<PutClass/>}/>
             <Route path="/putInClass/:id" element={<ClassPut/>}/>
+            <Route path="/history/:id" element={<ClassroomHistoryScreen/>}/>
+            <Route path="/frequencyPut" element={<FrequencyDesktopPut/>}/>
             <Route
               path="*"
               element={<Navigate to={token ? "/home" : "/login"} replace />}

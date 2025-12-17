@@ -89,8 +89,10 @@ export default function ClassDesktop() {
   
         {/* HEADER */}
         <div className="mt-10 flex justify-between items-center mb-8">
-          <div>
+          <div className="flex gap-4 flex-row items-center justify-center">
             <h2 className="text-2xl font-bold">{classData?.name}</h2>
+            <span className="h-10 bg-white w-0.5"></span>
+            <h2 onClick={() => navigate(`/history/${classData?.id}`, {state: classData})} className="text-xl text-white/40 hover:text-white cursor-pointer transition-all">Histórico</h2>
           </div>
           <p className="text-sm">  Prof.: {professores[classData?.teacher_id ?? ""] ?? "Carregando..."}</p>
         </div>
