@@ -24,17 +24,18 @@ export const StudentClassList = () => {
   const [modalMsg, setModalMsg] = useState("");
   const [modalType, setModalType] = useState<"error" | "success">("error");
   const [open, setOpen] = useState(false);
+  const [classData, setClassData] = useState<any>(location.state || null);
 
   useEffect(() => {
-    if (!location.state) {
+    if (!location.state?.id) {
       setIsLoading(false);
       return;
     }
   
-    setIsLoading(false);
-  }, [location.state]);
+    fetchClass(location.state.id)
+      .finally(() => setIsLoading(false));
+  }, [location.state?.id]);  
   
-
   const confirmDelete = async () => {
     if (!studentToDelete) return;
 
@@ -48,23 +49,19 @@ export const StudentClassList = () => {
     setStudentToDelete(null);
   };
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   const fetchClass = async (id: string) => {
     const res = await api.get("/class/filter", {
       params: { id },
     });
   
-    classData(res.data.classes[0]);
+    setClassData(res.data.classes[0]);
   };  
 
   useEffect(() => {
     if (location.state?.id) {
       fetchClass(location.state.id);
     }
-  }, [location.state]);  
+  }, [classData]);  
 
   const handleDelete = async (class_id: string, student_id: string) => {
     await api.delete(`/class/remove-student/${class_id}`, {
@@ -74,8 +71,6 @@ export const StudentClassList = () => {
     fetchClass(class_id); // 🔥 atualiza na hora
   };
 
-  const classData = location.state;
-
   if (!classData) {
     return <p>Turma não encontrada</p>;
   }
@@ -83,6 +78,10 @@ export const StudentClassList = () => {
   const alunos = classData.students.map(
     (item: any) => item.student
   );  
+
+  {!isLoading && !classData && (
+    <LoadingScreen />
+  )}
 
   return (
     <motion.div

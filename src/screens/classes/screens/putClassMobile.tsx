@@ -91,60 +91,67 @@ export function ModalMudarAluno({open, onClose}: Props) {
 
           {/* Telefone */}
           <div>
-                  <label className="block text-[10px] text-black mb-1">Professor</label>
-                  <select
-                    name="teacher_id"
-                    value={formData.teacher_id}
-                    onChange={handleChange}
-                    className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
-                  >
-                    <option value="">Selecione um professor</option>
-                    {teachers.map((teacher) => (
-                      <option key={teacher.id} value={teacher.id}>
-                        {teacher.username}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            <label className="block text-[10px] text-black mb-1">Professor</label>
+              <select
+                name="teacher_id"
+                value={formData.teacher_id}
+                onChange={handleChange}
+                className="w-full h-8 text-[12px] text-black border border-gray-300 rounded px-3 focus:ring-2 focus:ring-blue-400 shadow-sm"
+              >
+                <option value="">Selecione um professor</option>
+                {teachers.map((teacher) => (
+                  <option key={teacher.id} value={teacher.id}>
+                    {teacher.username}
+                  </option>
+                  ))}
+              </select>
+            </div>
 
-          {/* Foto */}
-          <div className="px-6">
-                <label className="block overflow-hidden text-[10px] text-black mb-2">
-                  Escolha uma imagem
+              <div className="mt-2">
+                <label className="block text-[11px] text-gray-400 mb-2">
+                  Imagem da turma
                 </label>
 
-                <div className="max-h-[140px] pr-1">
-                  <div className="grid grid-cols-5 gap-3">
-                    {turmasRecentes.map((turma) => (
-                      <button
-                        key={turma.id}
-                        type="button"
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            image_class_url: turma.imagem,
-                          }))
-                        }
-                        className={`relative w-24 h-24 rounded-md overflow-hidden border-2 transition
-                          ${
-                            formData.image_class_url === turma.imagem
-                              ? "border-blue-500 scale-105"
-                              : "border-transparent hover:border-gray-300"
-                          }`}
-                      >
-                        <img
-                          src={turma.imagem}
-                          alt={turma.nome}
-                          className="w-full h-full object-cover"
-                        />
+                <div className="max-h-[160px] overflow-y-auto pr-1">
+                  <div className="grid grid-cols-3 gap-3">
+                    {turmasRecentes.map((turma) => {
+                      const selected = formData.image_class_url === turma.imagem;
 
-                        {formData.image_class_url === turma.imagem && (
-                          <div className="absolute inset-0 bg-blue-500/40 flex items-center justify-center text-white text-[10px] font-semibold">
-                            Selecionada
-                          </div>
-                        )}
-                      </button>
-                    ))}
+                      return (
+                        <button
+                          key={turma.id}
+                          type="button"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              image_class_url: turma.imagem,
+                            }))
+                          }
+                          className={`
+                            relative aspect-square rounded-lg overflow-hidden
+                            border transition-all
+                            ${selected
+                              ? "border-[#4963F5] ring-2 ring-[#4963F5]/40 scale-[1.03]"
+                              : "border-white/10 hover:border-white/30"
+                            }
+                          `}
+                        >
+                          <img
+                            src={turma.imagem}
+                            alt={turma.nome}
+                            className="w-full h-full object-cover"
+                          />
+
+                          {selected && (
+                            <div className="absolute inset-0 bg-[#4963F5]/30 flex items-center justify-center">
+                              <span className="bg-[#4963F5] text-white text-[10px] px-2 py-1 rounded-full">
+                                Selecionada
+                              </span>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
