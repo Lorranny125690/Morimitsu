@@ -1,4 +1,4 @@
-import { FaCalendar, FaDownload } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import bg from "../../assets/bakcgorund.png";
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,6 @@ export function FrequencyDesktop() {
     id: string;
     nome: string;
     presencaHoje: boolean;
-    ultimos7dias: number[];
     total: number;
   }
 
@@ -103,7 +102,6 @@ export function FrequencyDesktop() {
           id: s.id,
           nome: s.social_name || s.name,
           presencaHoje: false,
-          ultimos7dias: [],
           total: s.current_frequency ?? 0,
         };
       });
@@ -200,19 +198,6 @@ export function FrequencyDesktop() {
                       }}
                       
                     />
-                  </td>
-
-                  <td className="py-4 px-80">
-                    <div className="flex items-center justify-start gap-3 text-lg">
-                      {aluno.ultimos7dias.map((v, idx) => (
-                        <span
-                          key={idx}
-                          className={v ? "text-green-600" : "text-gray-400"}
-                        >
-                          {v ? "✔" : "✕"}
-                        </span>
-                      ))}
-                    </div>
                   </td>
 
                   <td className="py-4 px-4 font-bold text-center text-gray-900 text-lg">
