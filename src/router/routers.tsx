@@ -61,24 +61,40 @@ export function AppContent() {
   const isEditStudent5= location.pathname.startsWith("/putClass/");
   const showHeader = !noHeaderRoutes.includes(location.pathname) && !isEditStudent2 && !isEditStudent5 && !isEditStudent4 && !isEditStudent3 && !isEditStudent;
 
-  const privateRoutes = [
+  const privateRoutesExact = [
     "/home",
     "/dashboard",
     "/student",
     "/notification",
     "/classes",
-    "/championship",
+    "/profile",
     "/add_student",
     "/add_classes",
-    "/profile",
     "/add_student_adress",
-    "/classStudent",
     "/frequencyPut"
   ];
+  
+  const privateRoutesDynamic = [
+    "/frequency/",
+    "/frequency2/",
+    "/classStudent/",
+    "/edit_student/",
+    "/enturmar/",
+    "/putClass/",
+    "/putInClass/",
+    "/history/"
+  ];
 
-  if (privateRoutes.includes(location.pathname) && !token) {
+  const isPrivateRoute =
+  privateRoutesExact.includes(location.pathname) ||
+  privateRoutesDynamic.some(route =>
+    location.pathname.startsWith(route)
+  );
+  
+
+  if (isPrivateRoute && !token) {
     return <Navigate to="/" replace />;
-  }
+  }  
 
   if ((location.pathname === "/" || location.pathname === "/login") && token) {
     return <Navigate to="/home" replace />;
