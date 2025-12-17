@@ -24,14 +24,9 @@ import { motion } from "framer-motion";
 
 interface Student {
   name: string;
-  faixa: string;
-  presences: number;
+  belt: string;
+  current_frequency: number;
 }
-const advancedStudents: Student[] = [
-  { name: "Carlos Oliveira", faixa: "Roxa", presences: 45 },
-  { name: "Fernanda Souza", faixa: "Marrom", presences: 52 },
-  { name: "Lucas Mendes", faixa: "Preta", presences: 60 },
-];
 
 import {
   getSummary,
@@ -108,6 +103,7 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [studentBirth, setStudentBirth] = useState<BirthdayStudent[]>([])
   const [studentG, setStudentG] = useState<BirthdayStudent[]>([])
+  const [student, setStudent] = useState<Student[]>([])
   const { onGetSTudentBirthday } = useStudent();
   const navigate = useNavigate();
 
@@ -128,6 +124,8 @@ export const Dashboard: React.FC = () => {
 
         const resG = await api.get("/student/fits-graduate")
         setStudentG(resG.data?.students)
+        const result = await api.get("/student/fits-graduate")
+        setStudent(result.data?.students)
   
         setSummary({
           totalStudents: s.quant_students,
@@ -339,11 +337,11 @@ export const Dashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {advancedStudents.map((student, idx) => (
+              {student.map((student, idx) => (
                 <tr key={idx} className="hover:bg-gray-50 transition">
                   <td className="px-6 py-3">{student.name}</td>
-                  <td className="px-6 py-3">{student.faixa}</td>
-                  <td className="px-6 py-3">{student.presences}</td>
+                  <td className="px-6 py-3">{belts[student.belt]}</td>
+                  <td className="px-6 py-3">{student.current_frequency}</td>
                 </tr>
               ))}
             </tbody>
