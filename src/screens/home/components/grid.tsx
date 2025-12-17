@@ -4,6 +4,7 @@ import { useStudent } from "@/context/studentContext";
 import { useClasses } from "@/screens/classes/hooks/classes";
 import type { Student } from "@/screens/student/types/type";
 import type { Class } from "@/screens/classes/types/type";
+import { api } from "@/context/authContext";
 
 interface ListaCarrosselProps {
   id?: string;
@@ -19,7 +20,7 @@ interface CarouselItem {
 
 function ScreenCard({ id, titulo, tipo }: ListaCarrosselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { onGetSTudentBirthday, onGetStudent } = useStudent();
+  const { onGetSTudentBirthday } = useStudent();
   const { data: classes = [] } = useClasses();
 
   const [items, setItems] = useState<CarouselItem[]>([]);
@@ -41,9 +42,9 @@ function ScreenCard({ id, titulo, tipo }: ListaCarrosselProps) {
       }
 
       if (tipo === "graduar") {
-        const res = await onGetStudent();
+        const resG = await api.get("/student/fits-graduate")
         list =
-          res.data?.students?.map((s: Student) => ({
+          resG.data?.students?.map((s: Student) => ({
             id: s.id,
             name: s.name,
             image: s.image_student_url,
